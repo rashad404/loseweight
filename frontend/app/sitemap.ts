@@ -19,6 +19,7 @@ const LOCALIZED_PATHS = [
   { path: '/calculators/protein', priority: 0.8, changeFrequency: 'monthly' as const },
   { path: '/calculators/plateau', priority: 0.8, changeFrequency: 'monthly' as const },
   { path: '/guides', priority: 0.9, changeFrequency: 'weekly' as const },
+  { path: '/authors/rashad-mirzayev', priority: 0.5, changeFrequency: 'monthly' as const },
 ];
 
 /**

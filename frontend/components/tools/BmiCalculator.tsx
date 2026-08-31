@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Field, FieldGroup, FormulaNote, ResultCard, ScaleBar } from './shared';
+import NumberField from './NumberField';
 import { bmi, bmiCategory, healthyWeightRange } from '@/lib/health/calculations';
 import { cmToFeetInches, feetInchesToCm, kgToLb, lbToKg, type Units } from '@/lib/health/units';
 
@@ -42,28 +43,23 @@ export default function BmiCalculator() {
         {isMetric ? (
           <Field label={`${tp('height')} (${tc('cm')})`}>
             {(p) => (
-              <input {...p} type="number" inputMode="decimal" className="field" value={Math.round(heightCm)}
-              onChange={(e) => setHeightCm(Number(e.target.value))} min={120} max={250} />
+              <NumberField {...p} decimals={0} value={heightCm} onCommit={(n) => setHeightCm(n)} />
             )}
           </Field>
         ) : (
           <FieldGroup label={tp('height')}>
             <div className="grid grid-cols-2 gap-2">
-              <input type="number" className="field" aria-label={tc('ft')} value={fi.feet}
-                onChange={(e) => setHeightCm(feetInchesToCm(Number(e.target.value), fi.inches))} />
-              <input type="number" className="field" aria-label={tc('in')} value={Math.round(fi.inches)}
-                onChange={(e) => setHeightCm(feetInchesToCm(fi.feet, Number(e.target.value)))} />
+              <NumberField decimals={0} aria-label={tc('ft')} value={fi.feet} onCommit={(n) => setHeightCm(feetInchesToCm(n, fi.inches))} />
+              <NumberField decimals={0} aria-label={tc('in')} value={fi.inches} onCommit={(n) => setHeightCm(feetInchesToCm(fi.feet, n))} />
             </div>
           </FieldGroup>
         )}
 
         <Field label={`${tp('currentWeight')} (${wUnit})`}>
             {(p) => (
-              <input {...p} type="number" inputMode="decimal" step="0.1" className="field"
-            value={(isMetric ? weightKg : kgToLb(weightKg)).toFixed(1)}
-            onChange={(e) =>
-              setWeightKg(isMetric ? Number(e.target.value) : lbToKg(Number(e.target.value)))
-            } />
+              <NumberField {...p}
+              value={isMetric ? weightKg : kgToLb(weightKg)}
+              onCommit={(n) => setWeightKg(isMetric ? n : lbToKg(n))} />
             )}
           </Field>
       </div>

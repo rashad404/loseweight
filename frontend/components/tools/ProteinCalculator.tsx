@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Field, FieldGroup, FormulaNote, ResultCard } from './shared';
+import NumberField from './NumberField';
 import {
   ACTIVITY_LEVELS, bmi, bmr, fiberTarget, intakeForRate, proteinTarget, tdee, type Sex,
 } from '@/lib/health/calculations';
@@ -66,14 +67,12 @@ export default function ProteinCalculator() {
         <div className="grid grid-cols-2 gap-3">
           <Field label={tp('age')}>
             {(p) => (
-              <input {...p} type="number" inputMode="decimal" className="field" value={age}
-                onChange={(e) => setAge(Number(e.target.value))} min={16} max={100} />
+              <NumberField {...p} decimals={0} value={age} onCommit={(n) => setAge(n)} />
             )}
           </Field>
           <Field label={`${tp('height')} (${tc('cm')})`}>
             {(p) => (
-              <input {...p} type="number" inputMode="decimal" className="field" value={Math.round(heightCm)}
-              onChange={(e) => setHeightCm(Number(e.target.value))} min={120} max={250} />
+              <NumberField {...p} decimals={0} value={heightCm} onCommit={(n) => setHeightCm(n)} />
             )}
           </Field>
         </div>
@@ -81,14 +80,12 @@ export default function ProteinCalculator() {
         <div className="grid grid-cols-2 gap-3">
           <Field label={`${tp('currentWeight')} (${wUnit})`}>
             {(p) => (
-              <input {...p} type="number" inputMode="decimal" step="0.1" className="field" value={toW(weightKg).toFixed(1)}
-              onChange={(e) => setWeightKg(fromW(Number(e.target.value)))} />
+              <NumberField {...p} value={toW(weightKg)} onCommit={(n) => setWeightKg(fromW(n))} />
             )}
           </Field>
           <Field label={`${tp('goalWeight')} (${wUnit})`}>
             {(p) => (
-              <input {...p} type="number" inputMode="decimal" step="0.1" className="field" value={toW(goalKg).toFixed(1)}
-              onChange={(e) => setGoalKg(fromW(Number(e.target.value)))} />
+              <NumberField {...p} value={toW(goalKg)} onCommit={(n) => setGoalKg(fromW(n))} />
             )}
           </Field>
         </div>

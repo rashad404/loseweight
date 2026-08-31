@@ -9,12 +9,10 @@ import type { SavedPlan } from '@/lib/plan/storage';
  */
 export default function FirstWeeks({
   plan,
-  stepTarget,
   weightUnit,
   toDisplayWeight,
 }: {
   plan: SavedPlan;
-  stepTarget: number;
   weightUnit: string;
   toDisplayWeight: (kg: number) => string;
 }) {
@@ -24,16 +22,14 @@ export default function FirstWeeks({
   const reviewDate = new Date(`${plan.startedOn}T00:00:00`);
   reviewDate.setDate(reviewDate.getDate() + 21);
 
+  // No step target: the planner never asks what you currently walk, so any
+  // number here would be invented. Holding activity steady is also what makes
+  // the calorie estimate checkable at the end of three weeks.
   const rows = [
     { label: t('fwCalories'), value: `${Math.round(plan.intake / 25) * 25 - 50} to ${Math.round(plan.intake / 25) * 25 + 50} ${tc('calories')}` },
     { label: t('fwProtein'), value: `${plan.proteinLow} to ${plan.proteinHigh} ${tc('grams')}` },
     { label: t('fwFiber'), value: `${plan.fiber} ${tc('grams')}` },
-    { label: t('fwWeigh'), value: t('fwWeighValue') },
-    { label: t('fwSteps'), value: `${stepTarget.toLocaleString()} steps` },
-    {
-      label: t('fwReview'),
-      value: reviewDate.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }),
-    },
+    { label: t('fwMovement'), value: t('fwMovementValue') },
   ];
 
   return (
@@ -52,7 +48,13 @@ export default function FirstWeeks({
         ))}
       </dl>
 
-      <p className="mt-4 notice text-[0.875rem] leading-relaxed">{t('fwDontChange')}</p>
+      <p className="mt-4 notice text-[0.875rem] leading-relaxed">
+        {t('fwDontChange', {
+          date: reviewDate.toLocaleDateString(undefined, {
+            year: 'numeric', month: 'long', day: 'numeric',
+          }),
+        })}
+      </p>
 
       <p className="sr-only">
         Starting weight {toDisplayWeight(plan.startWeightKg)} {weightUnit}.

@@ -41,7 +41,7 @@ export default function Corrections() {
 
       <h2>Baxış statusu</h2>
       <p>
-        Hər məqalə həkim baxışından keçib-keçmədiyini açıq yazır, keçməyibsə bunu
+        Hər məqalə həkim tərəfindən yoxlanılıb-yoxlanılmadığını açıq yazır, yoxlanılmayıbsa bunu
         yuxarıda bildirir. Statusun səhv göstərildiyini düşünsəniz, bu da bildirilməyə
         dəyər. Özümüzə qoyduğumuz tələblər{' '}
         <Link href="/editorial-policy">redaksiya qaydalarındadır</Link>.

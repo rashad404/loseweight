@@ -2,7 +2,7 @@
   "site": {
     "name": "LoseWeight.net",
     "tagline": "Hədəf çəkinizə aparan real yolu hesablayın.",
-    "description": "Pulsuz kalkulyatorlar və həkim baxışından keçən məqalələr. Real müddət, gündəlik kalori norması və həftəlik hədəflər."
+    "description": "Pulsuz kalkulyatorlar və elmi mənbələrə əsaslanan məqalələr. Mənbələr və yoxlanma statusu açıq göstərilir. Real müddət, gündəlik kalori norması və həftəlik hədəflər."
   },
   "nav": {
     "planner": "Plan",
@@ -19,7 +19,7 @@
   "home": {
     "allGuides": "Bütün məqalələr",
     "trustTitle": "Bu sayt necə qurulub",
-    "trustBody": "Hesablamalar brauzerinizdə aparılır və heç bir ölçü serverlərimizə çatmır. Məqalələrdə mənbələr aid olduqları fikirlərin yanındadır və hər məqalə həkim baxışından keçib-keçmədiyini açıq yazır. Məlumat dəqiq olmayanda səhifə bunu bildirir.",
+    "trustBody": "Hesablamalar brauzerinizdə aparılır və heç bir ölçü serverlərimizə çatmır. Məqalələrdə mənbələr aid olduqları fikirlərin yanındadır və hər məqalə həkim tərəfindən yoxlanılıb-yoxlanılmadığını açıq yazır. Məlumat dəqiq olmayanda səhifə bunu bildirir.",
     "quickTitle": "Real olaraq nə qədər vaxta arıqlayacaqsınız?",
     "quickLead": "Beş xana. Kalori aralığı, təxmini tarix və həftələr üzrə hesablama alacaqsınız. Yazdıqlarınız bizə göndərilmir.",
     "quickCta": "Tam planı göstər",
@@ -34,9 +34,9 @@
     "reason1Title": "Hər həftə yenidən hesablanır",
     "reason1": "Çəkiniz azaldıqca saxlama normanız da azalır, yəni eyni qidalanma vaxt keçdikcə daha kiçik defisit yaradır. Xətt əyilir. Sabit sürət bunu göstərə bilmir.",
     "reason2Title": "Uyğunlaşmanı nəzərə alır",
-    "reason2": "Enerji sərfiyyatı yalnız bədən tərkibinin dəyişməsindən gözləniləndən bir qədər çox düşür: bədən çəkisinin 10%-i itiriləndə gündə təxminən 95 kalori. Bunu nə görməzdən gəlirik, nə də şişirdirik.",
+    "reason2": "Enerji sərfiyyatı yalnız bədən tərkibinin dəyişməsindən gözləniləndən bir qədər çox düşür. Bu model həmin təsiri nəzərə alır və məhdudlaşdırır, nə görməzdən gəlir, nə də hər şeyin əbəs olduğuna dair bəhanəyə çevirir.",
     "reason3Title": "Vəd yox, aralıq göstərir",
-    "reason3": "Proqnoz düsturları insanların təxminən üçdə ikisində ölçülmüş nəticəyə 10% yaxınlıqda düşür. Plan bunu açıq yazır və üç həftəlik öz məlumatınızla necə düzəliş edəcəyinizi göstərir.",
+    "reason3": "Proqnoz düsturları ölçmə deyil, təxmindir və bəzi insanlarda daha çox yanılır. Plan bunu açıq yazır və üç həftəlik öz ölçmələrinizlə necə düzəliş edəcəyinizi göstərir.",
     "loopTitle": "Plan qur, izlə, düzəliş et",
     "loopBody": "Plan başlanğıc fərziyyəsidir. İzləyici həqiqətən nə baş verdiyini qeyd edir və proqnozla tutuşdurur. Plato analizi isə eyni məlumatı oxuyur və çəkinin dayandığı həftənin hələ bir şey ifadə edib-etmədiyini deyir.",
     "loopStep1": "Plan qurun və bu brauzerdə saxlayın.",
@@ -45,7 +45,12 @@
     "loopCta": "İzləyicini aç",
     "trustMethod": "Redaksiya qaydaları",
     "trustDisclaimer": "Tibbi xəbərdarlıq",
-    "resourcesTitle": "Buradan başlayın"
+    "resourcesTitle": "Buradan başlayın",
+    "sourcesLabel": "Bu rəqəmlər haradandır",
+    "source1": "Hall KD, Chow CC. Why is the 3500 kcal per pound weight loss rule wrong? International Journal of Obesity, 2013.",
+    "source2": "Rosenbaum M, Leibel RL. Adaptive thermogenesis in humans. International Journal of Obesity, 2010.",
+    "source3": "Mifflin MD et al. A new predictive equation for resting energy expenditure in healthy individuals. American Journal of Clinical Nutrition, 1990.",
+    "methodLink": "Proqnoz necə hesablanır"
   },
   "planner": {
     "title": "Arıqlama planı",
@@ -102,27 +107,29 @@
     "savedNote": "Yalnız bu brauzerdə saxlanılır. Hesab və sinxronizasiya yoxdur.",
     "saveFailed": "Saxlamaq alınmadı. Brauzeriniz yaddaşa icazə vermir və ya yer yoxdur.",
     "firstWeek": "İlk üç həftəniz",
-    "firstWeekIntro": "Bu üç həftədə başqa heç nəyi dəyişməyin. Məqsəd tez nəticə almaq deyil, bədəninizin bu kalori ilə həqiqətən necə davrandığını öyrənməkdir.",
+    "firstWeekIntro": "Bu üç həftə ölçmək üçündür, təzyiq etmək üçün yox. Aşağıdakı dörd rəqəmi qeyd edin, qalan hər şeyi olduğu kimi saxlayın və tendensiyanın hesablamanın sizə uyğun olub-olmadığını göstərməsini gözləyin.",
     "fwCalories": "Gündəlik kalori",
     "fwProtein": "Zülal",
     "fwFiber": "Lif",
     "fwWeigh": "Çəkiölçmə",
-    "fwWeighValue": "Hər gün, eyni şəraitdə. Yalnız 7 günlük ortalamaya baxın",
-    "fwSteps": "Hərəkət",
     "fwReview": "Nəticəyə baxış tarixi",
-    "fwDontChange": "Bu tarixə qədər kalori normanızı dəyişməyin, birinci həftə tərəzi nə göstərsə də.",
+    "fwDontChange": "{date} tarixinə qədər kalori normanızı dəyişməyin, birinci həftə tərəzi nə göstərsə də. İlk dəyişmələr su ilə bağlıdır, piy deyil, onlara reaksiya vermək isə mənzərəni tamamilə qarışdırır.",
     "scenarios": "Üç sürəti müqayisə edin",
     "scenarioGentle": "Yumşaq",
-    "scenarioStandard": "Standart",
-    "scenarioFaster": "Sürətli",
+    "scenarioStandard": "Sabit",
+    "scenarioFaster": "Ən sürətli təhlükəsiz",
     "scenarioDuration": "Təxminən",
-    "scenarioGentleTradeoff": "Ən rahat davam etdirilən variant, əzələni yaxşı qoruyur. Ən yavaşıdır, səbir tələb edir.",
-    "scenarioStandardTradeoff": "Çox adam üçün sürət və davamlılıq baxımından optimal seçim.",
-    "scenarioFasterTradeoff": "Kağız üzərində ən sürətlisi. Aclıq daha çox, əzələ itkisi daha böyük, pis həftədə saxlamaq ən çətindir.",
+    "scenarioGentleTradeoff": "Ən rahat davam etdirilən və əzələni ən yaxşı qoruyan variant. O qədər yavaşdır ki, uzaq hədəfə çatmadan dayana bilər.",
+    "scenarioStandardTradeoff": "Orta variant. Həvəsi saxlayacaq qədər sürətli, pis həftəni keçirəcək qədər yumşaq.",
+    "scenarioFasterTradeoff": "Ağlabatan həddə ən sürətlisi. Aclıq daha çox, əzələ itkisi daha böyük, gündəlik həyat araya girəndə saxlamaq ən çətini.",
     "scenarioNotFor": "Ağır idmanla məşğulsunuzsa, artıq arıqsınızsa və ya keçmişdə ciddi qida məhdudiyyəti olubsa, uyğun deyil.",
     "rangeNote": "Aralıq kimi göstərilir, çünki düstur ölçmə deyil, təxmindir.",
-    "scenarioCapped": "Təhlükəsiz həddə məhdudlaşdırılıb, yəni Standart variantla eynidir",
-    "rateSuggested": "Başlanğıc çəkinizə həftədə təxminən {rate} uyğundur."
+    "rateSuggested": "Başlanğıc çəkinizə həftədə təxminən {rate} uyğundur.",
+    "scenarioReaches": "Hədəfə çatmadan təxminən {weight} ətrafında dayanır",
+    "scenarioMilestone": "Çəkinin 10%-i təxminən {weeks} həftəyə",
+    "scenarioAllSafe": "Hər üçü sizin rəqəmləriniz üçün təhlükəsiz həddin içindədir. Ən sürətlisi ya 25% defisitlə, ya da həkim nəzarəti olmadan təklif etdiyimiz ən aşağı kalori ilə məhdudlaşdırılır.",
+    "fwMovement": "Hərəkət",
+    "fwMovementValue": "Adi gündəlik hərəkətinizi saxlayın. İndi onu dəyişsəniz, kalori hesablamasını yoxlamaq mümkün olmayacaq."
   },
   "tracker": {
     "title": "Çəki izləmə",
@@ -238,7 +245,8 @@
     "related": "Bunlar da maraqlı ola bilər",
     "byline": "Müəllif: {name}, {credentials}.",
     "reviewedSelf": "Yazıb və tibbi dəqiqliyini yoxlayıb: {name}. Azərbaycan Tibb Universitetini bitirib, Azərbaycanda pediatr kimi çalışıb. ABŞ-da həkimlik fəaliyyəti üçün lisenziyası yoxdur.",
-    "updated": "Sonuncu ciddi yenilənmə: {date}"
+    "updated": "Sonuncu ciddi yenilənmə: {date}",
+    "bylineBy": "Müəllif:"
   },
   "newsletter": {
     "title": "Yeniliklərdən xəbərdar olun",
@@ -308,5 +316,18 @@
     "healthy": "Normal",
     "increased": "Risk var",
     "high": "Risk yüksəkdir"
+  },
+  "authors": {
+    "role": "Vəzifə",
+    "education": "Təhsil",
+    "background": "Peşəkar təcrübə",
+    "location": "Hazırkı yaşayış yeri",
+    "licensing": "Lisenziya",
+    "articles": "Bu müəllifin məqalələri",
+    "reviewNote": "Müəllif və yoxlayıcı eyni şəxs olduğu üçün məqalələrdə \"yazılıb və tibbi dəqiqliyi yoxlanılıb\" yazılır, \"müstəqil yoxlanılıb\" yox. Hazırda ikinci həkim tərəfindən müstəqil yoxlama prosesin bir hissəsi deyil və səhifələr bunu açıq bildirir.",
+    "noArticles": "Bu dildə hələ dərc olunmuş məqalə yoxdur.",
+    "aboutAuthor": "Müəllif haqqında",
+    "pediatrics": "Azərbaycanda pediatr kimi təhsil alıb və işləyib",
+    "usa": "ABŞ"
   }
 }

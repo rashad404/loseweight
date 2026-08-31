@@ -141,7 +141,7 @@ export default function Tracker() {
 
           <Field label={`${t('weight')} (${wUnit})`} error={errors.weight}>
             {(p) => (
-              <input {...p} type="number" inputMode="decimal" step="0.1" className="field"
+              <input {...p} type="text" inputMode="decimal" className="field"
                 value={weight} placeholder={isMetric ? '78.4' : '172.8'} required
                 onChange={(e) => setWeight(e.target.value)} />
             )}
@@ -149,7 +149,7 @@ export default function Tracker() {
 
           <Field label={`${t('waist')} (${tc('cm')})`}>
             {(p) => (
-              <input {...p} type="number" inputMode="decimal" step="0.1" className="field"
+              <input {...p} type="text" inputMode="decimal" className="field"
                 value={waist} placeholder="88" onChange={(e) => setWaist(e.target.value)} />
             )}
           </Field>
@@ -188,9 +188,15 @@ export default function Tracker() {
               <Upload size={15} aria-hidden="true" />
               {t('importLabel')}
             </button>
-            <input ref={fileRef} type="file" accept=".csv,text/csv" className="sr-only"
-              aria-label={t('importLabel')}
-              onChange={(e) => { const f = e.target.files?.[0]; if (f) void importCsv(f); e.target.value = ''; }} />
+            <input
+              ref={fileRef}
+              type="file"
+              accept=".csv,text/csv"
+              tabIndex={-1}
+              aria-hidden="true"
+              className="sr-only"
+              onChange={(e) => { const f = e.target.files?.[0]; if (f) void importCsv(f); e.target.value = ''; }}
+            />
           </div>
 
           <p className="text-xs text-muted leading-relaxed">{t('localOnly')}</p>

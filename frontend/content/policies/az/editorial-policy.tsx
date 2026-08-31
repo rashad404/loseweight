@@ -28,7 +28,7 @@ export default function EditorialPolicy() {
       <h2>Həkim baxışı olduğu kimi göstərilir</h2>
       <p>
         Hər məqalədə kimin yazdığı, kimin yoxladığı, həmin şəxsin təhsili və hansı ölkədə
-        işlədiyi, habelə baxış tarixi qeyd olunur. Həkim baxışından keçməmiş məqalələr
+        işlədiyi, habelə baxış tarixi qeyd olunur. Həkim tərəfindən yoxlanılmamış məqalələr
         səhifənin yuxarısında məhz bunu yazır. Nişanı yaxşı göstərmək üçün yoxlayıcı adı
         yazmırıq və olmayan baxışa işarə etmirik.
       </p>

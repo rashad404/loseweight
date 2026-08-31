@@ -59,10 +59,11 @@ async function get<T>(path: string, revalidate = 300): Promise<T | null> {
 
 export async function fetchGuides(
   lang: string,
-  params: { category?: string; perPage?: number } = {},
+  params: { category?: string; perPage?: number; author?: string } = {},
 ): Promise<GuideSummary[]> {
   const query = new URLSearchParams({ lang, per_page: String(params.perPage ?? 24) });
   if (params.category) query.set('category', params.category);
+  if (params.author) query.set('author', params.author);
 
   const json = await get<{ data: GuideSummary[] }>(`/guides?${query}`);
   return json?.data ?? [];

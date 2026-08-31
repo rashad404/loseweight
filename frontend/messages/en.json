@@ -2,7 +2,7 @@
   "site": {
     "name": "LoseWeight.net",
     "tagline": "Calculate a realistic, evidence-based path to your goal weight.",
-    "description": "Free calculators and clinician-reviewed guides that show you a realistic timeline, calorie range, and weekly milestones for reaching your goal weight."
+    "description": "Free calculators and evidence-based guides with transparent sourcing and review status. Get a realistic timeline, calorie range, and weekly milestones for your goal weight."
   },
   "nav": {
     "planner": "Planner",
@@ -34,9 +34,9 @@
     "reason1Title": "It recalculates every week",
     "reason1": "Your maintenance falls as you get lighter, so the same intake produces a smaller deficit over time. The curve bends. A fixed rate cannot show that.",
     "reason2Title": "It accounts for adaptation",
-    "reason2": "Expenditure drops a little further than body-composition change alone predicts, roughly 95 calories a day at a 10% weight reduction. Included, and capped, rather than ignored or exaggerated.",
+    "reason2": "Expenditure drops a little further than body-composition change alone predicts. This model includes that effect and caps it, rather than ignoring it or exaggerating it into a reason nothing works.",
     "reason3Title": "It shows a range, not a promise",
-    "reason3": "Predictive equations land within 10% of measured expenditure for about two thirds of people. The plan says so, and tells you how to correct it from three weeks of your own data.",
+    "reason3": "Predictive equations are estimates, not measurements, and they miss by more for some people than others. The plan says so, and shows you how to correct it from three weeks of your own weigh-ins.",
     "loopTitle": "Plan, track, adjust",
     "loopBody": "The plan is a starting hypothesis. The tracker records what actually happens, compares it against the projection, and the plateau analyzer reads the same data to tell you whether a flat week means anything yet.",
     "loopStep1": "Build a plan and save it to this browser.",
@@ -45,7 +45,12 @@
     "loopCta": "Open the tracker",
     "trustMethod": "Editorial policy",
     "trustDisclaimer": "Medical disclaimer",
-    "resourcesTitle": "Start here"
+    "resourcesTitle": "Start here",
+    "sourcesLabel": "Where these numbers come from",
+    "source1": "Hall KD, Chow CC. Why is the 3500 kcal per pound weight loss rule wrong? International Journal of Obesity, 2013.",
+    "source2": "Rosenbaum M, Leibel RL. Adaptive thermogenesis in humans. International Journal of Obesity, 2010.",
+    "source3": "Mifflin MD et al. A new predictive equation for resting energy expenditure in healthy individuals. American Journal of Clinical Nutrition, 1990.",
+    "methodLink": "How the projection is calculated"
   },
   "planner": {
     "title": "Weight loss planner",
@@ -102,27 +107,29 @@
     "savedNote": "Saved in this browser only. There is no account and no sync.",
     "saveFailed": "Could not save. Your browser may be blocking storage or out of space.",
     "firstWeek": "Your first three weeks",
-    "firstWeekIntro": "Change nothing else while you gather a baseline. The point of these three weeks is to find out what your body actually does at this intake, not to make progress fast.",
+    "firstWeekIntro": "These three weeks are for measuring, not for pushing. Set the four numbers below, keep everything else as it already is, and let the trend tell you whether the estimate was right for you.",
     "fwCalories": "Eat",
     "fwProtein": "Protein",
     "fwFiber": "Fiber",
     "fwWeigh": "Weigh in",
-    "fwWeighValue": "Daily, same conditions, read the 7 day average only",
-    "fwSteps": "Movement",
     "fwReview": "Review the trend on",
-    "fwDontChange": "Do not change your calorie target before that date, whatever the scale does in week one.",
+    "fwDontChange": "Do not adjust the calorie target before {date}, whatever the scale does in week one. Early swings are water, not fat, and reacting to them is what makes a plan unreadable.",
     "scenarios": "Compare three paces",
-    "scenarioGentle": "Gentler",
-    "scenarioStandard": "Standard",
-    "scenarioFaster": "Faster",
+    "scenarioGentle": "Gentle",
+    "scenarioStandard": "Steady",
+    "scenarioFaster": "Fastest safe",
     "scenarioDuration": "Roughly",
-    "scenarioGentleTradeoff": "Easiest to sustain and protects muscle best. Slowest, so it needs patience.",
-    "scenarioStandardTradeoff": "The usual balance of speed and adherence for most people.",
-    "scenarioFasterTradeoff": "Fastest on paper. More hunger, more lean tissue lost, and the hardest to hold through a bad week.",
+    "scenarioGentleTradeoff": "Easiest to live with and the kindest to muscle. Slow enough that a distant goal may level off before you reach it.",
+    "scenarioStandardTradeoff": "The usual middle. Fast enough to stay motivating, slow enough to survive a bad week.",
+    "scenarioFasterTradeoff": "As fast as is sensible. More hunger, more lean tissue lost, and the hardest to hold when life interferes.",
     "scenarioNotFor": "Less suitable if you train hard, are already lean, or have a history of restrictive eating.",
     "rangeNote": "Shown as a range because the underlying equation is an estimate, not a measurement.",
-    "scenarioCapped": "Capped at the safe limit, so this is the same as Standard",
-    "rateSuggested": "Around {rate} a week suits your starting point."
+    "rateSuggested": "Around {rate} a week suits your starting point.",
+    "scenarioReaches": "Levels off around {weight}, short of your goal",
+    "scenarioMilestone": "10% of body weight in about {weeks} weeks",
+    "scenarioAllSafe": "All three sit inside safe limits for your numbers. The fastest is capped at a 25% deficit, or the lowest intake we will suggest without medical supervision, whichever comes first.",
+    "fwMovement": "Movement",
+    "fwMovementValue": "Keep your usual activity. Changing it now makes the calorie estimate impossible to check."
   },
   "tracker": {
     "title": "Progress tracker",
@@ -238,7 +245,8 @@
     "related": "Related guides",
     "byline": "Written by {name}, {credentials}.",
     "reviewedSelf": "Written and reviewed for medical accuracy by {name}, a physician educated at Azerbaijan Medical University with a professional background in pediatrics in Azerbaijan. He is not licensed to practice medicine in the United States.",
-    "updated": "Last substantially updated {date}"
+    "updated": "Last substantially updated {date}",
+    "bylineBy": "Written by"
   },
   "newsletter": {
     "title": "Get the practical stuff",
@@ -308,5 +316,18 @@
     "healthy": "Healthy range",
     "increased": "Increased risk",
     "high": "High risk"
+  },
+  "authors": {
+    "role": "Role",
+    "education": "Education",
+    "background": "Professional background",
+    "location": "Current location",
+    "licensing": "Licensing",
+    "articles": "Articles by this author",
+    "reviewNote": "Because the author and the reviewer are the same person, articles here say \"written and reviewed for medical accuracy\" rather than \"independently reviewed\". Independent review by a second clinician is not currently part of the process, and pages say so.",
+    "noArticles": "No published articles in this language yet.",
+    "aboutAuthor": "About the author",
+    "pediatrics": "Trained and worked as a pediatrician in Azerbaijan",
+    "usa": "United States"
   }
 }

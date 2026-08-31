@@ -3,7 +3,7 @@ import { Link } from '@/i18n/navigation';
 export const meta = {
   title: 'Sayt haqqında',
   description:
-    'LoseWeight.net-i kim aparır, planlayıcı nəyə görə hər həftə yenidən hesablayır, məqalələr necə yazılır və sayt nədən gəlir əldə edir.',
+    'LoseWeight.net-i kim aparır, planlayıcı nəyə görə hər həftə yenidən hesablayır, məqalələr necə yazılır və sayt necə maliyyələşir.',
 };
 
 export default function About() {
@@ -24,7 +24,7 @@ export default function About() {
         qidalanma daha kiçik defisit yaradır və proses ləngiyir.
       </p>
       <p>
-        Bunu nəzərə almayan kalkulyator sizə çatmayacağınız tarix verir. Həmin tarixə
+        Bunu nəzərə almayan kalkulyator real olmayan tarix göstərə bilər. Həmin tarixə
         çatmamaq isə insanların rejimi yarımçıq qoymasının ən çox rast gəlinən
         səbəblərindəndir. Buradakı bütün proqnozlar çəki dəyişdikcə sərfiyyatı yenidən
         hesablayır və maddələr mübadiləsinin uyğunlaşmasını da müəyyən qədər nəzərə alır.
@@ -47,13 +47,27 @@ export default function About() {
         məqalədən daha pisdir.
       </p>
       <p>
-        Hər məqalənin mənbələri göstərilir və hər məqalə həkim baxışından keçib-keçmədiyini
+        Hər məqalənin mənbələri göstərilir və hər məqalə həkim tərəfindən yoxlanılıb-yoxlanılmadığını
         açıq yazır. Baxış hələ olmayıbsa, səhifə bunu yuxarıda bildirir, olmayan təsdiqi
         varmış kimi göstərmir. Tam qaydalar{' '}
         <Link href="/editorial-policy">redaksiya qaydaları</Link> səhifəsindədir.
       </p>
 
-      <h2>Sayt nədən gəlir əldə edir</h2>
+      <h2>Saytı kim yazır</h2>
+      <p>
+        LoseWeight.net-i Rəşad Mirzəyev yazır və yoxlayır. O, Azərbaycan Tibb
+        Universitetini bitirib, Azərbaycanda pediatr kimi təhsil alıb və işləyib. Hazırda
+        ABŞ-da yaşayır və orada həkimlik fəaliyyəti üçün lisenziyası yoxdur.
+      </p>
+      <p>
+        Müəllif və yoxlayıcı eyni şəxs olduğu üçün məqalələrdə &quot;yazılıb və tibbi
+        dəqiqliyi yoxlanılıb&quot; yazılır, &quot;müstəqil yoxlanılıb&quot; yox. İkinci
+        həkim tərəfindən müstəqil yoxlama hazırda prosesin bir hissəsi deyil və hər səhifə
+        vəziyyəti olduğu kimi göstərir. Ətraflı məlumat və məqalələrin siyahısı{' '}
+        <Link href="/authors/rashad-mirzayev">müəllif səhifəsindədir</Link>.
+      </p>
+
+      <h2>Sayt necə maliyyələşir</h2>
       <p>
         Alətlər pulsuzdur və pulsuz qalacaq. Saytda reklam, tərəfdaş keçidi və ya ödənişli
         məhsul olarsa, bu, yerləşdiyi səhifədə açıq bildirilir. Kommersiya münasibətləri

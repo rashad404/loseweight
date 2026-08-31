@@ -120,7 +120,7 @@ function siteJsonLd(lang: string) {
           height: 512,
         },
         description:
-          'Free, evidence-based weight loss calculators and clinician-reviewed guides.',
+          'Free, evidence-based weight loss calculators and guides with transparent sourcing and review status.',
       },
       {
         '@type': 'WebSite',

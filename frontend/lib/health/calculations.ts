@@ -143,6 +143,7 @@ export interface ProjectionInput {
   activityFactor: number;
   /** Fixed daily intake to simulate. */
   intake: number;
+  /** Default allows a decade, so a gentle plan is not cut off mid-descent. */
   maxWeeks?: number;
 }
 
@@ -181,7 +182,7 @@ const ADAPTATION_FULL_AT_FRACTION_LOST = 0.10;
 export function projectWeightLoss(input: ProjectionInput): Projection {
   const {
     sex, age, heightCm, startWeightKg, goalWeightKg,
-    activityFactor, intake, maxWeeks = 260,
+    activityFactor, intake, maxWeeks = 520,
   } = input;
 
   const points: ProjectionPoint[] = [];
@@ -208,8 +209,10 @@ export function projectWeightLoss(input: ProjectionInput): Projection {
     const weeklyTdee = tdee(bmr(sex, weight, heightCm, age), activityFactor) * (1 - adaptation);
     const dailyDeficit = weeklyTdee - intake;
 
-    // Below ~40 kcal/day the plan has effectively converged; stop simulating.
-    if (dailyDeficit <= 40) break;
+    // Below ~10 kcal/day the plan has converged for practical purposes. The
+    // previous 10x higher cutoff truncated gentle plans early and made them
+    // look like they stall further from the goal than they do.
+    if (dailyDeficit <= 10) break;
 
     weight -= (dailyDeficit * 7) / KCAL_PER_KG;
 
@@ -281,4 +284,46 @@ export function suggestedRate(bmiValue: number): number {
   if (bmiValue >= 30) return 0.7;
   if (bmiValue >= 27) return 0.5;
   return 0.4;
+}
+
+/**
+ * The largest daily deficit this person can safely run: 25% of maintenance,
+ * or whatever the sex-specific calorie floor allows, whichever binds first.
+ */
+export function maxSafeDeficit(tdeeValue: number, sex: Sex): number {
+  return Math.max(0, Math.min(tdeeValue * 0.25, tdeeValue - CALORIE_FLOOR[sex]));
+}
+
+export interface Pace {
+  id: 'gentle' | 'standard' | 'faster';
+  intake: number;
+  deficit: number;
+  rateKgPerWeek: number;
+}
+
+/**
+ * Three paces derived from what this person can actually do, rather than three
+ * fixed rates that quietly collapse into each other once safety limits apply.
+ *
+ * Anchoring on 0.3, 0.55 and 0.85 kg per week meant that anyone whose safe
+ * ceiling was 0.5 saw "Standard" and "Faster" render identical numbers, which
+ * presented a choice that did not exist. Expressing each pace as a share of the
+ * achievable deficit keeps all three distinct and all three safe.
+ */
+export function paces(tdeeValue: number, sex: Sex): Pace[] {
+  const max = maxSafeDeficit(tdeeValue, sex);
+
+  return ([
+    ['gentle', 0.55],
+    ['standard', 0.8],
+    ['faster', 1],
+  ] as const).map(([id, share]) => {
+    const deficit = Math.round(max * share);
+    return {
+      id,
+      deficit,
+      intake: Math.round(tdeeValue - deficit),
+      rateKgPerWeek: Math.round(((deficit * 7) / KCAL_PER_KG) * 100) / 100,
+    };
+  });
 }

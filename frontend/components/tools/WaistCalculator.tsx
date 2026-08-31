@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Field, FieldGroup, FormulaNote, ScaleBar } from './shared';
+import NumberField from './NumberField';
 import { waistToHeight, whtrCategory } from '@/lib/health/calculations';
 import { cmToIn, inToCm, type Units } from '@/lib/health/units';
 
@@ -41,17 +42,17 @@ export default function WaistCalculator() {
 
         <Field label={`${tp('height')} (${lUnit})`}>
             {(p) => (
-              <input {...p} type="number" inputMode="decimal" step="0.1" className="field"
-            value={toLen(heightCm).toFixed(isMetric ? 0 : 1)}
-            onChange={(e) => setHeightCm(fromLen(Number(e.target.value)))} />
+              <NumberField {...p} decimals={isMetric ? 0 : 1}
+            value={toLen(heightCm)}
+            onCommit={(n) => setHeightCm(fromLen(n))} />
             )}
           </Field>
 
         <Field label={`${t('enterWaist')} (${lUnit})`} hint={t('waistHelp')}>
             {(p) => (
-              <input {...p} type="number" inputMode="decimal" step="0.1" className="field"
-            value={toLen(waistCm).toFixed(1)}
-            onChange={(e) => setWaistCm(fromLen(Number(e.target.value)))} />
+              <NumberField {...p}
+            value={toLen(waistCm)}
+            onCommit={(n) => setWaistCm(fromLen(n))} />
             )}
           </Field>
       </div>

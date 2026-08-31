@@ -53,6 +53,22 @@ export default function About() {
           the <Link href="/editorial-policy">editorial policy</Link>.
         </p>
 
+        <h2>Who writes this</h2>
+        <p>
+          LoseWeight.net is written and reviewed by Rashad Mirzayev, who earned his
+          medical degree from Azerbaijan Medical University and trained and worked as a
+          pediatrician in Azerbaijan. He currently lives in the United States and is not
+          licensed to practice medicine there.
+        </p>
+        <p>
+          Because the author and the reviewer are the same person, articles say
+          &quot;written and reviewed for medical accuracy&quot; rather than
+          &quot;independently reviewed&quot;. Independent review by a second clinician is
+          not currently part of the process, and every page says where it stands. Full
+          details and the list of articles are on the{' '}
+          <Link href="/authors/rashad-mirzayev">author page</Link>.
+        </p>
+
         <h2>How the site is funded</h2>
         <p>
           The tools are free and will stay free. Any advertising, affiliate link, or paid

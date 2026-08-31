@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { ArrowRight } from 'lucide-react';
 import { Field, FieldGroup } from '@/components/tools/shared';
+import NumberField from '@/components/tools/NumberField';
 import {
   ACTIVITY_LEVELS, bmi, bmr, intakeForRate, projectWeightLoss, suggestedRate, tdee, type Sex,
 } from '@/lib/health/calculations';
@@ -121,25 +122,21 @@ export default function QuickStart() {
         <div className="grid grid-cols-2 gap-3">
           <Field label={tp('age')}>
             {(p) => (
-              <input {...p} type="number" inputMode="numeric" className="field" min={16} max={100}
-                value={age} onChange={(e) => setAge(Number(e.target.value))} />
+              <NumberField {...p} decimals={0} value={age} onCommit={(n) => setAge(n)} />
             )}
           </Field>
 
           {isMetric ? (
             <Field label={`${tp('height')} (${tc('cm')})`}>
               {(p) => (
-                <input {...p} type="number" inputMode="numeric" className="field" min={120} max={250}
-                  value={Math.round(heightCm)} onChange={(e) => setHeightCm(Number(e.target.value))} />
+                <NumberField {...p} decimals={0} value={heightCm} onCommit={(n) => setHeightCm(n)} />
               )}
             </Field>
           ) : (
             <FieldGroup label={tp('height')}>
               <div className="grid grid-cols-2 gap-2">
-                <input type="number" inputMode="numeric" className="field" aria-label={tc('ft')}
-                  value={fi.feet} onChange={(e) => setHeightCm(feetInchesToCm(Number(e.target.value), fi.inches))} />
-                <input type="number" inputMode="numeric" className="field" aria-label={tc('in')}
-                  value={Math.round(fi.inches)} onChange={(e) => setHeightCm(feetInchesToCm(fi.feet, Number(e.target.value)))} />
+                <NumberField decimals={0} aria-label={tc('ft')} value={fi.feet} onCommit={(n) => setHeightCm(feetInchesToCm(n, fi.inches))} />
+                <NumberField decimals={0} aria-label={tc('in')} value={fi.inches} onCommit={(n) => setHeightCm(feetInchesToCm(fi.feet, n))} />
               </div>
             </FieldGroup>
           )}
@@ -148,14 +145,12 @@ export default function QuickStart() {
         <div className="grid grid-cols-2 gap-3">
           <Field label={`${tp('currentWeight')} (${wUnit})`}>
             {(p) => (
-              <input {...p} type="number" inputMode="decimal" step="0.1" className="field"
-                value={toW(weightKg).toFixed(1)} onChange={(e) => setWeightKg(fromW(Number(e.target.value)))} />
+              <NumberField {...p} value={toW(weightKg)} onCommit={(n) => setWeightKg(fromW(n))} />
             )}
           </Field>
           <Field label={`${tp('goalWeight')} (${wUnit})`}>
             {(p) => (
-              <input {...p} type="number" inputMode="decimal" step="0.1" className="field"
-                value={toW(goalKg).toFixed(1)} onChange={(e) => setGoalKg(fromW(Number(e.target.value)))} />
+              <NumberField {...p} value={toW(goalKg)} onCommit={(n) => setGoalKg(fromW(n))} />
             )}
           </Field>
         </div>

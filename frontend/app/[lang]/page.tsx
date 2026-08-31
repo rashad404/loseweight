@@ -48,6 +48,36 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
               </div>
             ))}
           </div>
+
+          <details className="mt-8 max-w-[74ch]">
+            <summary className="text-[0.875rem] font-semibold cursor-pointer">
+              {t('sourcesLabel')}
+            </summary>
+            <ol className="mt-3 space-y-2 list-decimal pl-5 text-[0.8125rem] text-muted leading-relaxed">
+              <li>
+                <a href="https://pubmed.ncbi.nlm.nih.gov/23949615/" target="_blank"
+                   rel="noopener noreferrer nofollow" className="text-brand-800 hover:underline">
+                  {t('source1')}
+                </a>
+              </li>
+              <li>
+                <a href="https://pubmed.ncbi.nlm.nih.gov/20935667/" target="_blank"
+                   rel="noopener noreferrer nofollow" className="text-brand-800 hover:underline">
+                  {t('source2')}
+                </a>
+              </li>
+              <li>
+                <a href="https://pubmed.ncbi.nlm.nih.gov/2305711/" target="_blank"
+                   rel="noopener noreferrer nofollow" className="text-brand-800 hover:underline">
+                  {t('source3')}
+                </a>
+              </li>
+            </ol>
+            <Link href="/guides/calorie-deficit-explained"
+                  className="mt-3 inline-block text-[0.875rem] font-medium text-brand-800 hover:underline">
+              {t('methodLink')}
+            </Link>
+          </details>
         </div>
       </section>
 

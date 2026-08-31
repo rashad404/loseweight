@@ -32,6 +32,9 @@ export default function Logo({
         width={width}
         height={height}
         priority={priority}
+        // Small, always present, and its absence reads as a broken header or
+        // footer rather than a slow image.
+        loading="eager"
         className={className}
         style={{ height, width: 'auto' }}
       />

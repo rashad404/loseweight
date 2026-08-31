@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { AlertTriangle, Info } from 'lucide-react';
 import ProjectionChart, { type Series } from './ProjectionChart';
+import NumberField from './NumberField';
 import PlanActions from './PlanActions';
 import FirstWeeks from './FirstWeeks';
 import ScenarioCompare from './ScenarioCompare';
@@ -222,10 +223,11 @@ export default function Planner() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="field-label" htmlFor="age">{t('age')}</label>
-              <input
-                id="age" type="number" inputMode="decimal" className="field" min={16} max={100}
+              <NumberField
+                id="age"
+                decimals={0}
                 value={form.age}
-                onChange={(e) => set('age', Number(e.target.value))}
+                onCommit={(n) => set('age', n)}
               />
             </div>
 
@@ -234,31 +236,28 @@ export default function Planner() {
                 <label className="field-label" htmlFor="height">
                   {t('height')} ({tc('cm')})
                 </label>
-                <input
-                  id="height" type="number" inputMode="decimal" className="field" min={120} max={250}
-                  value={Math.round(form.heightCm)}
-                  onChange={(e) => set('heightCm', Number(e.target.value))}
+                <NumberField
+                  id="height"
+                  decimals={0}
+                  value={form.heightCm}
+                  onCommit={(n) => set('heightCm', n)}
                 />
               </div>
             ) : (
               <fieldset>
                 <legend className="field-label">{t('height')}</legend>
                 <div className="grid grid-cols-2 gap-2">
-                  <input
-                    type="number" inputMode="decimal" className="field" min={3} max={8}
+                  <NumberField
+                    decimals={0}
                     aria-label={tc('ft')}
                     value={feetInches.feet}
-                    onChange={(e) =>
-                      set('heightCm', feetInchesToCm(Number(e.target.value), feetInches.inches))
-                    }
+                    onCommit={(n) => set('heightCm', feetInchesToCm(n, feetInches.inches))}
                   />
-                  <input
-                    type="number" inputMode="decimal" className="field" min={0} max={11}
+                  <NumberField
+                    decimals={0}
                     aria-label={tc('in')}
-                    value={Math.round(feetInches.inches)}
-                    onChange={(e) =>
-                      set('heightCm', feetInchesToCm(feetInches.feet, Number(e.target.value)))
-                    }
+                    value={feetInches.inches}
+                    onCommit={(n) => set('heightCm', feetInchesToCm(feetInches.feet, n))}
                   />
                 </div>
               </fieldset>
@@ -270,20 +269,20 @@ export default function Planner() {
               <label className="field-label" htmlFor="weight">
                 {t('currentWeight')} ({wUnit})
               </label>
-              <input
-                id="weight" type="number" inputMode="decimal" step="0.1" className="field"
-                value={toDisplay(form.weightKg).toFixed(1)}
-                onChange={(e) => set('weightKg', fromDisplay(Number(e.target.value)))}
+              <NumberField
+                id="weight"
+                value={toDisplay(form.weightKg)}
+                onCommit={(n) => set('weightKg', fromDisplay(n))}
               />
             </div>
             <div>
               <label className="field-label" htmlFor="goal">
                 {t('goalWeight')} ({wUnit})
               </label>
-              <input
-                id="goal" type="number" inputMode="decimal" step="0.1" className="field"
-                value={toDisplay(form.goalKg).toFixed(1)}
-                onChange={(e) => set('goalKg', fromDisplay(Number(e.target.value)))}
+              <NumberField
+                id="goal"
+                value={toDisplay(form.goalKg)}
+                onCommit={(n) => set('goalKg', fromDisplay(n))}
               />
             </div>
           </div>
@@ -456,16 +455,14 @@ export default function Planner() {
                 activityFactor: form.activityFactor,
                 maintenance: result.maintenance,
               }}
-              selectedRate={form.rate}
-              onSelect={(rate) => set('rate', rate)}
+              selectedIntake={result.intake}
+              onSelect={(_, rate) => set('rate', rate)}
               weeksLabel={(w) => t('weeksToGoal', { weeks: w })}
+              formatWeight={(kg) => `${fmtWeight(kg)} ${wUnit}`}
             />
 
             <FirstWeeks
               plan={result.savedPlan}
-              stepTarget={
-                form.activityFactor <= 1.2 ? 7000 : form.activityFactor <= 1.375 ? 8500 : 10000
-              }
               weightUnit={wUnit}
               toDisplayWeight={fmtWeight}
             />

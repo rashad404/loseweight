@@ -5,6 +5,7 @@ import { localePath } from '@/i18n/routing';
 import { absolute } from '@/lib/seo';
 import { Link } from '@/i18n/navigation';
 import { fetchGuide, fetchGuides } from '@/lib/api/guides';
+import { authorByName } from '@/lib/authors';
 import { AlertTriangle } from 'lucide-react';
 import Newsletter from '@/components/ui/Newsletter';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
@@ -47,6 +48,7 @@ export default async function GuidePage({
   const tn = await getTranslations({ locale: lang, namespace: 'nav' });
 
   const related = (await fetchGuides(lang, { perPage: 4 })).filter((g) => g.slug !== slug).slice(0, 3);
+  const author = authorByName(guide.review.author_name);
 
   // A guide counts as reviewed only when a real review date exists. A reviewer
   // name alone means the reviewer is assigned, not that the review happened.
@@ -70,6 +72,7 @@ export default async function GuidePage({
       ? {
           '@type': 'Person',
           name: guide.review.author_name,
+          ...(author ? { '@id': absolute(localePath(lang, `/authors/${author.slug}`)) + '#person' } : {}),
           ...(guide.review.author_credentials
             ? { description: guide.review.author_credentials }
             : {}),
@@ -127,10 +130,20 @@ export default async function GuidePage({
           <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
             {guide.review.author_name && (
               <span>
-                {t('byline', {
-                  name: guide.review.author_name,
-                  credentials: guide.review.author_credentials ?? '',
-                })}
+                {/* Composed in JSX rather than through ICU: t.rich treats {name}
+                    as a value placeholder and will not turn it into a link. */}
+                {t('bylineBy')}{' '}
+                {author ? (
+                  <Link
+                    href={`/authors/${author.slug}`}
+                    className="text-brand-800 font-medium hover:underline"
+                  >
+                    {guide.review.author_name}
+                  </Link>
+                ) : (
+                  guide.review.author_name
+                )}
+                {guide.review.author_credentials ? `, ${guide.review.author_credentials}` : ''}
               </span>
             )}
             {publishedDate && <span>{t('published', { date: publishedDate })}</span>}

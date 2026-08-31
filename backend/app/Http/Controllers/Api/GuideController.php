@@ -30,6 +30,7 @@ class GuideController extends Controller
             ->when($request->query('category'), function ($query, $slug) use ($language) {
                 $query->whereHas('category', fn ($q) => $q->where('slug', $slug)->where('language', $language));
             })
+            ->when($request->query('author'), fn ($q, $author) => $q->where('author_name', $author))
             ->when($request->query('q'), function ($query, $term) {
                 $query->where(function ($q) use ($term) {
                     $q->where('title', 'like', "%{$term}%")

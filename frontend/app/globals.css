@@ -288,6 +288,15 @@
   }
   select.field { cursor: pointer; }
 
+  /* No spinner arrows. These fields are typed into, not stepped through, and
+     the arrows also let a stray scroll change a weight. */
+  .field[type='number']::-webkit-outer-spin-button,
+  .field[type='number']::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+  .field[type='number'] { appearance: textfield; }
+
   .notice {
     border-left: 3px solid var(--color-brand-500);
     background: var(--sunken);
