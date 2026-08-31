@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { Field, FormulaNote, ResultCard } from './shared';
+import { Field, FieldGroup, FormulaNote, ResultCard } from './shared';
 import {
   ACTIVITY_LEVELS, bmi, bmr, fiberTarget, intakeForRate, proteinTarget, tdee, type Sex,
 } from '@/lib/health/calculations';
@@ -43,55 +43,65 @@ export default function ProteinCalculator() {
   return (
     <div className="grid gap-6 lg:grid-cols-[360px_1fr] items-start">
       <div className="panel p-5 space-y-4">
-        <Field label={tp('units')}>
-          <div className="segment">
+        <FieldGroup label={tp('units')}>
+            <div className="segment">
             {(['metric', 'imperial'] as Units[]).map((u) => (
               <button key={u} type="button" data-active={units === u} onClick={() => setUnits(u)}>
                 {tp(u)}
               </button>
             ))}
           </div>
-        </Field>
+          </FieldGroup>
 
-        <Field label={tp('sex')}>
-          <div className="segment">
+        <FieldGroup label={tp('sex')}>
+            <div className="segment">
             {(['female', 'male'] as Sex[]).map((s) => (
               <button key={s} type="button" data-active={sex === s} onClick={() => setSex(s)}>
                 {tp(s)}
               </button>
             ))}
           </div>
-        </Field>
+          </FieldGroup>
 
         <div className="grid grid-cols-2 gap-3">
           <Field label={tp('age')}>
-            <input type="number" className="field" value={age}
-              onChange={(e) => setAge(Number(e.target.value))} min={16} max={100} />
+            {(p) => (
+              <input {...p} type="number" inputMode="decimal" className="field" value={age}
+                onChange={(e) => setAge(Number(e.target.value))} min={16} max={100} />
+            )}
           </Field>
           <Field label={`${tp('height')} (${tc('cm')})`}>
-            <input type="number" className="field" value={Math.round(heightCm)}
+            {(p) => (
+              <input {...p} type="number" inputMode="decimal" className="field" value={Math.round(heightCm)}
               onChange={(e) => setHeightCm(Number(e.target.value))} min={120} max={250} />
+            )}
           </Field>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <Field label={`${tp('currentWeight')} (${wUnit})`}>
-            <input type="number" step="0.1" className="field" value={toW(weightKg).toFixed(1)}
+            {(p) => (
+              <input {...p} type="number" inputMode="decimal" step="0.1" className="field" value={toW(weightKg).toFixed(1)}
               onChange={(e) => setWeightKg(fromW(Number(e.target.value)))} />
+            )}
           </Field>
           <Field label={`${tp('goalWeight')} (${wUnit})`}>
-            <input type="number" step="0.1" className="field" value={toW(goalKg).toFixed(1)}
+            {(p) => (
+              <input {...p} type="number" inputMode="decimal" step="0.1" className="field" value={toW(goalKg).toFixed(1)}
               onChange={(e) => setGoalKg(fromW(Number(e.target.value)))} />
+            )}
           </Field>
         </div>
 
         <Field label={tp('activity')}>
-          <select className="field" value={factor} onChange={(e) => setFactor(Number(e.target.value))}>
-            {ACTIVITY_LEVELS.map((level) => (
-              <option key={level.id} value={level.factor}>{ta(level.id)}</option>
-            ))}
-          </select>
-        </Field>
+            {(p) => (
+              <select {...p} className="field" value={factor} onChange={(e) => setFactor(Number(e.target.value))}>
+              {ACTIVITY_LEVELS.map((level) => (
+                <option key={level.id} value={level.factor}>{ta(level.id)}</option>
+              ))}
+            </select>
+            )}
+          </Field>
       </div>
 
       <div className="space-y-5">

@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { Field, FormulaNote, ResultCard, ScaleBar } from './shared';
+import { Field, FieldGroup, FormulaNote, ResultCard, ScaleBar } from './shared';
 import { bmi, bmiCategory, healthyWeightRange } from '@/lib/health/calculations';
 import { cmToFeetInches, feetInchesToCm, kgToLb, lbToKg, type Units } from '@/lib/health/units';
 
@@ -29,39 +29,43 @@ export default function BmiCalculator() {
   return (
     <div className="grid gap-6 lg:grid-cols-[360px_1fr] items-start">
       <div className="panel p-5 space-y-4">
-        <Field label={tp('units')}>
-          <div className="segment">
+        <FieldGroup label={tp('units')}>
+            <div className="segment">
             {(['metric', 'imperial'] as Units[]).map((u) => (
               <button key={u} type="button" data-active={units === u} onClick={() => setUnits(u)}>
                 {tp(u)}
               </button>
             ))}
           </div>
-        </Field>
+          </FieldGroup>
 
         {isMetric ? (
           <Field label={`${tp('height')} (${tc('cm')})`}>
-            <input type="number" className="field" value={Math.round(heightCm)}
+            {(p) => (
+              <input {...p} type="number" inputMode="decimal" className="field" value={Math.round(heightCm)}
               onChange={(e) => setHeightCm(Number(e.target.value))} min={120} max={250} />
+            )}
           </Field>
         ) : (
-          <Field label={tp('height')}>
+          <FieldGroup label={tp('height')}>
             <div className="grid grid-cols-2 gap-2">
               <input type="number" className="field" aria-label={tc('ft')} value={fi.feet}
                 onChange={(e) => setHeightCm(feetInchesToCm(Number(e.target.value), fi.inches))} />
               <input type="number" className="field" aria-label={tc('in')} value={Math.round(fi.inches)}
                 onChange={(e) => setHeightCm(feetInchesToCm(fi.feet, Number(e.target.value)))} />
             </div>
-          </Field>
+          </FieldGroup>
         )}
 
         <Field label={`${tp('currentWeight')} (${wUnit})`}>
-          <input type="number" step="0.1" className="field"
+            {(p) => (
+              <input {...p} type="number" inputMode="decimal" step="0.1" className="field"
             value={(isMetric ? weightKg : kgToLb(weightKg)).toFixed(1)}
             onChange={(e) =>
               setWeightKg(isMetric ? Number(e.target.value) : lbToKg(Number(e.target.value)))
             } />
-        </Field>
+            )}
+          </Field>
       </div>
 
       <div className="space-y-5">

@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { Field, FormulaNote, ScaleBar } from './shared';
+import { Field, FieldGroup, FormulaNote, ScaleBar } from './shared';
 import { waistToHeight, whtrCategory } from '@/lib/health/calculations';
 import { cmToIn, inToCm, type Units } from '@/lib/health/units';
 
@@ -29,27 +29,31 @@ export default function WaistCalculator() {
   return (
     <div className="grid gap-6 lg:grid-cols-[360px_1fr] items-start">
       <div className="panel p-5 space-y-4">
-        <Field label={tp('units')}>
-          <div className="segment">
+        <FieldGroup label={tp('units')}>
+            <div className="segment">
             {(['metric', 'imperial'] as Units[]).map((u) => (
               <button key={u} type="button" data-active={units === u} onClick={() => setUnits(u)}>
                 {tp(u)}
               </button>
             ))}
           </div>
-        </Field>
+          </FieldGroup>
 
         <Field label={`${tp('height')} (${lUnit})`}>
-          <input type="number" step="0.1" className="field"
+            {(p) => (
+              <input {...p} type="number" inputMode="decimal" step="0.1" className="field"
             value={toLen(heightCm).toFixed(isMetric ? 0 : 1)}
             onChange={(e) => setHeightCm(fromLen(Number(e.target.value)))} />
-        </Field>
+            )}
+          </Field>
 
         <Field label={`${t('enterWaist')} (${lUnit})`} hint={t('waistHelp')}>
-          <input type="number" step="0.1" className="field"
+            {(p) => (
+              <input {...p} type="number" inputMode="decimal" step="0.1" className="field"
             value={toLen(waistCm).toFixed(1)}
             onChange={(e) => setWaistCm(fromLen(Number(e.target.value)))} />
-        </Field>
+            )}
+          </Field>
       </div>
 
       <div className="space-y-5">

@@ -41,8 +41,21 @@ export default function ScenarioCompare({
   ].map((s) => {
     const { intake, clamped } = intakeForRate(input.maintenance, s.rate, input.sex);
     const projection = projectWeightLoss({ ...input, intake });
-    return { ...s, intake, clamped, weeks: projection.weeksToGoal, reached: projection.goalReached };
+    // The rate the plan will actually deliver. A requested pace above the 25%
+    // deficit cap is silently reduced, and showing the requested number anyway
+    // would promise something the plan does not produce.
+    const effectiveRate = (input.maintenance - intake) * 7 / 7700;
+    return {
+      ...s, intake, clamped,
+      effectiveRate: Math.round(effectiveRate * 100) / 100,
+      weeks: projection.weeksToGoal,
+      reached: projection.goalReached,
+    };
   });
+
+  // Two scenarios that clamp to the same intake are the same plan. Saying so is
+  // more useful than showing three cards where two are secretly identical.
+  const standardIntake = scenarios.find((s) => s.id === 'Standard')?.intake;
 
   return (
     <section className="panel p-5 sm:p-6">
@@ -67,7 +80,7 @@ export default function ScenarioCompare({
               <div className="flex items-baseline justify-between gap-2">
                 <span className="font-semibold">{s.label}</span>
                 <span className="text-[0.75rem] text-muted">
-                  {s.rate.toFixed(2)} {tc('kg')}/{tc('weeks').slice(0, 4)}
+                  {s.effectiveRate.toFixed(2)} {tc('kg')}/{tc('weeks').slice(0, 4)}
                 </span>
               </div>
 
@@ -85,6 +98,12 @@ export default function ScenarioCompare({
               {s.caution && (
                 <p className="mt-2 text-[0.8125rem] leading-relaxed" style={{ color: 'var(--color-clay)' }}>
                   {s.caution}
+                </p>
+              )}
+
+              {s.id !== 'Standard' && s.intake === standardIntake && (
+                <p className="mt-2 text-[0.75rem] font-medium" style={{ color: 'var(--color-clay)' }}>
+                  {t('scenarioCapped')}
                 </p>
               )}
 

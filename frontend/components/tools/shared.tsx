@@ -1,16 +1,82 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
 
+/**
+ * A real label bound to a real control.
+ *
+ * The previous version rendered `<span class="field-label">`, which looks
+ * identical and is invisible to assistive technology. Every tool used it, so
+ * the tracker alone shipped five unlabeled inputs. This clones the child to
+ * inject the generated id, plus aria-describedby when there is a hint, so a
+ * screen reader announces the label and the help text together.
+ */
 export function Field({
-  label, hint, children,
-}: { label: string; hint?: string; children: ReactNode }) {
+  label,
+  hint,
+  error,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  error?: string | null;
+  children: (props: {
+    id: string;
+    'aria-describedby'?: string;
+    'aria-invalid'?: true;
+  }) => ReactNode;
+}) {
+  const id = useId();
+  const hintId = hint ? `${id}-hint` : undefined;
+  const errorId = error ? `${id}-error` : undefined;
+  const describedBy = [hintId, errorId].filter(Boolean).join(' ') || undefined;
+
   return (
     <div>
-      <span className="field-label">{label}</span>
+      <label htmlFor={id} className="field-label">
+        {label}
+      </label>
+
+      {children({
+        id,
+        ...(describedBy ? { 'aria-describedby': describedBy } : {}),
+        ...(error ? { 'aria-invalid': true as const } : {}),
+      })}
+
+      {hint && (
+        <p id={hintId} className="mt-1.5 text-xs text-muted leading-relaxed">
+          {hint}
+        </p>
+      )}
+
+      {error && (
+        <p id={errorId} role="alert" className="mt-1.5 text-xs font-medium" style={{ color: 'var(--color-clay)' }}>
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+/**
+ * A group of radio-like buttons. Uses a fieldset and legend because a segmented
+ * control is a choice between options, not a labeled input.
+ */
+export function FieldGroup({
+  label,
+  hint,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  children: ReactNode;
+}) {
+  return (
+    <fieldset>
+      <legend className="field-label">{label}</legend>
       {children}
       {hint && <p className="mt-1.5 text-xs text-muted leading-relaxed">{hint}</p>}
-    </div>
+    </fieldset>
   );
 }
 
@@ -23,8 +89,7 @@ export function ResultCard({
   note?: string;
   tone?: 'brand' | 'neutral' | 'warn';
 }) {
-  const color =
-    tone === 'brand' ? 'text-brand-800' : tone === 'warn' ? 'text-clay' : '';
+  const color = tone === 'brand' ? 'text-brand-800' : tone === 'warn' ? 'text-clay' : '';
 
   return (
     <div className="panel p-5">
@@ -49,37 +114,38 @@ export function FormulaNote({ title, children }: { title: string; children: Reac
   );
 }
 
-/** Horizontal bar showing where a value sits between category boundaries. */
 export function ScaleBar({
-  value, min, max, stops,
+  value, min, max, stops, valueLabel,
 }: {
   value: number;
   min: number;
   max: number;
   stops: { at: number; label: string; color: string }[];
+  /** Text equivalent, so the band is not conveyed by color alone. */
+  valueLabel?: string;
 }) {
   const pct = Math.max(0, Math.min(100, ((value - min) / (max - min)) * 100));
 
   return (
     <div className="mt-4">
-      <div className="relative h-2.5 rounded-full overflow-hidden flex">
+      <div className="relative h-2.5 rounded-full overflow-hidden flex" aria-hidden="true">
         {stops.map((stop, i) => {
           const start = i === 0 ? min : stops[i - 1].at;
-          const width = ((stop.at - start) / (max - min)) * 100;
           return (
-            <div key={stop.label} style={{ width: `${width}%`, background: stop.color }} />
+            <div
+              key={stop.label}
+              style={{ width: `${((stop.at - start) / (max - min)) * 100}%`, background: stop.color }}
+            />
           );
         })}
       </div>
-      <div className="relative h-6">
-        <div
-          className="absolute -translate-x-1/2 flex flex-col items-center"
-          style={{ left: `${pct}%` }}
-        >
+      <div className="relative h-6" aria-hidden="true">
+        <div className="absolute -translate-x-1/2 flex flex-col items-center" style={{ left: `${pct}%` }}>
           <div className="w-0.5 h-2 bg-current" />
           <span className="text-xs font-bold whitespace-nowrap">{value.toFixed(1)}</span>
         </div>
       </div>
+      {valueLabel && <p className="sr-only">{valueLabel}</p>}
     </div>
   );
 }

@@ -1,193 +1,216 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { Field, FormulaNote } from './shared';
-import { AlertTriangle, Info } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Info } from 'lucide-react';
+import { FormulaNote } from './shared';
+import { bmr, tdee } from '@/lib/health/calculations';
+import { kgToLb } from '@/lib/health/units';
 import {
-  ACTIVITY_LEVELS, bmr, tdee, type Sex,
-} from '@/lib/health/calculations';
-import { kgToLb, lbToKg, type Units } from '@/lib/health/units';
+  ENTRIES_CHANGED, PLAN_CHANGED, loadEntries, loadPlan,
+  type SavedPlan, type WeightEntry,
+} from '@/lib/plan/storage';
+import { analyzeStall, summarize } from '@/lib/plan/analysis';
 
+/**
+ * Reads the tracker instead of asking the visitor how many weeks their average
+ * has been flat. That question was the analysis, so asking it pushed the actual
+ * work back onto the person least equipped to do it.
+ *
+ * It never opens by telling anyone to eat less. Measurement error and a
+ * shrinking maintenance are both far more common than needing a deeper deficit.
+ */
 export default function PlateauAnalyzer() {
   const t = useTranslations('calculators');
-  const tp = useTranslations('planner');
   const tc = useTranslations('common');
-  const ta = useTranslations('activity');
 
-  const [units, setUnits] = useState<Units>('metric');
-  const [sex, setSex] = useState<Sex>('female');
-  const [age, setAge] = useState(35);
-  const [heightCm, setHeightCm] = useState(168);
-  const [startKg, setStartKg] = useState(88);
-  const [currentKg, setCurrentKg] = useState(79);
-  const [factor, setFactor] = useState(1.375);
-  const [weeksFlat, setWeeksFlat] = useState(4);
+  const [entries, setEntries] = useState<WeightEntry[]>([]);
+  const [plan, setPlan] = useState<SavedPlan | null>(null);
+  const [context, setContext] = useState<Record<string, boolean>>({});
 
-  const isMetric = units === 'metric';
-  const wUnit = isMetric ? tc('kg') : tc('lb');
-  const toW = (kg: number) => (isMetric ? kg : kgToLb(kg));
-  const fromW = (v: number) => (isMetric ? v : lbToKg(v));
-
-  const analysis = useMemo(() => {
-    const startTdee = tdee(bmr(sex, startKg, heightCm, age), factor);
-    const nowTdee = tdee(bmr(sex, currentKg, heightCm, age), factor);
-    const drop = Math.round(startTdee - nowTdee);
-    const lost = startKg - currentKg;
-
-    const real = weeksFlat >= 3;
-
-    return {
-      startTdee: Math.round(startTdee),
-      nowTdee: Math.round(nowTdee),
-      drop,
-      lost,
-      real,
+  useEffect(() => {
+    const sync = () => { setEntries(loadEntries()); setPlan(loadPlan()); };
+    const id = requestAnimationFrame(sync);
+    window.addEventListener(ENTRIES_CHANGED, sync);
+    window.addEventListener(PLAN_CHANGED, sync);
+    return () => {
+      cancelAnimationFrame(id);
+      window.removeEventListener(ENTRIES_CHANGED, sync);
+      window.removeEventListener(PLAN_CHANGED, sync);
     };
-  }, [sex, age, heightCm, startKg, currentKg, factor, weeksFlat]);
+  }, []);
+
+  const stall = useMemo(() => analyzeStall(entries, plan), [entries, plan]);
+  const progress = useMemo(() => summarize(entries, plan), [entries, plan]);
+
+  const metric = plan?.units !== 'imperial';
+  const wUnit = metric ? tc('kg') : tc('lb');
+  const rate = (kg: number) => `${Math.abs(metric ? kg : kgToLb(kg)).toFixed(2)} ${wUnit}`;
+
+  const maintenanceNow = useMemo(() => {
+    if (!plan || !progress) return null;
+    return Math.round(
+      tdee(bmr(plan.sex, progress.latest.averageKg, plan.heightCm, plan.age), plan.activityFactor),
+    );
+  }, [plan, progress]);
+
+  if (entries.length === 0) {
+    return (
+      <section className="panel p-6 max-w-[62ch]">
+        <h2 className="t-h3">{t('plateauFromData')}</h2>
+        <p className="mt-2 text-[0.9375rem] text-muted leading-relaxed">{t('plateauNeedsData')}</p>
+        <Link href="/tracker" className="btn btn-primary mt-4">{t('openTracker')}</Link>
+      </section>
+    );
+  }
+
+  const verdicts = {
+    'insufficient-data': {
+      title: t('vInsufficient'),
+      why: t('vInsufficientWhy', { days: Math.round(stall.observationDays) }),
+      tone: 'info' as const,
+    },
+    'sparse-data': {
+      title: t('vSparse'),
+      why: t('vSparseWhy', {
+        perWeek: stall.entriesPerWeek.toFixed(1),
+        days: Math.round(stall.observationDays),
+      }),
+      tone: 'info' as const,
+    },
+    'on-track': {
+      title: t('vOnTrack'),
+      why: t('vOnTrackWhy', { rate: rate(stall.slopeKgPerWeek ?? 0) }),
+      tone: 'good' as const,
+    },
+    'normal-fluctuation': {
+      title: t('vNormal'),
+      why: t('vNormalWhy', { weeks: stall.flatWeeks }),
+      tone: 'info' as const,
+    },
+    'slower-than-planned': {
+      title: t('vSlower'),
+      why: t('vSlowerWhy', {
+        rate: rate(stall.slopeKgPerWeek ?? 0),
+        planned: rate(plan?.rateKgPerWeek ?? 0),
+      }),
+      tone: 'warn' as const,
+    },
+    plateau: {
+      title: t('vPlateau'),
+      why: t('vPlateauWhy', { weeks: stall.flatWeeks }),
+      tone: 'warn' as const,
+    },
+  };
+
+  const v = verdicts[stall.verdict];
+  const actionable = stall.verdict === 'plateau' || stall.verdict === 'slower-than-planned';
+  const anyContext = Object.values(context).some(Boolean);
+
+  const steps = [
+    t('stepData'),
+    t('stepMeasure'),
+    t('stepActivity'),
+    maintenanceNow ? t('stepRecalc', { maintenance: maintenanceNow.toLocaleString() }) : null,
+    t('stepAdjust'),
+    t('stepProfessional'),
+  ].filter(Boolean) as string[];
+
+  const contextOptions = [
+    { id: 'cycle', label: t('ctxCycle') },
+    { id: 'illness', label: t('ctxIllness') },
+    { id: 'sodium', label: t('ctxSodium') },
+    { id: 'training', label: t('ctxTraining') },
+  ];
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[360px_1fr] items-start">
-      <div className="panel p-5 space-y-4">
-        <Field label={tp('units')}>
-          <div className="segment">
-            {(['metric', 'imperial'] as Units[]).map((u) => (
-              <button key={u} type="button" data-active={units === u} onClick={() => setUnits(u)}>
-                {tp(u)}
-              </button>
-            ))}
-          </div>
-        </Field>
-
-        <Field label={tp('sex')}>
-          <div className="segment">
-            {(['female', 'male'] as Sex[]).map((s) => (
-              <button key={s} type="button" data-active={sex === s} onClick={() => setSex(s)}>
-                {tp(s)}
-              </button>
-            ))}
-          </div>
-        </Field>
-
-        <div className="grid grid-cols-2 gap-3">
-          <Field label={tp('age')}>
-            <input type="number" className="field" value={age}
-              onChange={(e) => setAge(Number(e.target.value))} />
-          </Field>
-          <Field label={`${tp('height')} (${tc('cm')})`}>
-            <input type="number" className="field" value={Math.round(heightCm)}
-              onChange={(e) => setHeightCm(Number(e.target.value))} />
-          </Field>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <Field label={`${t('startWeightAgo')} (${wUnit})`}>
-            <input type="number" step="0.1" className="field" value={toW(startKg).toFixed(1)}
-              onChange={(e) => setStartKg(fromW(Number(e.target.value)))} />
-          </Field>
-          <Field label={`${tp('currentWeight')} (${wUnit})`}>
-            <input type="number" step="0.1" className="field" value={toW(currentKg).toFixed(1)}
-              onChange={(e) => setCurrentKg(fromW(Number(e.target.value)))} />
-          </Field>
-        </div>
-
-        <Field label={tp('activity')}>
-          <select className="field" value={factor} onChange={(e) => setFactor(Number(e.target.value))}>
-            {ACTIVITY_LEVELS.map((level) => (
-              <option key={level.id} value={level.factor}>{ta(level.id)}</option>
-            ))}
-          </select>
-        </Field>
-
-        <Field label={t('weeksFlat')}>
-          <input type="number" className="field" min={0} max={52} value={weeksFlat}
-            onChange={(e) => setWeeksFlat(Number(e.target.value))} />
-        </Field>
-      </div>
-
-      <div className="space-y-5">
-        <div className={`panel p-5 border-l-4`} style={{
-          borderLeftColor: analysis.real ? 'var(--color-clay)' : 'var(--color-brand-500)',
-        }}>
-          <div className="flex gap-3">
-            {analysis.real
-              ? <AlertTriangle size={20} className="text-clay shrink-0 mt-0.5" />
-              : <Info size={20} className="text-brand-800 shrink-0 mt-0.5" />}
-            <div>
-              <h2 className="t-h3">
-                {analysis.real ? 'This counts as a plateau' : 'This is probably still normal fluctuation'}
-              </h2>
-              <p className="mt-2 text-sm leading-relaxed">
-                {analysis.real
-                  ? `Your 7 day average has been flat for ${weeksFlat} weeks. Three or more flat weeks with unchanged adherence is the point where it means something.`
-                  : `Your average has been flat for ${weeksFlat} ${weeksFlat === 1 ? 'week' : 'weeks'}. Day to day swings of 1 to 2 kg from water, sodium, and food in transit are larger than a week of real fat loss, so a short flat stretch usually says nothing. Wait until you have three or more flat weeks before changing anything.`}
-              </p>
-            </div>
+    <div className="space-y-5 max-w-[70ch]">
+      <section
+        className="panel p-5 border-l-4"
+        style={{
+          borderLeftColor:
+            v.tone === 'warn' ? 'var(--color-clay)'
+            : v.tone === 'good' ? 'var(--color-brand-500)'
+            : 'var(--color-violet-500)',
+        }}
+        aria-labelledby="verdict"
+      >
+        <div className="flex gap-3">
+          {v.tone === 'warn' ? <AlertTriangle size={20} className="text-clay shrink-0 mt-0.5" aria-hidden="true" />
+            : v.tone === 'good' ? <CheckCircle2 size={20} className="text-brand-800 shrink-0 mt-0.5" aria-hidden="true" />
+            : <Info size={20} className="shrink-0 mt-0.5" style={{ color: 'var(--color-violet-500)' }} aria-hidden="true" />}
+          <div>
+            <h2 id="verdict" className="t-h3">{v.title}</h2>
+            <p className="mt-2 text-[0.9375rem] leading-relaxed">{v.why}</p>
           </div>
         </div>
 
-        <div className="panel p-5">
-          <h2 className="t-h3">What changed since you started</h2>
-          <dl className="mt-4 space-y-3 text-sm">
-            <div className="flex justify-between gap-4">
-              <dt className="text-muted">Weight lost so far</dt>
-              <dd className="font-semibold">{toW(analysis.lost).toFixed(1)} {wUnit}</dd>
-            </div>
-            <div className="flex justify-between gap-4">
-              <dt className="text-muted">Maintenance calories then</dt>
-              <dd className="font-semibold">{analysis.startTdee.toLocaleString()}</dd>
-            </div>
-            <div className="flex justify-between gap-4">
-              <dt className="text-muted">Maintenance calories now</dt>
-              <dd className="font-semibold">{analysis.nowTdee.toLocaleString()}</dd>
-            </div>
-            <div className="flex justify-between gap-4 pt-3 border-t border-line">
-              <dt className="font-semibold">Your deficit shrank by</dt>
-              <dd className="font-bold text-clay">{analysis.drop} calories a day</dd>
-            </div>
-          </dl>
+        <dl className="mt-5 grid gap-3 sm:grid-cols-3 text-[0.875rem]">
+          <div>
+            <dt className="text-muted">{t('weeksFlat')}</dt>
+            <dd className="t-num text-[1.25rem]">{stall.flatWeeks}</dd>
+          </div>
+          <div>
+            <dt className="text-muted">{tc('weeks')}</dt>
+            <dd className="t-num text-[1.25rem]">{(stall.observationDays / 7).toFixed(1)}</dd>
+          </div>
+          <div>
+            <dt className="text-muted">{t('plateauFromData')}</dt>
+            <dd className="t-num text-[1.25rem]">{stall.entriesPerWeek.toFixed(1)}</dd>
+          </div>
+        </dl>
+      </section>
 
-          {analysis.drop > 0 && (
-            <p className="mt-4 text-sm leading-relaxed">
-              If you are still eating what you ate at {toW(startKg).toFixed(1)} {wUnit}, your deficit is
-              now {analysis.drop} calories a day smaller than it was. That alone can turn visible
-              progress into an apparent stall, without anything going wrong metabolically.
-            </p>
-          )}
+      <section className="panel p-5" aria-labelledby="context">
+        <h2 id="context" className="t-h3">{t('contextTitle')}</h2>
+        <p className="mt-1.5 text-[0.875rem] text-muted">{t('contextHint')}</p>
+
+        <div className="mt-4 space-y-2.5">
+          {contextOptions.map((opt) => (
+            <label key={opt.id} className="flex items-start gap-2.5 text-[0.9375rem] cursor-pointer">
+              <input
+                type="checkbox"
+                checked={Boolean(context[opt.id])}
+                onChange={(e) => setContext((c) => ({ ...c, [opt.id]: e.target.checked }))}
+                className="mt-1 accent-brand-600 h-4 w-4 shrink-0"
+              />
+              <span>{opt.label}</span>
+            </label>
+          ))}
         </div>
 
-        <div className="panel p-5">
-          <h2 className="t-h3">What to change, in order</h2>
-          <ol className="mt-3 space-y-2.5 text-sm list-decimal pl-5 leading-relaxed">
-            <li>Weigh daily and read only the 7 day average. Confirm the flat line over 21 days or more.</li>
-            <li>Weigh your food for one week instead of estimating. Reported intake drifts upward over months, and the drift is invisible from the inside. This alone resolves a large share of stalls.</li>
-            <li>Recalculate your calorie target at your current weight, not your starting weight. For you that means about {analysis.nowTdee.toLocaleString()} calories for maintenance.</li>
-            <li>Add movement before subtracting food. Steps are easier to keep up than a smaller food budget.</li>
-            <li>Only then cut 100 to 150 calories, and give it two weeks before judging.</li>
-            <li>Consider two to four weeks at maintenance. It does not undo what you have lost, and it often restores the consistency that actually drives results.</li>
+        {anyContext && (
+          <p className="mt-4 notice text-[0.875rem] leading-relaxed">{t('ctxNote')}</p>
+        )}
+      </section>
+
+      {actionable && (
+        <section className="panel p-5" aria-labelledby="steps">
+          <h2 id="steps" className="t-h3">{t('whatToCheck')}</h2>
+          <ol className="mt-3 space-y-2.5 text-[0.9375rem] list-decimal pl-5 leading-relaxed">
+            {steps.map((step) => <li key={step}>{step}</li>)}
           </ol>
-        </div>
+        </section>
+      )}
 
-        <p className="text-[0.9375rem]">
-          <Link href="/guides/weight-loss-plateau" className="text-brand-800 font-medium hover:underline">
-            Why plateaus happen, and what to change first
-          </Link>
+      <FormulaNote title={t('formula')}>
+        <p>
+          The verdict comes from your saved weigh-ins: a trailing 7 day average, a
+          least-squares slope through it, and the number of consecutive trailing weeks
+          where that average has not fallen by more than 0.2 kg.
         </p>
-
-        <p className="text-[0.9375rem]">
-          <Link href="/guides/weight-loss-plateau" className="text-brand-800 font-medium hover:underline">
-            Why plateaus happen, and what to change first
-          </Link>
+        <p>
+          Under 21 days of data, or fewer than three weigh-ins a week, it reports that
+          rather than guessing. A 7 day average built from one reading a week is not an
+          average.
         </p>
-
-        <FormulaNote title="What not to do">
-          <p>Do not cut calories dramatically. Larger deficits cost more lean tissue and rarely survive contact with a normal week.</p>
-          <p>Do not add hours of cardio. It raises appetite and eats into recovery, and the calories burned are usually smaller than people expect.</p>
-          <p>Cutting out food groups or doing a cleanse does not address any mechanism that causes a plateau.</p>
-          <p>One more possibility worth ruling out: if you recently started resistance training, you may be gaining muscle while losing fat. The scale hides that. Check your waist measurement and how your clothes fit before assuming nothing is happening.</p>
-        </FormulaNote>
-      </div>
+        <p>
+          It does not open by suggesting fewer calories. Measurement drift and a
+          maintenance level that fell with your weight are both more common explanations,
+          and both are fixed without eating less.
+        </p>
+      </FormulaNote>
     </div>
   );
 }

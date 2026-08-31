@@ -170,8 +170,8 @@ export default function Planner() {
         <h2 className="t-h3">{t('yourDetails')}</h2>
 
         <div className="mt-4 space-y-4">
-          <div>
-            <span className="field-label">{t('units')}</span>
+          <fieldset>
+            <legend className="field-label">{t('units')}</legend>
             <div className="segment">
               {(['metric', 'imperial'] as Units[]).map((u) => (
                 <button key={u} type="button" data-active={form.units === u} onClick={() => set('units', u)}>
@@ -179,10 +179,10 @@ export default function Planner() {
                 </button>
               ))}
             </div>
-          </div>
+          </fieldset>
 
-          <div>
-            <span className="field-label">{t('sex')}</span>
+          <fieldset>
+            <legend className="field-label">{t('sex')}</legend>
             <div className="segment">
               {(['female', 'male'] as Sex[]).map((s) => (
                 <button key={s} type="button" data-active={form.sex === s} onClick={() => set('sex', s)}>
@@ -191,13 +191,13 @@ export default function Planner() {
               ))}
             </div>
             <p className="mt-1.5 text-xs text-muted">{t('sexNote')}</p>
-          </div>
+          </fieldset>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="field-label" htmlFor="age">{t('age')}</label>
               <input
-                id="age" type="number" className="field" min={16} max={100}
+                id="age" type="number" inputMode="decimal" className="field" min={16} max={100}
                 value={form.age}
                 onChange={(e) => set('age', Number(e.target.value))}
               />
@@ -209,17 +209,17 @@ export default function Planner() {
                   {t('height')} ({tc('cm')})
                 </label>
                 <input
-                  id="height" type="number" className="field" min={120} max={250}
+                  id="height" type="number" inputMode="decimal" className="field" min={120} max={250}
                   value={Math.round(form.heightCm)}
                   onChange={(e) => set('heightCm', Number(e.target.value))}
                 />
               </div>
             ) : (
-              <div>
-                <span className="field-label">{t('height')}</span>
+              <fieldset>
+                <legend className="field-label">{t('height')}</legend>
                 <div className="grid grid-cols-2 gap-2">
                   <input
-                    type="number" className="field" min={3} max={8}
+                    type="number" inputMode="decimal" className="field" min={3} max={8}
                     aria-label={tc('ft')}
                     value={feetInches.feet}
                     onChange={(e) =>
@@ -227,7 +227,7 @@ export default function Planner() {
                     }
                   />
                   <input
-                    type="number" className="field" min={0} max={11}
+                    type="number" inputMode="decimal" className="field" min={0} max={11}
                     aria-label={tc('in')}
                     value={Math.round(feetInches.inches)}
                     onChange={(e) =>
@@ -235,7 +235,7 @@ export default function Planner() {
                     }
                   />
                 </div>
-              </div>
+              </fieldset>
             )}
           </div>
 
@@ -245,7 +245,7 @@ export default function Planner() {
                 {t('currentWeight')} ({wUnit})
               </label>
               <input
-                id="weight" type="number" step="0.1" className="field"
+                id="weight" type="number" inputMode="decimal" step="0.1" className="field"
                 value={toDisplay(form.weightKg).toFixed(1)}
                 onChange={(e) => set('weightKg', fromDisplay(Number(e.target.value)))}
               />
@@ -255,7 +255,7 @@ export default function Planner() {
                 {t('goalWeight')} ({wUnit})
               </label>
               <input
-                id="goal" type="number" step="0.1" className="field"
+                id="goal" type="number" inputMode="decimal" step="0.1" className="field"
                 value={toDisplay(form.goalKg).toFixed(1)}
                 onChange={(e) => set('goalKg', fromDisplay(Number(e.target.value)))}
               />
