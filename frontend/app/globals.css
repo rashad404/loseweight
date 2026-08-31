@@ -73,6 +73,18 @@
 }
 
 @layer base {
+  /* Honor the OS setting. smooth scrolling and transitions are the two things
+     that actually trigger discomfort for people who set this. */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;

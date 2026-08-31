@@ -13,7 +13,8 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "language": "Language",
-    "theme": "Switch theme"
+    "theme": "Switch theme",
+    "home": "Home"
   },
   "home": {
     "heroTitle": "How long will it actually take?",
@@ -173,7 +174,9 @@
     "editorial": "Editorial policy",
     "disclaimer": "Medical disclaimer",
     "privacy": "Privacy",
-    "contact": "Contact"
+    "contact": "Contact",
+    "terms": "Terms of use",
+    "corrections": "Corrections"
   },
   "footer": {
     "tools": "Tools",

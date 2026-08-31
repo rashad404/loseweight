@@ -1,11 +1,16 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { localePath } from '@/i18n/routing';
+import { policyMetadata } from '@/lib/seo';
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
-  const t = await getTranslations({ locale: lang, namespace: 'pages' });
-  return { title: t('contact'), alternates: { canonical: localePath(lang, '/contact') } };
+
+  return policyMetadata({
+    lang,
+    path: '/contact',
+    title: 'Contact and corrections',
+    description: 'How to reach LoseWeight.net, how to report an error in a guide, and what we cannot answer. Corrections to medical content are handled ahead of everything else.',
+  });
 }
 
 export default async function ContactPage({ params }: { params: Promise<{ lang: string }> }) {

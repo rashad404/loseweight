@@ -1,11 +1,16 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { localePath } from '@/i18n/routing';
+import { policyMetadata } from '@/lib/seo';
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
-  const t = await getTranslations({ locale: lang, namespace: 'pages' });
-  return { title: t('editorial'), alternates: { canonical: localePath(lang, '/editorial-policy') } };
+
+  return policyMetadata({
+    lang,
+    path: '/editorial-policy',
+    title: 'Editorial policy',
+    description: 'How guides are sourced, reviewed, and corrected: primary sources next to the claims they support, honest review status, no personalized medical advice, and clear separation of commercial content.',
+  });
 }
 
 export default async function EditorialPage({ params }: { params: Promise<{ lang: string }> }) {
@@ -37,7 +42,7 @@ export default async function EditorialPage({ params }: { params: Promise<{ lang
 
         <h2>Review status is stated honestly</h2>
         <p>
-          Each guide records who wrote it, who reviewed it, that reviewer's credentials and
+          Each guide records who wrote it, who reviewed it, that reviewer&apos;s credentials and
           licensing jurisdiction, and the review date. Guides that have not yet been reviewed
           by a clinician display a notice saying exactly that at the top of the page. We do
           not fill in a reviewer name to make a badge look better, and we do not imply

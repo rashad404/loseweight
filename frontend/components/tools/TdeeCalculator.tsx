@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { Field, FormulaNote, ResultCard } from './shared';
 import {
   ACTIVITY_LEVELS, bmr, bmrFromLeanMass, tdee, type Sex,
@@ -155,6 +156,12 @@ export default function TdeeCalculator() {
             ))}
           </ul>
         </div>
+
+        <p className="text-[0.9375rem]">
+          <Link href="/guides/tdee-explained" className="text-brand-800 font-medium hover:underline">
+            What TDEE is made of, and how much to trust the estimate
+          </Link>
+        </p>
 
         <FormulaNote title={t('formula')}>
           {result.useKatch ? (

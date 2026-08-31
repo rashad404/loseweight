@@ -5,10 +5,12 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { localePath } from '@/i18n/routing';
 import { Geist } from 'next/font/google';
 import { routing } from '@/i18n/routing';
+import { alternatesFor, absolute } from '@/lib/seo';
 
 const geist = Geist({
   subsets: ['latin', 'latin-ext', 'cyrillic'],
-  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  // Only the weights actually used. Each extra weight is another font file.
+  weight: ['400', '500', '600', '700', '800'],
   variable: '--font-geist',
   display: 'swap',
 });
@@ -31,10 +33,7 @@ export async function generateMetadata({
   return {
     title: { default: `${t('name')}: ${t('tagline')}`, template: `%s | ${t('name')}` },
     description: t('description'),
-    alternates: {
-      canonical: localePath(lang),
-      languages: Object.fromEntries(routing.locales.map((l) => [l, localePath(l)])),
-    },
+    alternates: alternatesFor(lang),
     openGraph: {
       siteName: t('name'),
       locale: lang,
@@ -84,6 +83,10 @@ export default async function LocaleLayout({
         />
       </head>
       <body suppressHydrationWarning>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd(lang)) }}
+        />
         <NextIntlClientProvider>
           <div className="min-h-screen flex flex-col">
             <Header />
@@ -94,4 +97,39 @@ export default async function LocaleLayout({
       </body>
     </html>
   );
+}
+
+/**
+ * Organization and WebSite, describing what the site actually is. No
+ * aggregateRating, no review counts, no medical entity claims: none of those
+ * are true here and inventing them is the fastest way to lose trust.
+ */
+function siteJsonLd(lang: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': `${absolute('/')}#organization`,
+        name: 'LoseWeight.net',
+        url: absolute('/'),
+        logo: {
+          '@type': 'ImageObject',
+          url: absolute('/brand/icon-512.png'),
+          width: 512,
+          height: 512,
+        },
+        description:
+          'Free, evidence-based weight loss calculators and clinician-reviewed guides.',
+      },
+      {
+        '@type': 'WebSite',
+        '@id': `${absolute('/')}#website`,
+        url: absolute('/'),
+        name: 'LoseWeight.net',
+        inLanguage: lang,
+        publisher: { '@id': `${absolute('/')}#organization` },
+      },
+    ],
+  };
 }

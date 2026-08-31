@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { Field, FormulaNote } from './shared';
 import { AlertTriangle, Info } from 'lucide-react';
 import {
@@ -167,6 +168,18 @@ export default function PlateauAnalyzer() {
             <li>Consider two to four weeks at maintenance. It does not undo what you have lost, and it often restores the consistency that actually drives results.</li>
           </ol>
         </div>
+
+        <p className="text-[0.9375rem]">
+          <Link href="/guides/weight-loss-plateau" className="text-brand-800 font-medium hover:underline">
+            Why plateaus happen, and what to change first
+          </Link>
+        </p>
+
+        <p className="text-[0.9375rem]">
+          <Link href="/guides/weight-loss-plateau" className="text-brand-800 font-medium hover:underline">
+            Why plateaus happen, and what to change first
+          </Link>
+        </p>
 
         <FormulaNote title="What not to do">
           <p>Do not cut calories dramatically. Larger deficits cost more lean tissue and rarely survive contact with a normal week.</p>

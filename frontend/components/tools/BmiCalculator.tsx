@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { Field, FormulaNote, ResultCard, ScaleBar } from './shared';
 import { bmi, bmiCategory, healthyWeightRange } from '@/lib/health/calculations';
 import { cmToFeetInches, feetInchesToCm, kgToLb, lbToKg, type Units } from '@/lib/health/units';
@@ -91,6 +92,12 @@ export default function BmiCalculator() {
           note="This is the weight range that maps to a BMI of 18.5 to 24.9 at your height. It is a range, not a single correct number."
           tone="neutral"
         />
+
+        <p className="text-[0.9375rem]">
+          <Link href="/guides/bmi-waist-body-fat" className="text-brand-800 font-medium hover:underline">
+            Why waist to height predicts individual risk better than BMI
+          </Link>
+        </p>
 
         <FormulaNote title={t('formula')}>
           <p>BMI = weight in kg divided by height in meters squared.</p>

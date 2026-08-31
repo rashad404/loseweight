@@ -1,11 +1,16 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { localePath } from '@/i18n/routing';
+import { policyMetadata } from '@/lib/seo';
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
-  const t = await getTranslations({ locale: lang, namespace: 'pages' });
-  return { title: t('disclaimer'), alternates: { canonical: localePath(lang, '/medical-disclaimer') } };
+
+  return policyMetadata({
+    lang,
+    path: '/medical-disclaimer',
+    title: 'Medical disclaimer',
+    description: 'LoseWeight.net gives general health information, not medical advice. When to talk to a clinician before starting, when to seek urgent care, and the limits of the calculators.',
+  });
 }
 
 export default async function DisclaimerPage({ params }: { params: Promise<{ lang: string }> }) {
@@ -63,7 +68,7 @@ export default async function DisclaimerPage({ params }: { params: Promise<{ lan
           Regulatory approvals, treatment thresholds, and available products differ by
           country. Information here is general and may not reflect the guidance or licensed
           indications where you live. Where a guide has been reviewed by a clinician, that
-          clinician's licensing jurisdiction is stated on the page.
+          clinician&apos;s licensing jurisdiction is stated on the page.
         </p>
 
         <h2>Accuracy and corrections</h2>

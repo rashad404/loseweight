@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { Field, FormulaNote, ScaleBar } from './shared';
 import { waistToHeight, whtrCategory } from '@/lib/health/calculations';
 import { cmToIn, inToCm, type Units } from '@/lib/health/units';
@@ -77,6 +78,12 @@ export default function WaistCalculator() {
             {ratio >= 0.5 && ` You are currently ${toLen(waistCm - targetWaist).toFixed(1)} ${lUnit} above that.`}
           </p>
         </div>
+
+        <p className="text-[0.9375rem]">
+          <Link href="/guides/bmi-waist-body-fat" className="text-brand-800 font-medium hover:underline">
+            How waist to height compares with BMI and body fat percentage
+          </Link>
+        </p>
 
         <FormulaNote title={t('formula')}>
           <p>Waist to height ratio = waist circumference divided by height, in the same units.</p>

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { Field, FormulaNote, ResultCard } from './shared';
 import {
   ACTIVITY_LEVELS, bmi, bmr, fiberTarget, intakeForRate, proteinTarget, tdee, type Sex,
@@ -127,6 +128,12 @@ export default function ProteinCalculator() {
             a cup of cooked lentils about 18 g, two eggs about 12 g, and 150 g of firm tofu about 17 g.
           </p>
         </div>
+
+        <p className="text-[0.9375rem]">
+          <Link href="/guides/protein-targets" className="text-brand-800 font-medium hover:underline">
+            How much protein you need, and how to spread it across the day
+          </Link>
+        </p>
 
         <FormulaNote title={t('formula')}>
           <p>Your BMI is {result.bmiValue.toFixed(1)}, so the target is scaled to your {result.protein.basis === 'goal' ? 'goal' : 'current'} weight.</p>

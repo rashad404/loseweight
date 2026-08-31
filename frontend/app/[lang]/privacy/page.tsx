@@ -1,11 +1,16 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { localePath } from '@/i18n/routing';
+import { policyMetadata } from '@/lib/seo';
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
-  const t = await getTranslations({ locale: lang, namespace: 'pages' });
-  return { title: t('privacy'), alternates: { canonical: localePath(lang, '/privacy') } };
+
+  return policyMetadata({
+    lang,
+    path: '/privacy',
+    title: 'Privacy',
+    description: 'Calculators run in your browser and we never receive your measurements. What we store if you subscribe or sign in, how long we keep it, and how to have it deleted.',
+  });
 }
 
 export default async function PrivacyPage({ params }: { params: Promise<{ lang: string }> }) {
@@ -28,7 +33,7 @@ export default async function PrivacyPage({ params }: { params: Promise<{ lang: 
           in your browser. They are not transmitted to our servers, and we cannot see them.
         </p>
         <p>
-          Weigh-ins in the progress tracker are stored in your browser's local storage on the
+          Weigh-ins in the progress tracker are stored in your browser&apos;s local storage on the
           device you used. Clearing site data deletes them. If you create an account and
           choose to save a plan or sync your weigh-ins, that specific data is then stored on
           our server against your account, and you can delete it at any time.

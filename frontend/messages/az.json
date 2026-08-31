@@ -13,7 +13,8 @@
     "openMenu": "Menyu",
     "closeMenu": "Bağla",
     "language": "Dil",
-    "theme": "Rejimi dəyiş"
+    "theme": "Rejimi dəyiş",
+    "home": "Ana səhifə"
   },
   "home": {
     "heroTitle": "Hədəfinizə nə vaxt çata bilərsiniz?",
@@ -173,7 +174,9 @@
     "editorial": "Redaksiya qaydaları",
     "disclaimer": "Tibbi xəbərdarlıq",
     "privacy": "Məxfilik",
-    "contact": "Əlaqə"
+    "contact": "Əlaqə",
+    "terms": "İstifadə şərtləri",
+    "corrections": "Düzəlişlər"
   },
   "footer": {
     "tools": "Alətlər",

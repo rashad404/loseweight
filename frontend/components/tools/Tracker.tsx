@@ -43,13 +43,18 @@ export default function Tracker() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setEntries(JSON.parse(raw));
-    } catch {
-      // A corrupt or unreadable store should not break the page.
-    }
-    setLoaded(true);
+    // Deferred so the first paint matches the server HTML. Reading storage
+    // synchronously here would set state during the initial commit.
+    const id = requestAnimationFrame(() => {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) setEntries(JSON.parse(raw));
+      } catch {
+        // A corrupt or unreadable store should not break the page.
+      }
+      setLoaded(true);
+    });
+    return () => cancelAnimationFrame(id);
   }, []);
 
   useEffect(() => {

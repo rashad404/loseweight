@@ -69,6 +69,18 @@ weight is 800 with tight negative tracking rather than a second display face.
 Design tokens live in `frontend/app/globals.css`. Use the `.t-*` type scale, `.panel`,
 `.band-dark`, `.segment` and `.btn-*` classes rather than ad hoc Tailwind stacks.
 
+## SEO
+
+`.claude/skills/seo/SKILL.md` holds the standing rules. Invoke it before launching new
+pages or a new locale. The parts easiest to break:
+
+- Build every canonical, hreflang and sitemap URL with `localePath()` / `lib/seo.ts`.
+- Policy pages are English-only prose. Non-English versions are `noindex` and excluded
+  from both the sitemap and the hreflang cluster. When one is genuinely translated, add
+  its locale to `translated` in `policyMetadata()`.
+- Only emit `BreadcrumbList` where visible breadcrumbs render. Never add schema for
+  content the page does not show.
+
 ## Content rules
 
 Two documents govern all copy, and both are binding:

@@ -2,10 +2,12 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { localePath } from '@/i18n/routing';
+import { absolute } from '@/lib/seo';
 import { Link } from '@/i18n/navigation';
 import { fetchGuide, fetchGuides } from '@/lib/api/guides';
-import { AlertTriangle, ArrowLeft } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import Newsletter from '@/components/ui/Newsletter';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
 
 export async function generateMetadata({
   params,
@@ -42,6 +44,7 @@ export default async function GuidePage({
   if (!guide) notFound();
 
   const t = await getTranslations({ locale: lang, namespace: 'guides' });
+  const tn = await getTranslations({ locale: lang, namespace: 'nav' });
 
   const related = (await fetchGuides(lang, { perPage: 4 })).filter((g) => g.slug !== slug).slice(0, 3);
 
@@ -80,12 +83,17 @@ export default async function GuidePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <Link href="/guides" className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-brand-800">
-        <ArrowLeft size={15} />
-        {t('backToGuides')}
-      </Link>
+      <Breadcrumbs
+        lang={lang}
+        homeLabel={tn('home')}
+        items={[
+          { label: t('title'), href: '/guides' },
+          ...(guide.category ? [{ label: guide.category.name, href: `/guides?category=${guide.category.slug}` }] : []),
+          { label: guide.title },
+        ]}
+      />
 
-      <article className="mt-6">
+      <article>
         <header>
           {guide.category && (
             <span className="text-xs font-semibold text-brand-800 uppercase tracking-wide">

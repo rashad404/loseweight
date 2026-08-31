@@ -1,12 +1,17 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { localePath } from '@/i18n/routing';
+import { policyMetadata } from '@/lib/seo';
 import { Link } from '@/i18n/navigation';
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
-  const t = await getTranslations({ locale: lang, namespace: 'pages' });
-  return { title: t('about'), alternates: { canonical: localePath(lang, '/about') } };
+
+  return policyMetadata({
+    lang,
+    path: '/about',
+    title: 'About LoseWeight.net',
+    description: 'Who runs LoseWeight.net, why the planner recalculates expenditure every week instead of dividing by a fixed rate, how guides are written per language, and how the site is funded.',
+  });
 }
 
 export default async function AboutPage({ params }: { params: Promise<{ lang: string }> }) {
