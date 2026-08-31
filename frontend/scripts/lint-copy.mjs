@@ -14,6 +14,9 @@ const TARGETS = [
   { dir: 'messages', exts: ['.json'] },
   { dir: '../backend/database/seeders/content', exts: ['.html'] },
   { dir: 'content', exts: ['.md', '.html'] },
+  // Guide titles, excerpts and meta descriptions live in the seeder, not just
+  // in the article bodies. They are reader-facing copy and get checked too.
+  { dir: '../backend/database/seeders', exts: ['.php'] },
 ];
 
 const BANNED_CHARS = [
