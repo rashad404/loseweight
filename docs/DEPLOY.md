@@ -173,6 +173,10 @@ composer install --optimize-autoloader --no-dev
 cd ../frontend
 npm ci
 npm run build
+# Guide pages fetch the API with revalidate: 300, and that cache survives a
+# build. After any content or seeder change, clear it or the site serves the old
+# copy for five minutes and the deploy looks broken.
+rm -rf .next/cache/fetch-cache
 pm2 restart next.loseweight.net
 ```
 
