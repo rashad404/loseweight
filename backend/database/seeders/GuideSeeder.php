@@ -192,14 +192,24 @@ class GuideSeeder extends Seeder
                     'title' => $guide['title'],
                     'excerpt' => $guide['excerpt'],
                     'body' => $body,
-                    'author_name' => 'LoseWeight.net Editorial',
-                    // Deliberately left null: no guide claims clinical review until a
-                    // named clinician has actually signed it off in the admin panel.
-                    'reviewer_name' => null,
-                    'reviewer_credentials' => null,
+                    // Verified facts only, from docs/author.md. Nothing here may
+                    // imply US licensure, board certification, obesity-medicine
+                    // specialization, or independent review.
+                    'author_name' => 'Rashad Mirzayev',
+                    'author_credentials' => 'Medical degree, Azerbaijan Medical University',
+                    'reviewer_name' => 'Rashad Mirzayev',
+                    'reviewer_credentials' => 'Physician educated in Azerbaijan with a professional background in pediatrics',
+                    'review_jurisdiction' => 'Azerbaijan',
+                    'us_licensed' => false,
+                    // Author and reviewer are the same person, so the page must say
+                    // "written and reviewed", never "independently reviewed".
+                    'independent_review' => false,
+                    // Only Rashad can set this, after he actually reviews the article.
                     'reviewed_at' => null,
                     'sources' => $guide['sources'],
-                    'meta_title' => $guide['title'].' | LoseWeight.net',
+                    // The layout's title template appends the brand; storing it here too
+                    // produced "Title | LoseWeight.net | LoseWeight.net".
+                    'meta_title' => $guide['title'],
                     'meta_description' => $guide['meta_description'],
                     'reading_minutes' => Guide::estimateReadingMinutes($body),
                     'status' => 'published',

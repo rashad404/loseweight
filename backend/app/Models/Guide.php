@@ -10,7 +10,9 @@ class Guide extends Model
 {
     protected $fillable = [
         'language', 'guide_category_id', 'slug', 'title', 'excerpt', 'body', 'hero_image',
-        'author_name', 'reviewer_name', 'reviewer_credentials', 'reviewed_at', 'sources',
+        'author_name', 'author_credentials', 'reviewer_name', 'reviewer_credentials',
+        'review_jurisdiction', 'us_licensed', 'independent_review',
+        'reviewed_at', 'last_substantive_update', 'sources',
         'meta_title', 'meta_description', 'reading_minutes', 'status', 'published_at',
     ];
 
@@ -19,6 +21,9 @@ class Guide extends Model
         return [
             'sources' => 'array',
             'reviewed_at' => 'date',
+            'last_substantive_update' => 'date',
+            'us_licensed' => 'boolean',
+            'independent_review' => 'boolean',
             'published_at' => 'datetime',
         ];
     }

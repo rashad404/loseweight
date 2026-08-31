@@ -4,6 +4,10 @@ import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { AlertTriangle, Info } from 'lucide-react';
 import ProjectionChart, { type Series } from './ProjectionChart';
+import PlanActions from './PlanActions';
+import FirstWeeks from './FirstWeeks';
+import ScenarioCompare from './ScenarioCompare';
+import type { SavedPlan } from '@/lib/plan/storage';
 import {
   ACTIVITY_LEVELS, CALORIE_FLOOR, KCAL_PER_KG,
   bmi, bmr, fiberTarget, healthyWeightRange, intakeForRate,
@@ -81,8 +85,35 @@ export default function Planner() {
         return { ...m, week: hit?.week ?? null };
       });
 
+    const startedOn = startDate.toISOString().slice(0, 10);
+
+    // Weekly sample of the projection, so the tracker can draw the planned line
+    // and compare a real weigh-in against the day it was expected on.
+    const savedPlan: SavedPlan = {
+      version: 1,
+      savedAt: new Date().toISOString(),
+      startedOn,
+      sex, age, heightCm,
+      startWeightKg: weightKg,
+      goalWeightKg: goalKg,
+      activityFactor,
+      rateKgPerWeek: rate,
+      units: form.units,
+      maintenance: Math.round(maintenance),
+      intake,
+      deficit: Math.round(maintenance - intake),
+      bmr: Math.round(bmrValue),
+      proteinLow: protein.low,
+      proteinHigh: protein.high,
+      fiber: fiberTarget(intake),
+      weeksToGoal: projection.weeksToGoal,
+      targetDate: targetDate ? targetDate.toISOString().slice(0, 10) : null,
+      projection: projection.points.map((pt) => ({ week: pt.week, weightKg: pt.weightKg })),
+    };
+
     return {
       error: null,
+      savedPlan,
       bmrValue: Math.round(bmrValue),
       maintenance: Math.round(maintenance),
       intake,
@@ -386,6 +417,32 @@ export default function Planner() {
                 </div>
               </div>
             </div>
+
+            <ScenarioCompare
+              input={{
+                sex: form.sex,
+                age: form.age,
+                heightCm: form.heightCm,
+                startWeightKg: form.weightKg,
+                goalWeightKg: form.goalKg,
+                activityFactor: form.activityFactor,
+                maintenance: result.maintenance,
+              }}
+              selectedRate={form.rate}
+              onSelect={(rate) => set('rate', rate)}
+              weeksLabel={(w) => t('weeksToGoal', { weeks: w })}
+            />
+
+            <FirstWeeks
+              plan={result.savedPlan}
+              stepTarget={
+                form.activityFactor <= 1.2 ? 7000 : form.activityFactor <= 1.375 ? 8500 : 10000
+              }
+              weightUnit={wUnit}
+              toDisplayWeight={fmtWeight}
+            />
+
+            <PlanActions plan={result.savedPlan} />
 
             <div className="panel p-5">
               <h2 className="t-h3">{t('assumptionsTitle')}</h2>

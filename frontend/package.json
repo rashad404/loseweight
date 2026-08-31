@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "lint:copy": "node scripts/lint-copy.mjs"
+    "lint:copy": "node scripts/lint-copy.mjs",
+    "test": "node --test --experimental-strip-types \"tests/**/*.test.ts\"",
+    "test:watch": "node --test --watch \"tests/**/*.test.ts\""
   },
   "dependencies": {
     "axios": "^1.20.0",

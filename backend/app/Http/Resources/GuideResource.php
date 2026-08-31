@@ -34,9 +34,14 @@ class GuideResource extends JsonResource
             ]),
             'review' => [
                 'author_name' => $this->author_name,
+                'author_credentials' => $this->author_credentials,
                 'reviewer_name' => $this->reviewer_name,
                 'reviewer_credentials' => $this->reviewer_credentials,
+                'review_jurisdiction' => $this->review_jurisdiction,
+                'us_licensed' => (bool) $this->us_licensed,
+                'independent_review' => (bool) $this->independent_review,
                 'reviewed_at' => $this->reviewed_at?->toDateString(),
+                'last_substantive_update' => $this->last_substantive_update?->toDateString(),
             ],
             $this->mergeWhen($this->withBody, fn () => [
                 'body' => $this->body,

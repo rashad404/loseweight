@@ -12,9 +12,16 @@ export interface GuideSummary {
   category?: { slug: string; name: string };
   review: {
     author_name: string | null;
+    author_credentials: string | null;
     reviewer_name: string | null;
     reviewer_credentials: string | null;
+    review_jurisdiction: string | null;
+    /** Never rendered as true unless the owner has confirmed it. */
+    us_licensed: boolean;
+    /** False when author and reviewer are the same person. */
+    independent_review: boolean;
     reviewed_at: string | null;
+    last_substantive_update: string | null;
   };
 }
 
