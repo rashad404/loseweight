@@ -129,6 +129,7 @@ class GuideSeeder extends Seeder
                 ['title' => 'Wilding JPH et al. Once-weekly semaglutide in adults with overweight or obesity (STEP 1). NEJM, 2021.', 'url' => 'https://pubmed.ncbi.nlm.nih.gov/33567185/'],
                 ['title' => 'Jastreboff AM et al. Tirzepatide once weekly for the treatment of obesity (SURMOUNT-1). NEJM, 2022.', 'url' => 'https://pubmed.ncbi.nlm.nih.gov/35658024/'],
                 ['title' => 'Wilding JPH et al. Weight regain after withdrawal of semaglutide (STEP 1 extension). Diabetes Obes Metab, 2022.', 'url' => 'https://pubmed.ncbi.nlm.nih.gov/35441470/'],
+                ['title' => 'Wilding JPH et al. STEP 1 body composition substudy, reported within the STEP 1 trial publication. NEJM, 2021.', 'url' => 'https://pubmed.ncbi.nlm.nih.gov/33567185/'],
             ],
         ],
         [

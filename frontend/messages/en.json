@@ -17,20 +17,7 @@
     "home": "Home"
   },
   "home": {
-    "heroTitle": "How long will it actually take?",
-    "heroBody": "Enter your age, height, weight, activity level, and goal. You get a calorie range, a week-by-week timeline, and a projection that slows down as you get lighter, the way real weight loss does.",
-    "ctaPrimary": "Build my plan",
-    "ctaSecondary": "Read the guides",
-    "privacyNote": "Your measurements stay in your browser. Nothing is sent to us unless you choose to save a plan.",
-    "whyTitle": "Most calculators give you a date you will miss",
-    "whyBody": "The common approach divides the weight you want to lose by a fixed weekly rate, or uses the old rule that 3,500 calories equals one pound. Both assume your body burns the same energy at 90 kg as it does at 75 kg. It doesn't. As you get lighter, your daily expenditure falls, so the same intake produces a smaller deficit and progress slows.",
-    "whyBody2": "This planner recalculates your expenditure every simulated week and shows you the curve instead of the straight line. You can see the difference between the two estimates on your own numbers.",
-    "toolsTitle": "Tools",
-    "toolsBody": "Each one runs in your browser and shows its working.",
-    "guidesTitle": "Guides",
-    "guidesBody": "Written to be useful on the day you read them, with sources attached to the claims they support.",
     "allGuides": "All guides",
-    "noGuides": "No guides have been published in this language yet.",
     "trustTitle": "How this is built",
     "trustBody": "Calculators run in your browser and no measurement reaches our servers. Guides cite primary sources next to the claims they support, and each one states plainly whether a clinician has reviewed it. Where evidence is uncertain, the page says so.",
     "quickTitle": "How long will it take, realistically?",
@@ -77,9 +64,6 @@
     "units": "Units",
     "metric": "Metric (kg, cm)",
     "imperial": "Imperial (lb, ft)",
-    "calculate": "Calculate my plan",
-    "recalculate": "Update plan",
-    "resultsTitle": "Your plan",
     "dailyCalories": "Daily calories",
     "maintenance": "Maintenance",
     "deficit": "Daily deficit",
@@ -131,16 +115,13 @@
     "scenarioGentle": "Gentler",
     "scenarioStandard": "Standard",
     "scenarioFaster": "Faster",
-    "scenarioCalories": "Daily calories",
     "scenarioDuration": "Roughly",
-    "scenarioTradeoff": "Tradeoff",
     "scenarioGentleTradeoff": "Easiest to sustain and protects muscle best. Slowest, so it needs patience.",
     "scenarioStandardTradeoff": "The usual balance of speed and adherence for most people.",
     "scenarioFasterTradeoff": "Fastest on paper. More hunger, more lean tissue lost, and the hardest to hold through a bad week.",
     "scenarioNotFor": "Less suitable if you train hard, are already lean, or have a history of restrictive eating.",
     "rangeNote": "Shown as a range because the underlying equation is an estimate, not a measurement.",
-    "scenarioCapped": "Capped at the safe limit, so this is the same as Standard",
-    "scenarioEffective": "Actual pace"
+    "scenarioCapped": "Capped at the safe limit, so this is the same as Standard"
   },
   "tracker": {
     "title": "Progress tracker",
@@ -156,7 +137,6 @@
     "trend": "7 day average",
     "current": "Latest",
     "change": "Change",
-    "sinceStart": "since start",
     "delete": "Delete",
     "localOnly": "Your weigh-ins are saved in this browser only. Clearing site data or switching device loses them, so export a backup now and then.",
     "needThreeWeeks": "Add three weeks of weigh-ins to get a reliable read on your rate.",
@@ -178,7 +158,6 @@
     "rate": "Current rate",
     "perWeek": "per week",
     "last7": "Last 7 days",
-    "last30": "Last 30 days",
     "edit": "Edit",
     "cancel": "Cancel",
     "update": "Update",
@@ -188,8 +167,7 @@
     "raw": "Daily weigh-in",
     "goalLine": "Goal",
     "invalidWeight": "Enter a weight between 20 and 500 kg.",
-    "invalidDate": "Pick a date that is not in the future.",
-    "milestoneProgress": "{done} of {total} milestones reached"
+    "invalidDate": "Pick a date that is not in the future."
   },
   "calculators": {
     "title": "Calculators",
@@ -204,7 +182,6 @@
     "proteinDesc": "How much protein protects lean mass in a deficit, and how much fiber fits your intake.",
     "plateau": "Plateau analyzer",
     "plateauDesc": "Check whether a stall is a real plateau or normal fluctuation, and what to change first.",
-    "calculate": "Calculate",
     "formula": "Formula used",
     "yourResult": "Your result",
     "enterWaist": "Waist circumference",
@@ -212,7 +189,6 @@
     "bodyFat": "Body fat % (optional)",
     "bodyFatHelp": "If you know it from a DEXA scan, the calculator uses the Katch-McArdle equation instead, which is more accurate.",
     "weeksFlat": "Weeks with no change in your 7 day average",
-    "startWeightAgo": "Weight when you started",
     "componentsTitle": "Where your calories go",
     "componentBmr": "Resting (BMR)",
     "componentNeat": "Daily movement",
@@ -256,15 +232,12 @@
     "published": "Published {date}",
     "notReviewed": "This guide is written by {name} but has not yet completed his medical accuracy review. It is based on the sources listed at the end. Check anything affecting your treatment with your own doctor.",
     "sources": "Sources",
-    "backToGuides": "All guides",
     "empty": "No guides have been published in this language yet.",
     "emptyNote": "Guides on LoseWeight.net are written separately for each language rather than machine translated, so a guide written in another language will not appear here.",
     "related": "Related guides",
-    "onThisPage": "On this page",
     "byline": "Written by {name}, {credentials}.",
     "reviewedSelf": "Written and reviewed for medical accuracy by {name}, a physician educated at Azerbaijan Medical University with a professional background in pediatrics in Azerbaijan. He is not licensed to practice medicine in the United States.",
-    "updated": "Last substantially updated {date}",
-    "aboutAuthor": "About the author"
+    "updated": "Last substantially updated {date}"
   },
   "newsletter": {
     "title": "Get the practical stuff",
@@ -278,13 +251,6 @@
     "privacy": "We store your address and the page you subscribed from, nothing else. One email per new guide or calculator, unsubscribe in any of them.",
     "noConfirm": "No confirmation email is sent yet, because sending is not set up. You are on the list.",
     "sending": "Subscribing"
-  },
-  "auth": {
-    "signIn": "Sign in",
-    "signOut": "Sign out",
-    "signInWith": "Sign in with Kimlik.az",
-    "account": "Account",
-    "notConfigured": "Sign-in is not configured on this environment yet."
   },
   "pages": {
     "about": "About",
@@ -303,10 +269,7 @@
     "rights": "All rights reserved."
   },
   "common": {
-    "loading": "Loading",
     "error": "Something went wrong.",
-    "retry": "Try again",
-    "optional": "optional",
     "kg": "kg",
     "lb": "lb",
     "cm": "cm",
