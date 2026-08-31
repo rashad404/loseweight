@@ -1,3 +1,5 @@
+import { Link } from '@/i18n/navigation';
+
 export const meta = {
   title: 'Redaksiya qaydaları',
   description:
@@ -45,9 +47,20 @@ export default function EditorialPolicy() {
         asan yoludur.
       </p>
 
+      <h2>Nəyi fərdiləşdiririk, nəyi yox</h2>
+      <p>
+        Planlayıcı və həftəlik plan qida seçimi, porsiyalar, hərəkət və vərdişlərlə bağlı
+        fərdi tövsiyələr verir. Bu, ümumi sağlamlıq tövsiyəsidir, tibbi xidmət deyil. Tam
+        hüdudlar, o cümlədən ümumiyyətlə plan hazırlamadığımız hallar{' '}
+        <Link href="/medical-disclaimer">tibbi xəbərdarlıq</Link> səhifəsindədir.
+      </p>
+
       <h2>Keçmədiyimiz sərhədlər</h2>
       <ul>
-        <li>Fərdi diaqnoz, resept, doza dəyişikliyi və dərman tövsiyəsi yoxdur.</li>
+        <li>Diaqnoz qoymuruq, xəstəlik müalicə etmirik və simptomları diaqnoz kimi şərh etmirik.</li>
+        <li>Dərman və qida əlavəsi tövsiyə etmirik, doza təyin etmirik.</li>
+        <li>Öz həkiminizin tövsiyəsinə zidd heç nə demirik.</li>
+        <li>18 yaşdan kiçiklər, hamiləlik və süd vermə dövrü, habelə qidalanma pozğunluğu olan şəxslər üçün fərdi plan hazırlamırıq.</li>
         <li>Nə qədər və nə sürətlə arıqlayacağınıza dair vəd yoxdur.</li>
         <li>Uydurma xəstə hekayəsi, sitat, statistika və ya diplom yoxdur.</li>
         <li>"Əvvəl və sonra" reklamı, utandırma və qidaya əxlaqi qiymət yoxdur.</li>

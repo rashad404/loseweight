@@ -1,7 +1,9 @@
+import { Link } from '@/i18n/navigation';
+
 export const meta = {
   title: 'Editorial policy',
   description:
-    'How guides are sourced, reviewed, and corrected: primary sources next to the claims they support, honest review status, no personalized medical advice, and clear separation of commercial content.',
+    'How guides are sourced, reviewed, and corrected, what personalized guidance the product does and does not give, and how commercial content is kept separate.',
 };
 
 export default function EditorialPolicy() {
@@ -42,9 +44,21 @@ export default function EditorialPolicy() {
           way to introduce errors nobody catches.
         </p>
 
+        <h2>What the product personalizes, and what it will not</h2>
+        <p>
+          The planner and the weekly plan give personalized guidance about food choices,
+          portions, activity, and habits. That is general wellness guidance, not medical
+          care. The full boundary, including the situations where we decline to generate a
+          plan at all, is set out in the{' '}
+          <Link href="/medical-disclaimer">medical disclaimer</Link>.
+        </p>
+
         <h2>Limits we do not cross</h2>
         <ul>
-          <li>No individual diagnosis, prescription, dosage change, or personalized medication recommendation.</li>
+          <li>No diagnosis, no treatment of disease, and no interpretation of symptoms as a diagnosis.</li>
+          <li>No medication or supplement recommendations, and no dosing for either.</li>
+          <li>Nothing that contradicts advice your own clinician has given you.</li>
+          <li>No personalized plan for anyone under 18, during pregnancy or breastfeeding, or with an active or suspected eating disorder.</li>
           <li>No promises about how much or how fast you will lose weight.</li>
           <li>No fabricated patient stories, quotations, statistics, or credentials.</li>
           <li>No before and after hype, shame, or moral framing about food or body size.</li>

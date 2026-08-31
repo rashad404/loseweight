@@ -1,3 +1,5 @@
+import ScopeStatement from '@/components/ui/ScopeStatement';
+
 export const meta = {
   title: 'Medical disclaimer',
   description:
@@ -7,11 +9,7 @@ export const meta = {
 export default function MedicalDisclaimer() {
   return (
     <>
-<p>
-          LoseWeight.net provides general health information and calculators. It does not
-          provide medical advice, diagnosis, or treatment, and nothing here creates a
-          clinician and patient relationship.
-        </p>
+<ScopeStatement lang="en" />
 
         <h2>Calculators are estimates</h2>
         <p>

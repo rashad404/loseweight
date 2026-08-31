@@ -28,6 +28,16 @@ export default function Terms() {
         tərkib hissəsidir.
       </p>
 
+      <h2>Tövsiyələrin xarakteri</h2>
+      <p>
+        Planlayıcı və həftəlik plan qida, porsiyalar, hərəkət və vərdişlərlə bağlı fərdi
+        tövsiyələr verir. Bu, ümumi sağlamlıq tövsiyəsidir: tibbi xidmət, diaqnoz və ya
+        müalicə deyil. Diaqnoz qoymuruq, xəstəlik müalicə etmirik, dərman və qida əlavəsi
+        tövsiyə edib doza təyin etmirik, həkiminizin sözünə zidd getmirik. 18 yaşdan
+        kiçiklər, hamiləlik və süd vermə dövrü, habelə qidalanma pozğunluğu olan şəxslər
+        üçün fərdi plan hazırlamırıq.
+      </p>
+
       <h2>Sizin məsuliyyətiniz</h2>
       <p>
         Nəticələrlə nə edəcəyinizə siz qərar verirsiniz. Qidalanmanızı, hərəkət rejiminizi

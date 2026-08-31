@@ -1,3 +1,5 @@
+import ScopeStatement from '@/components/ui/ScopeStatement';
+
 export const meta = {
   title: 'Медицинская оговорка',
   description:
@@ -7,11 +9,7 @@ export const meta = {
 export default function MedicalDisclaimer() {
   return (
     <>
-      <p>
-        LoseWeight.net предоставляет общую информацию о здоровье и калькуляторы. Здесь нет
-        медицинских рекомендаций, диагноза или назначения лечения, и использование сайта
-        не создаёт отношений врача и пациента.
-      </p>
+      <ScopeStatement lang="ru" />
 
       <h2>Калькуляторы дают оценку</h2>
       <p>

@@ -39,6 +39,21 @@ export default function Privacy() {
           so the sign-in works. We do not receive your password.
         </p>
 
+        <h2>Meal descriptions and AI processing</h2>
+        <p>
+          If you describe how you normally eat, that text is sent to an AI provider to be
+          turned into a structured list of meals and foods. We ask for your consent before
+          the first time this happens, and you can decline and fill in the same
+          information yourself instead.
+        </p>
+        <p>
+          We send the meal text only. Your name, email, and weigh-ins are not included. The
+          provider processes it to return structured data and we do not permit it to be
+          used for training. Once you have confirmed the interpretation we store the
+          structured result, not the raw text, and you can delete it with the rest of your
+          data.
+        </p>
+
         <h2>Analytics and advertising</h2>
         <p>
           If we add analytics or advertising, this page will say which provider, what it

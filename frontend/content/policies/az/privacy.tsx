@@ -34,6 +34,21 @@ export default function Privacy() {
         dəyişəndə səhifədə yazacağıq.
       </p>
 
+      <h2>Qida təsvirləri və süni intellektlə emal</h2>
+      <p>
+        Adətən necə qidalandığınızı yazsanız, həmin mətn struktur şəklində yemək və məhsul
+        siyahısına çevrilmək üçün süni intellekt provayderinə göndərilir. Bu, ilk dəfə baş
+        verməzdən əvvəl razılığınızı soruşuruq. İmtina edib eyni məlumatı özünüz də daxil
+        edə bilərsiniz.
+      </p>
+      <p>
+        Yalnız qida mətnini göndəririk. Adınız, e-poçtunuz və çəki ölçmələriniz daxil
+        edilmir. Provayder mətni struktur məlumat qaytarmaq üçün emal edir, modelin
+        öyrədilməsində istifadəyə icazə vermirik. Siz nəticəni təsdiqlədikdən sonra biz xam
+        mətni yox, struktur nəticəni saxlayırıq və onu digər məlumatlarınızla birlikdə silə
+        bilərsiniz.
+      </p>
+
       <h2>Analitika və reklam</h2>
       <p>
         Analitika və ya reklam əlavə etsək, bu səhifədə hansı xidmət olduğunu, nə

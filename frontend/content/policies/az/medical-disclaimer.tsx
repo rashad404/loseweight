@@ -1,3 +1,5 @@
+import ScopeStatement from '@/components/ui/ScopeStatement';
+
 export const meta = {
   title: 'Tibbi xəbərdarlıq',
   description:
@@ -7,11 +9,7 @@ export const meta = {
 export default function MedicalDisclaimer() {
   return (
     <>
-      <p>
-        LoseWeight.net ümumi sağlamlıq məlumatı və hesablama alətləri təqdim edir. Burada
-        tibbi məsləhət, diaqnoz və ya müalicə təyinatı yoxdur, saytdan istifadə həkim-xəstə
-        münasibəti yaratmır.
-      </p>
+      <ScopeStatement lang="az" />
 
       <h2>Kalkulyatorlar təxmindir</h2>
       <p>

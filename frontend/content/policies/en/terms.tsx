@@ -27,6 +27,16 @@ export default function Terms() {
           these terms.
         </p>
 
+        <h2>What the guidance is</h2>
+        <p>
+          The planner and weekly plan give personalized guidance about food, portions,
+          activity, and habits. That is general wellness guidance, not medical care,
+          diagnosis, or treatment. We do not diagnose, treat disease, recommend or dose
+          medications or supplements, or contradict your own clinician, and we will not
+          generate a personalized plan for anyone under 18, during pregnancy or
+          breastfeeding, or with an active or suspected eating disorder.
+        </p>
+
         <h2>Your responsibility</h2>
         <p>
           You decide what to do with the output. Before making changes to how you eat,

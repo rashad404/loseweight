@@ -79,8 +79,16 @@ does not judge voice, only characters.
 - Include publication and medical review dates.
 - Identify the author and reviewer honestly, including jurisdiction and licensing
   limitations.
-- Do not provide an individual diagnosis, prescription, dosage change, or personalized
-  medication recommendation.
+- **Personalized nutrition, portion, activity and behaviour guidance is in scope.** The
+  product exists to give it. What follows are the limits on that, not a ban on it.
+- Do not provide an individual diagnosis, treat disease, interpret symptoms as a
+  diagnosis, recommend a medication or supplement, or suggest a dose for either.
+- Do not contradict advice a reader's own clinician has given them, and do not attempt to
+  help with a medical emergency.
+- Do not generate a personalized plan for anyone under 18, during pregnancy or
+  breastfeeding, for an active or suspected eating disorder, or a therapeutic diet for a
+  diagnosed condition without a clinician involved. `frontend/lib/safety/boundaries.ts`
+  enforces this in code; the copy describes it.
 - Explain when a reader should consult a licensed clinician or seek urgent care.
 - Never promise a specific amount or speed of weight loss.
 - Avoid shame, fear, moral judgment, and before-and-after hype.
@@ -109,6 +117,14 @@ Then:
 
 Use AI to assist with research, organization, and editing. Not as the final medical
 authority. Human review is required before publication.
+
+## Where the boundary lives
+
+`frontend/content/policies/scope.ts` holds the canonical scope statement in all three
+languages. Every policy page and the onboarding consent render that same text, so the
+wording cannot drift between them. `frontend/lib/safety/boundaries.ts` holds the
+screening rules and numeric limits. Prose describes those files; it never restates them
+from memory.
 
 ## How this is enforced in the product
 
