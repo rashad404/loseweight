@@ -76,11 +76,11 @@ export default async function GuidesPage({
               className="panel p-5 hover:border-brand-500 transition-colors group flex flex-col"
             >
               {guide.category && (
-                <span className="text-xs font-semibold text-brand-600 uppercase tracking-wide">
+                <span className="text-xs font-semibold text-brand-800 uppercase tracking-wide">
                   {guide.category.name}
                 </span>
               )}
-              <h2 className="mt-1.5 font-semibold leading-snug group-hover:text-brand-600 transition-colors">
+              <h2 className="mt-1.5 font-semibold leading-snug group-hover:text-brand-800 transition-colors">
                 {guide.title}
               </h2>
               <p className="mt-2 text-sm text-muted leading-relaxed line-clamp-3 flex-1">

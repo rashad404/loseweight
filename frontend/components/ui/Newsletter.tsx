@@ -37,7 +37,7 @@ export default function Newsletter({ source = 'site' }: { source?: string }) {
 
       <div className="lg:justify-self-end w-full lg:max-w-md">
         {state === 'done' ? (
-          <p className="font-semibold text-brand-600">{t('success')}</p>
+          <p className="font-semibold text-brand-800">{t('success')}</p>
         ) : (
           <form onSubmit={submit} className="flex flex-col sm:flex-row gap-2.5">
             <input

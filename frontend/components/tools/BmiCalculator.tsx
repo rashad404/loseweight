@@ -69,7 +69,7 @@ export default function BmiCalculator() {
             {t('yourResult')}
           </div>
           <div className="mt-1.5 flex items-baseline gap-3 flex-wrap">
-            <span className="text-4xl font-bold text-brand-600">{value.toFixed(1)}</span>
+            <span className="text-4xl font-bold text-brand-800">{value.toFixed(1)}</span>
             <span className="text-lg font-semibold">{tb(category)}</span>
           </div>
 

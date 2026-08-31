@@ -15,54 +15,61 @@
 @theme {
   --font-sans: var(--font-geist), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
-  --color-brand-50:  #e9f7f1;
-  --color-brand-100: #cdefe1;
-  --color-brand-200: #9adfc4;
-  --color-brand-300: #5fc9a1;
-  --color-brand-400: #2bae81;
-  --color-brand-500: #16a374;
-  --color-brand-600: #0e7a57;
-  --color-brand-700: #0a5c43;
-  --color-brand-800: #094735;
-  --color-brand-900: #08382b;
+  /* Brand palette taken from the logo. Mint #0bd3bf and violet #6353e9 are
+     the exact logo colors. The darker steps exist because mint only reaches
+     1.8:1 against the page background, so it works as a fill but never as text. */
+  --color-brand-50:  #e6fbf8;
+  --color-brand-100: #c5f5ef;
+  --color-brand-200: #8eebe0;
+  --color-brand-300: #4fdfcf;
+  --color-brand-400: #17d7c3;
+  --color-brand-500: #0bd3bf;
+  --color-brand-600: #09ad9d;
+  --color-brand-700: #0a8d80;
+  --color-brand-800: #0a7469;
+  --color-brand-900: #0b5a53;
 
-  --color-lime: #d8f26b;
-  --color-clay: #d8734a;
+  --color-violet-300: #a99ffc;
+  --color-violet-400: #8b7dfa;
+  --color-violet-500: #6353e9;
+  --color-violet-600: #5341d4;
 
-  --color-ink-50:  #f6f6f3;
-  --color-ink-100: #ecebe6;
-  --color-ink-200: #d9d7ce;
-  --color-ink-300: #b4b1a5;
-  --color-ink-400: #85837a;
-  --color-ink-500: #5f5e58;
-  --color-ink-600: #454540;
-  --color-ink-700: #33332f;
-  --color-ink-800: #1f2320;
-  --color-ink-900: #101613;
+  --color-clay: #b8502a;
+
+  --color-ink-50:  #f6f6f4;
+  --color-ink-100: #ebebe7;
+  --color-ink-200: #d7d8d3;
+  --color-ink-300: #b1b4ae;
+  --color-ink-400: #83888a;
+  --color-ink-500: #5e6469;
+  --color-ink-600: #454c53;
+  --color-ink-700: #333b43;
+  --color-ink-800: #1f272f;
+  --color-ink-900: #131c26;
 }
 
 :root {
   color-scheme: light;
   /* A warm paper white rather than #fff. Pure white plus a card grid is what
      makes a page read as an untouched framework default. */
-  --paper: #fcfbf8;
+  --paper: #fbfcfc;
   --raised: #ffffff;
-  --sunken: #f2f1ea;
-  --text: #101613;
-  --text-muted: #5f5e58;
-  --line: #e4e2d8;
-  --line-strong: #d0cdc0;
+  --sunken: #f1f4f4;
+  --text: #131c26;
+  --text-muted: #5e6469;
+  --line: #e3e8e8;
+  --line-strong: #ccd4d4;
 }
 
 .dark {
   color-scheme: dark;
-  --paper: #0c110f;
-  --raised: #141a17;
-  --sunken: #101613;
-  --text: #eceae2;
-  --text-muted: #9d9f97;
-  --line: #242c27;
-  --line-strong: #35403a;
+  --paper: #0d1319;
+  --raised: #141c24;
+  --sunken: #101821;
+  --text: #e9edee;
+  --text-muted: #97a0a5;
+  --line: #232c35;
+  --line-strong: #35414b;
 }
 
 @layer base {
@@ -81,7 +88,7 @@
     text-rendering: optimizeLegibility;
   }
 
-  ::selection { background: var(--color-lime); color: var(--color-ink-900); }
+  ::selection { background: var(--color-brand-500); color: var(--color-ink-900); }
 
   /* Tailwind 4 drops the browser default cursor on buttons. Anything
      clickable should say so on hover. */
@@ -164,20 +171,23 @@
      It stays dark in both themes on purpose: if it flipped to light under dark
      mode the page would read inverted, with the hero brighter than the body. */
   .band-dark {
-    background: #101613;
-    color: #f6f6f3;
+    background: #131c26;
+    color: #f6f6f4;
   }
   .dark .band-dark {
-    background: #080c0a;
-    border-block: 1px solid #202824;
+    background: #0a1016;
+    border-block: 1px solid #1f2831;
   }
-  .band-dark .text-muted { color: #a8a89f; }
-  .band-dark .t-eyebrow { color: var(--color-brand-400); }
+  .band-dark .text-muted { color: #a3adb3; }
+  .band-dark .t-eyebrow,
+  .band-dark .text-brand-800 { color: var(--color-brand-400); }
+  .band-dark a.text-brand-800:hover { color: var(--color-brand-300); }
+  .band-dark .text-violet-500 { color: var(--color-violet-400); }
   .band-dark .panel {
-    background: rgba(246, 246, 243, 0.05);
-    border-color: rgba(246, 246, 243, 0.13);
+    background: rgba(246, 246, 244, 0.05);
+    border-color: rgba(246, 246, 244, 0.13);
   }
-  .band-dark .border-line { border-color: rgba(246, 246, 243, 0.15); }
+  .band-dark .border-line { border-color: rgba(246, 246, 244, 0.15); }
 
   .rule {
     height: 1px;
@@ -203,17 +213,17 @@
   }
   .btn-lg { font-size: 1.0625rem; padding: 0.9375rem 1.875rem; }
 
-  .btn-primary { background: var(--color-brand-600); color: #fff; }
-  .btn-primary:hover { background: var(--color-brand-700); }
+  .btn-primary { background: var(--color-brand-800); color: #fff; }
+  .btn-primary:hover { background: var(--color-brand-900); }
 
-  .btn-lime { background: var(--color-lime); color: var(--color-ink-900); }
-  .btn-lime:hover { background: #cbe956; }
+  .btn-mint { background: var(--color-brand-500); color: var(--color-ink-900); }
+  .btn-mint:hover { background: var(--color-brand-400); }
 
   .btn-ghost { border-color: var(--line-strong); color: var(--text); }
   .btn-ghost:hover { background: var(--sunken); }
 
-  .band-dark .btn-ghost { border-color: rgba(246, 246, 243, 0.32); color: #f6f6f3; }
-  .band-dark .btn-ghost:hover { background: rgba(246, 246, 243, 0.1); }
+  .band-dark .btn-ghost { border-color: rgba(246, 246, 244, 0.32); color: #f6f6f3; }
+  .band-dark .btn-ghost:hover { background: rgba(246, 246, 244, 0.1); }
 
   /* Segmented control, for unit and sex toggles. Reads as one control rather
      than two competing buttons. */
@@ -306,9 +316,9 @@
   .prose-guide ul { list-style: disc; }
   .prose-guide ol { list-style: decimal; }
   .prose-guide li { margin: 0.55rem 0; padding-left: 0.25rem; }
-  .prose-guide li::marker { color: var(--color-brand-500); }
+  .prose-guide li::marker { color: var(--color-brand-700); }
   .prose-guide a {
-    color: var(--color-brand-600);
+    color: var(--color-brand-800);
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 3px;

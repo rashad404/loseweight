@@ -49,7 +49,7 @@ export default function LanguageSwitcher() {
                 router.replace(isGuideDetail ? '/guides' : pathname, { locale: code });
               }}
               className={`w-full text-left px-3 py-2 text-sm hover:sunken transition-colors ${
-                code === locale ? 'text-brand-600 font-semibold' : ''
+                code === locale ? 'text-brand-800 font-semibold' : ''
               }`}
             >
               {localeNames[code]}

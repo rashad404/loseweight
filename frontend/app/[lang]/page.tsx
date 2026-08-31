@@ -37,7 +37,7 @@ export default async function HomePage({
               <p className="t-lead mt-7 max-w-[50ch]">{t('heroBody')}</p>
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <Link href="/planner" className="btn btn-lime btn-lg">
+                <Link href="/planner" className="btn btn-mint btn-lg">
                   {t('ctaPrimary')}
                   <ArrowRight size={19} />
                 </Link>
@@ -63,7 +63,7 @@ export default async function HomePage({
             <p className="text-muted">{t('whyBody2')}</p>
             <Link
               href="/planner"
-              className="inline-flex items-center gap-1.5 font-semibold text-brand-600 hover:gap-2.5 transition-all"
+              className="inline-flex items-center gap-1.5 font-semibold text-brand-800 hover:gap-2.5 transition-all"
             >
               {t('ctaPrimary')}
               <ArrowRight size={17} />
@@ -88,7 +88,7 @@ export default async function HomePage({
                   <span className="t-num text-[0.8125rem] text-muted w-8 shrink-0 pt-1">
                     {String(i + 1).padStart(2, '0')}
                   </span>
-                  <span className="t-h3 sm:w-[19rem] shrink-0 group-hover:text-brand-600 transition-colors">
+                  <span className="t-h3 sm:w-[19rem] shrink-0 group-hover:text-brand-800 transition-colors">
                     {tool.title}
                   </span>
                   <span className="text-[0.9375rem] text-muted max-w-[52ch] leading-relaxed">
@@ -134,7 +134,7 @@ export default async function HomePage({
                   <span className="t-eyebrow">{guide.category.name}</span>
                 )}
                 <h3
-                  className={`mt-2 font-bold tracking-[-0.025em] leading-[1.2] group-hover:text-brand-600 transition-colors ${
+                  className={`mt-2 font-bold tracking-[-0.025em] leading-[1.2] group-hover:text-brand-800 transition-colors ${
                     i === 0 ? 'text-[1.75rem] sm:text-[2.125rem] max-w-[22ch]' : 'text-[1.125rem]'
                   }`}
                 >

@@ -68,17 +68,17 @@ export default async function HeroExample({ lang }: { lang: string }) {
           <line x1="0" y1="66" x2="260" y2="66" stroke="rgba(246,246,243,0.18)" strokeWidth="1" />
           <path
             d={`${path} L 260 76 L 0 76 Z`}
-            fill="rgba(216,242,107,0.10)"
+            fill="rgba(11,211,191,0.12)"
             stroke="none"
           />
-          <path d={path} fill="none" stroke="var(--color-lime)" strokeWidth="2.5"
+          <path d={path} fill="none" stroke="var(--color-brand-500)" strokeWidth="2.5"
             strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </div>
 
       {weeks && (
         <p className="mt-4 text-[0.9375rem]">
-          <span className="t-num text-[1.75rem]" style={{ color: 'var(--color-lime)' }}>
+          <span className="t-num text-[1.75rem]" style={{ color: 'var(--color-brand-500)' }}>
             {weeks}
           </span>
           <span className="ml-2 text-muted">{tc('weeks')}</span>

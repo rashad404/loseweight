@@ -24,7 +24,7 @@ export function ResultCard({
   tone?: 'brand' | 'neutral' | 'warn';
 }) {
   const color =
-    tone === 'brand' ? 'text-brand-600' : tone === 'warn' ? 'text-clay' : '';
+    tone === 'brand' ? 'text-brand-800' : tone === 'warn' ? 'text-clay' : '';
 
   return (
     <div className="panel p-5">

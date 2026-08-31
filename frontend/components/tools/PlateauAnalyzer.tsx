@@ -112,7 +112,7 @@ export default function PlateauAnalyzer() {
           <div className="flex gap-3">
             {analysis.real
               ? <AlertTriangle size={20} className="text-clay shrink-0 mt-0.5" />
-              : <Info size={20} className="text-brand-600 shrink-0 mt-0.5" />}
+              : <Info size={20} className="text-brand-800 shrink-0 mt-0.5" />}
             <div>
               <h2 className="t-h3">
                 {analysis.real ? 'This counts as a plateau' : 'This is probably still normal fluctuation'}

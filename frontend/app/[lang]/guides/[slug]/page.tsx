@@ -80,7 +80,7 @@ export default async function GuidePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <Link href="/guides" className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-brand-600">
+      <Link href="/guides" className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-brand-800">
         <ArrowLeft size={15} />
         {t('backToGuides')}
       </Link>
@@ -88,7 +88,7 @@ export default async function GuidePage({
       <article className="mt-6">
         <header>
           {guide.category && (
-            <span className="text-xs font-semibold text-brand-600 uppercase tracking-wide">
+            <span className="text-xs font-semibold text-brand-800 uppercase tracking-wide">
               {guide.category.name}
             </span>
           )}
@@ -144,7 +144,7 @@ export default async function GuidePage({
                       href={source.url}
                       target="_blank"
                       rel="noopener noreferrer nofollow"
-                      className="text-brand-600 hover:underline"
+                      className="text-brand-800 hover:underline"
                     >
                       {source.title}
                     </a>
@@ -168,7 +168,7 @@ export default async function GuidePage({
                 href={`/guides/${g.slug}`}
                 className="panel p-4 hover:border-brand-500 transition-colors group"
               >
-                <h3 className="text-sm font-semibold leading-snug group-hover:text-brand-600">
+                <h3 className="text-sm font-semibold leading-snug group-hover:text-brand-800">
                   {g.title}
                 </h3>
               </Link>

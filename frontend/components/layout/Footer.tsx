@@ -1,5 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
+import Logo from '@/components/ui/Logo';
 
 export default function Footer() {
   const t = useTranslations();
@@ -39,9 +40,7 @@ export default function Footer() {
       <div className="mx-auto max-w-[1160px] px-5 sm:px-8 py-16">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <div className="text-[1.375rem] font-extrabold tracking-[-0.04em]">
-              loseweight<span className="text-brand-400">.net</span>
-            </div>
+            <Logo height={30} variant="onDark" />
             <p className="mt-3 text-[0.9375rem] text-muted max-w-[26ch] leading-relaxed">
               {t('site.tagline')}
             </p>

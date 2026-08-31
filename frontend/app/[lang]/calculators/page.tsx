@@ -48,7 +48,7 @@ export default async function CalculatorsPage({
               item.featured ? 'sm:col-span-2 lg:col-span-3 border-brand-400' : ''
             }`}
           >
-            <h2 className="font-semibold group-hover:text-brand-600 transition-colors">
+            <h2 className="font-semibold group-hover:text-brand-800 transition-colors">
               {item.title}
             </h2>
             <p className="mt-2 text-sm text-muted leading-relaxed">{item.desc}</p>

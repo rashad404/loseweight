@@ -284,7 +284,7 @@ export default function Planner() {
 
             {result.clamped !== 'none' && (
               <div className="panel p-4 flex gap-3 border-l-4" style={{ borderLeftColor: 'var(--color-brand-500)' }}>
-                <Info size={18} className="text-brand-600 shrink-0 mt-0.5" />
+                <Info size={18} className="text-brand-800 shrink-0 mt-0.5" />
                 <p className="text-sm">
                   {result.clamped === 'floor'
                     ? t('clampedFloor', { floor: CALORIE_FLOOR[form.sex] })
@@ -409,7 +409,7 @@ function Stat({
       <div className="text-[0.6875rem] font-bold uppercase tracking-[0.07em] text-muted">
         {label}
       </div>
-      <div className={`mt-2 t-num ${emphasis ? 'text-[2.125rem] text-brand-600' : 'text-[1.625rem]'}`}>
+      <div className={`mt-2 t-num ${emphasis ? 'text-[2.125rem] text-brand-800' : 'text-[1.625rem]'}`}>
         {value.toLocaleString()}
       </div>
       <div className="text-[0.75rem] text-muted">{unit}</div>

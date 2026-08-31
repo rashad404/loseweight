@@ -44,6 +44,22 @@ Local database is MySQL `loseweight` (root/root). Seed with
 - **No charting library.** `components/tools/ProjectionChart.tsx` is hand-rolled SVG,
   because page weight matters for search traffic.
 
+## Brand
+
+The master logo is `brand/loseweight-logo.png`. Everything in
+`frontend/public/brand/` is derived from it, so regenerate rather than editing
+the derivatives by hand.
+
+Exact logo colors: mint `#0bd3bf`, violet `#6353e9`, ink `#131c26`. The whole
+palette in `globals.css` is built from these. Mint only reaches 1.8:1 against the
+page background, so it is a fill color with dark text on top, never text itself.
+Use `brand-800` (`#0a7469`, 5.5:1) for brand-colored text on light surfaces; a
+rule in `globals.css` automatically swaps it for `brand-400` inside `.band-dark`.
+
+`components/ui/Logo.tsx` renders both light and dark lockups and swaps them with
+CSS, not JavaScript, so there is no flash before the stored theme is read. Pass
+`variant="onDark"` on surfaces that stay dark in both themes, like the footer.
+
 ## Typography and design
 
 Body and display are both Geist, self-hosted via `next/font`. It covers Latin, Latin

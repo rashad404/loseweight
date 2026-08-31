@@ -208,14 +208,14 @@ export default function Tracker() {
               </div>
               <div className="panel p-4 border-brand-500">
                 <div className="text-xs font-semibold text-muted uppercase tracking-wide">{t('trend')}</div>
-                <div className="mt-1.5 text-2xl font-bold text-brand-600">
+                <div className="mt-1.5 text-2xl font-bold text-brand-800">
                   {toW(stats.latestAvg).toFixed(1)}
                   <span className="ml-1 text-sm font-semibold text-muted">{wUnit}</span>
                 </div>
               </div>
               <div className="panel p-4">
                 <div className="text-xs font-semibold text-muted uppercase tracking-wide">{t('change')}</div>
-                <div className={`mt-1.5 text-2xl font-bold ${stats.change < 0 ? 'text-brand-600' : ''}`}>
+                <div className={`mt-1.5 text-2xl font-bold ${stats.change < 0 ? 'text-brand-800' : ''}`}>
                   {stats.change > 0 ? '+' : ''}{toW(stats.change).toFixed(1)}
                   <span className="ml-1 text-sm font-semibold text-muted">{wUnit}</span>
                 </div>

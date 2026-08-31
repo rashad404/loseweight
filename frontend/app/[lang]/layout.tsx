@@ -39,7 +39,21 @@ export async function generateMetadata({
       siteName: t('name'),
       locale: lang,
       type: 'website',
+      images: [{ url: '/brand/og.png', width: 1200, height: 630, alt: t('name') }],
     },
+    twitter: {
+      card: 'summary_large_image',
+      images: ['/brand/og.png'],
+    },
+    icons: {
+      icon: [
+        { url: '/favicon.ico', sizes: '48x48' },
+        { url: '/brand/icon-32.png', type: 'image/png', sizes: '32x32' },
+        { url: '/brand/icon-16.png', type: 'image/png', sizes: '16x16' },
+      ],
+      apple: [{ url: '/brand/apple-touch-icon.png', sizes: '180x180' }],
+    },
+    manifest: '/site.webmanifest',
   };
 }
 

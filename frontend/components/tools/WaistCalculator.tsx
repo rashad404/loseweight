@@ -57,7 +57,7 @@ export default function WaistCalculator() {
             {t('yourResult')}
           </div>
           <div className="mt-1.5 flex items-baseline gap-3 flex-wrap">
-            <span className="text-4xl font-bold text-brand-600">{ratio.toFixed(2)}</span>
+            <span className="text-4xl font-bold text-brand-800">{ratio.toFixed(2)}</span>
             <span className="text-lg font-semibold">{tw(category)}</span>
           </div>
 
