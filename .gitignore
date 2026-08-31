@@ -37,3 +37,8 @@ Thumbs.db
 .idea
 .vscode/*
 !.vscode/extensions.json
+
+# cPanel and Apache generate these inside the checkout on the server
+/backend/error_log
+/backend/public/php.ini
+/backend/public/.user.ini

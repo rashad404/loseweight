@@ -54,7 +54,7 @@
     "sex": "Cins",
     "male": "Kişi",
     "female": "Qadın",
-    "sexNote": "Yalnız maddələr mübadiləsi düsturunda istifadə olunur, çünki düstur kişi və qadın üçün fərqlidir.",
+    "sexNote": "Yalnız maddələr mübadiləsi düsturunda istifadə olunur. Düsturun kişi və qadın bədəni üçün ayrı variantı var. Sizin üçün bunlar fərqlidirsə, kişi variantı adətən daha çox əzələ kütləsinə uyğun gəlir.",
     "age": "Yaş",
     "height": "Boy",
     "currentWeight": "İndiki çəkiniz",
