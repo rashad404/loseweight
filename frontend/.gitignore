@@ -30,8 +30,11 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files. Every variant stays out, including .env.production, which is where
+# a server-side API key would otherwise sit one careless commit from public.
 .env*
+# The example carries no secrets and documents what the app needs.
+!.env.example
 
 # vercel
 .vercel

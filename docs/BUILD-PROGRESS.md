@@ -9,7 +9,7 @@ each step lands. Do not mark a step done until it has been tested, not merely wr
 | 2 | Structured models: user routine, meal, food match, plan change, weekly plan | **done** |
 | 3 | Food provider abstraction | **done**, 11 tests, USDA + 12 curated AZ dishes |
 | 4 | Deterministic change-selection rules | **done**, 17 tests, 7 rules |
-| 5 | Natural-language parsing with correction UI | parsing **done** (22 tests); correction UI next |
+| 5 | Natural-language parsing with correction UI | parsing **done** (18 TS + 15 PHP tests); correction UI next |
 | 6 | Side-by-side original versus modified | not started |
 | 7 | Save accepted changes | not started |
 | 8 | `/today` | not started |
@@ -18,6 +18,10 @@ each step lands. Do not mark a step done until it has been tested, not merely wr
 
 ## Standing constraints
 
+- **AI lives in the Laravel API, never the frontend.** The API owns the key, the
+  durable parse cache and the spend ledger, because a cap held in a Node process
+  resets on restart and is therefore not a cap. The frontend runs the
+  deterministic parser locally, which needs no secret and costs nothing.
 - **Deterministic code owns every number and every safety decision.** AI parses
   language, proposes candidate mappings, and writes explanations. It never sets a
   threshold, never invents a calorie target, and never decides eligibility.

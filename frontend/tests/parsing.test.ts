@@ -1,9 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseRoutineDeterministic, parseCacheKey } from '../lib/ai/parse-routine.ts';
-import {
-  checkSpend, record, resetLedger, usageReport, estimateCost, SPEND_LIMITS, DEFAULT_MODEL,
-} from '../lib/ai/provider.ts';
 
 const slots = (t: string) => parseRoutineDeterministic(t).meals.map((m) => m.slot);
 const items = (t: string, slot: string) =>
@@ -106,65 +103,4 @@ test('a fragment that is only filler is not treated as a food', () => {
 test('the cache key ignores case and spacing but not content', () => {
   assert.equal(parseCacheKey('  Eggs   and toast '), parseCacheKey('eggs and toast'));
   assert.notEqual(parseCacheKey('eggs and toast'), parseCacheKey('eggs and rice'));
-});
-
-/* ------------------------------------------------------------ spend caps -- */
-
-test('cost is estimated from token counts', () => {
-  const c = estimateCost(DEFAULT_MODEL, 1000, 500);
-  assert.ok(c > 0 && c < 0.01, `a small parse should cost fractions of a cent, got ${c}`);
-});
-
-test('a user is cut off at the daily spend cap', () => {
-  resetLedger();
-  assert.equal(checkSpend('u1').allowed, true);
-  record('u1', {
-    feature: 'parse-routine', model: DEFAULT_MODEL, inputTokens: 0, outputTokens: 0,
-    estimatedCost: SPEND_LIMITS.perUserDaily, cached: false,
-  });
-  const d = checkSpend('u1');
-  assert.equal(d.allowed, false);
-  assert.equal(d.allowed === false && d.reason, 'user-daily-spend');
-});
-
-test('a user is cut off at the daily call cap', () => {
-  resetLedger();
-  for (let i = 0; i < SPEND_LIMITS.perUserDailyCalls; i++) {
-    record('u2', {
-      feature: 'parse-routine', model: DEFAULT_MODEL, inputTokens: 1, outputTokens: 1,
-      estimatedCost: 0.000001, cached: false,
-    });
-  }
-  const d = checkSpend('u2');
-  assert.equal(d.allowed, false);
-  assert.equal(d.allowed === false && d.reason, 'user-daily-calls');
-});
-
-test('the service-wide cap stops everyone, not just the heavy user', () => {
-  resetLedger();
-  record('whale', {
-    feature: 'parse-routine', model: DEFAULT_MODEL, inputTokens: 0, outputTokens: 0,
-    estimatedCost: SPEND_LIMITS.serviceDaily, cached: false,
-  });
-  const d = checkSpend('someone-else');
-  assert.equal(d.allowed, false);
-  assert.equal(d.allowed === false && d.reason, 'service-daily-spend');
-});
-
-test('cached responses are not billed', () => {
-  resetLedger();
-  record('u3', {
-    feature: 'parse-routine', model: DEFAULT_MODEL, inputTokens: 999, outputTokens: 999,
-    estimatedCost: 0.05, cached: true,
-  });
-  assert.equal(usageReport().serviceSpend, 0);
-});
-
-test('spend is attributed by feature', () => {
-  resetLedger();
-  record('u4', { feature: 'parse-routine', model: DEFAULT_MODEL, inputTokens: 10, outputTokens: 10, estimatedCost: 0.001, cached: false });
-  record('u4', { feature: 'explain-change', model: DEFAULT_MODEL, inputTokens: 10, outputTokens: 10, estimatedCost: 0.002, cached: false });
-  const r = usageReport();
-  assert.equal(r.byFeature['parse-routine'].calls, 1);
-  assert.ok(r.byFeature['explain-change'].spend > r.byFeature['parse-routine'].spend);
 });

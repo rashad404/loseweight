@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\GuideController;
 use App\Http\Controllers\Api\PlanController;
+use App\Http\Controllers\Api\RoutineParseController;
 use App\Http\Controllers\Api\SubscriberController;
 use App\Http\Controllers\Api\WeightEntryController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,12 @@ Route::prefix('guides')->group(function () {
 
 Route::post('/subscribers', [SubscriberController::class, 'store'])->middleware('throttle:10,1');
 Route::post('/subscribers/{token}/unsubscribe', [SubscriberController::class, 'unsubscribe']);
+
+// Routine parsing. Rate limited on top of the per-user spend cap, because a
+// throttle stops abuse cheaply and the spend cap stops it expensively.
+Route::post('/routine/parse', [RoutineParseController::class, 'store'])
+    ->middleware('throttle:20,1');
+Route::get('/ai/status', [RoutineParseController::class, 'status']);
 
 // Kimlik.az OAuth (PKCE)
 Route::post('/auth/wallet/callback', [AuthController::class, 'walletCallback'])->middleware('throttle:20,1');

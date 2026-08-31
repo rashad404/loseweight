@@ -35,6 +35,15 @@ return [
         ],
     ],
 
+    'anthropic' => [
+        'key' => env('ANTHROPIC_API_KEY'),
+        'model' => env('AI_MODEL'),
+    ],
+
+    'usda' => [
+        'key' => env('USDA_API_KEY'),
+    ],
+
     'wallet' => [
         'api_url' => env('WALLET_API_URL', 'https://api.kimlik.az/api'),
         'url' => env('WALLET_URL', 'https://kimlik.az'),

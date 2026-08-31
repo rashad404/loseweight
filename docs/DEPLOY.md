@@ -153,6 +153,25 @@ NEXT_PUBLIC_WALLET_API_URL=https://api.kimlik.az/api
 NEXT_PUBLIC_WALLET_CLIENT_ID=<oauth client id>
 ```
 
+The frontend holds no secrets. AI keys go in `backend/.env`, because the API
+owns the durable cache, the spend ledger and the refusal screen:
+
+```
+ANTHROPIC_API_KEY=<key>
+AI_MODEL=claude-haiku-4-5-20251001
+USDA_API_KEY=<optional>
+```
+
+After changing it, `php artisan config:cache` then reload PHP-FPM. Confirm it
+loaded without printing it:
+
+```bash
+curl -s https://api.loseweight.net/api/ai/status
+```
+
+`ai_parsing` reads `live` once the key is present, and `today` shows spend by
+feature against the caps.
+
 `NEXT_PUBLIC_SITE_URL` feeds `sitemap.xml`, `robots.txt`, and every canonical tag. If it
 is wrong, search engines index the wrong host, so check it before the first deploy.
 

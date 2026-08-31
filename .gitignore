@@ -3,11 +3,13 @@
 /backend/vendor
 /frontend/node_modules
 
-# Environment
+# Environment. Ignore every .env variant, including .env.production, which is
+# where a server-side API key would otherwise sit one careless commit from
+# being public. Only the example files are tracked.
 .env
-.env.local
-.env.*.local
+.env.*
 !.env.example
+!*/.env.example
 
 # Laravel
 /backend/storage/*.key
