@@ -6,9 +6,9 @@ each step lands. Do not mark a step done until it has been tested, not merely wr
 | # | Step | Status |
 | --- | --- | --- |
 | 1 | Update policies and safety boundaries | **done**, 14 safety tests |
-| 2 | Structured models: user routine, meal, food match, plan change, weekly plan | in progress |
-| 3 | Food provider abstraction | not started |
-| 4 | Deterministic change-selection rules | not started |
+| 2 | Structured models: user routine, meal, food match, plan change, weekly plan | **done** |
+| 3 | Food provider abstraction | **done**, 11 tests, USDA + 12 curated AZ dishes |
+| 4 | Deterministic change-selection rules | next |
 | 5 | Natural-language parsing with correction UI | not started |
 | 6 | Side-by-side original versus modified | not started |
 | 7 | Save accepted changes | not started |
