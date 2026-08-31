@@ -31,7 +31,7 @@ export default function PlanActions({ plan }: { plan: SavedPlan }) {
   };
 
   return (
-    <div className="panel p-5 print:hidden">
+    <div className="pt-6 border-t border-line print:hidden">
       <div className="flex flex-wrap items-center gap-2.5">
         <button type="button" onClick={persist} className="btn btn-primary">
           {state === 'saved' && <Check size={16} aria-hidden="true" />}

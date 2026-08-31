@@ -225,7 +225,7 @@ export default function Tracker() {
             </div>
 
             {plan ? (
-              <section className="panel p-5" aria-labelledby="vs-plan">
+              <section className="pt-6 border-t border-line" aria-labelledby="vs-plan">
                 <h2 id="vs-plan" className="t-h3">{t('vsPlan')}</h2>
                 <dl className="mt-4 grid gap-3 sm:grid-cols-3">
                   <div>
@@ -280,7 +280,7 @@ export default function Tracker() {
               }}
             />
 
-            <section className="panel p-5" aria-labelledby="stall">
+            <section className="pt-6 border-t border-line" aria-labelledby="stall">
               <h2 id="stall" className="t-h3">{t('plateauCheck')}</h2>
               <p className="mt-2 text-[0.9375rem] leading-relaxed">{stallText[stall.verdict]}</p>
               <Link href="/calculators/plateau" className="mt-3 inline-block text-[0.875rem] text-brand-800 font-medium hover:underline">
@@ -288,7 +288,7 @@ export default function Tracker() {
               </Link>
             </section>
 
-            <section className="panel p-5" aria-labelledby="entries">
+            <section className="pt-6 border-t border-line" aria-labelledby="entries">
               <h2 id="entries" className="t-h3">{t('entries')}</h2>
               <ul className="mt-4 divide-y" style={{ borderColor: 'var(--line)' }}>
                 {[...progress.points].reverse().map((point) => {

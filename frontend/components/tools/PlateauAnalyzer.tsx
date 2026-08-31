@@ -162,7 +162,7 @@ export default function PlateauAnalyzer() {
         </dl>
       </section>
 
-      <section className="panel p-5" aria-labelledby="context">
+      <section className="pt-6 border-t border-line" aria-labelledby="context">
         <h2 id="context" className="t-h3">{t('contextTitle')}</h2>
         <p className="mt-1.5 text-[0.875rem] text-muted">{t('contextHint')}</p>
 
@@ -186,7 +186,7 @@ export default function PlateauAnalyzer() {
       </section>
 
       {actionable && (
-        <section className="panel p-5" aria-labelledby="steps">
+        <section className="pt-6 border-t border-line" aria-labelledby="steps">
           <h2 id="steps" className="t-h3">{t('whatToCheck')}</h2>
           <ol className="mt-3 space-y-2.5 text-[0.9375rem] list-decimal pl-5 leading-relaxed">
             {steps.map((step) => <li key={step}>{step}</li>)}

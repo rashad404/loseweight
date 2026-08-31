@@ -192,7 +192,7 @@ export default function Planner() {
 
   return (
     <div className="grid gap-6 lg:grid-cols-[380px_1fr] items-start">
-      <div className="panel p-5 lg:sticky lg:top-20">
+      <div className="panel p-5 lg:sticky lg:top-[84px]">
         <h2 className="t-h3">{t('yourDetails')}</h2>
 
         <div className="mt-4 space-y-4">
@@ -315,8 +315,10 @@ export default function Planner() {
               onChange={(e) => set('rate', Number(e.target.value))}
               className="w-full accent-brand-600"
             />
-            <p className="mt-1 text-xs text-muted">
-              {ta('light')} {suggestedRate(bmi(form.weightKg, form.heightCm)).toFixed(2)} {tc('kg')}
+            <p className="mt-1.5 text-xs text-muted">
+              {t('rateSuggested', {
+                rate: `${suggestedRate(bmi(form.weightKg, form.heightCm)).toFixed(2)} ${tc('kg')}`,
+              })}
             </p>
           </div>
         </div>
@@ -402,12 +404,12 @@ export default function Planner() {
                 <h2 className="t-h3">{t('milestonesTitle')}</h2>
                 <ul className="mt-4 space-y-3">
                   {result.milestones.map((m) => (
-                    <li key={m.key} className="flex items-baseline justify-between gap-3 text-sm">
-                      <span>
+                    <li key={m.key} className="flex items-baseline justify-between gap-4 text-sm py-1">
+                      <span className="min-w-0">
                         {t(m.key as 'milestone5')}
-                        <span className="text-muted"> ({fmtWeight(m.weight)} {wUnit})</span>
+                        <span className="text-muted whitespace-nowrap"> ({fmtWeight(m.weight)} {wUnit})</span>
                       </span>
-                      <span className="font-semibold shrink-0">
+                      <span className="font-semibold shrink-0 whitespace-nowrap">
                         {m.week === null ? (
                           <span className="text-muted font-normal">{t('notReached')}</span>
                         ) : (

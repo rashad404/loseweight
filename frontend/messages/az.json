@@ -121,7 +121,8 @@
     "scenarioFasterTradeoff": "Kağız üzərində ən sürətlisi. Aclıq daha çox, əzələ itkisi daha böyük, pis həftədə saxlamaq ən çətindir.",
     "scenarioNotFor": "Ağır idmanla məşğulsunuzsa, artıq arıqsınızsa və ya keçmişdə ciddi qida məhdudiyyəti olubsa, uyğun deyil.",
     "rangeNote": "Aralıq kimi göstərilir, çünki düstur ölçmə deyil, təxmindir.",
-    "scenarioCapped": "Təhlükəsiz həddə məhdudlaşdırılıb, yəni Standart variantla eynidir"
+    "scenarioCapped": "Təhlükəsiz həddə məhdudlaşdırılıb, yəni Standart variantla eynidir",
+    "rateSuggested": "Başlanğıc çəkinizə həftədə təxminən {rate} uyğundur."
   },
   "tracker": {
     "title": "Çəki izləmə",

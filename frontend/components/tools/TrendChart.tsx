@@ -88,7 +88,7 @@ export default function TrendChart({
   ];
 
   return (
-    <section className="panel p-5">
+    <section className="pt-6 border-t border-line">
       <svg
         viewBox={`0 0 ${W} ${H}`}
         className="w-full h-auto"

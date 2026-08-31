@@ -37,7 +37,7 @@ export default function FirstWeeks({
   ];
 
   return (
-    <section className="panel p-5 sm:p-6">
+    <section className="pt-6 border-t border-line">
       <h2 className="t-h3">{t('firstWeek')}</h2>
       <p className="mt-2 text-[0.9375rem] text-muted leading-relaxed max-w-[62ch]">
         {t('firstWeekIntro')}

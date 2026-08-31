@@ -58,7 +58,7 @@ export default function ScenarioCompare({
   const standardIntake = scenarios.find((s) => s.id === 'Standard')?.intake;
 
   return (
-    <section className="panel p-5 sm:p-6">
+    <section className="pt-6 border-t border-line">
       <h2 className="t-h3">{t('scenarios')}</h2>
 
       <div className="mt-4 grid gap-3 md:grid-cols-3">
@@ -70,7 +70,7 @@ export default function ScenarioCompare({
               type="button"
               onClick={() => onSelect(s.rate)}
               aria-pressed={active}
-              className="text-left rounded-xl p-4 transition-colors"
+              className="text-left rounded-xl p-4 transition-colors flex flex-col"
               style={{
                 border: `1px solid ${active ? 'var(--color-brand-500)' : 'var(--line)'}`,
                 borderWidth: active ? 2 : 1,
@@ -93,7 +93,7 @@ export default function ScenarioCompare({
                 {s.weeks ? `${t('scenarioDuration')} ${weeksLabel(s.weeks)}` : t('notReached')}
               </div>
 
-              <p className="mt-3 text-[0.8125rem] leading-relaxed">{s.tradeoff}</p>
+              <p className="mt-3 text-[0.8125rem] leading-relaxed flex-1">{s.tradeoff}</p>
 
               {s.caution && (
                 <p className="mt-2 text-[0.8125rem] leading-relaxed" style={{ color: 'var(--color-clay)' }}>

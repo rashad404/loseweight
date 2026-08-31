@@ -121,7 +121,8 @@
     "scenarioFasterTradeoff": "Fastest on paper. More hunger, more lean tissue lost, and the hardest to hold through a bad week.",
     "scenarioNotFor": "Less suitable if you train hard, are already lean, or have a history of restrictive eating.",
     "rangeNote": "Shown as a range because the underlying equation is an estimate, not a measurement.",
-    "scenarioCapped": "Capped at the safe limit, so this is the same as Standard"
+    "scenarioCapped": "Capped at the safe limit, so this is the same as Standard",
+    "rateSuggested": "Around {rate} a week suits your starting point."
   },
   "tracker": {
     "title": "Progress tracker",
