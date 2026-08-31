@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { localePath } from '@/i18n/routing';
 import { Link } from '@/i18n/navigation';
 import { fetchCategories, fetchGuides } from '@/lib/api/guides';
 import Newsletter from '@/components/ui/Newsletter';
@@ -12,7 +13,7 @@ export async function generateMetadata({
   return {
     title: t('title'),
     description: t('intro'),
-    alternates: { canonical: `/${lang}/guides` },
+    alternates: { canonical: localePath(lang, '/guides') },
   };
 }
 

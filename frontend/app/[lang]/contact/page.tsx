@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { localePath } from '@/i18n/routing';
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
   const t = await getTranslations({ locale: lang, namespace: 'pages' });
-  return { title: t('contact'), alternates: { canonical: `/${lang}/contact` } };
+  return { title: t('contact'), alternates: { canonical: localePath(lang, '/contact') } };
 }
 
 export default async function ContactPage({ params }: { params: Promise<{ lang: string }> }) {

@@ -83,6 +83,18 @@
 
   ::selection { background: var(--color-lime); color: var(--color-ink-900); }
 
+  /* Tailwind 4 drops the browser default cursor on buttons. Anything
+     clickable should say so on hover. */
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  summary,
+  label[for],
+  select {
+    cursor: pointer;
+  }
+
+  button:disabled { cursor: not-allowed; }
+
   :focus-visible {
     outline: 2px solid var(--color-brand-600);
     outline-offset: 2px;

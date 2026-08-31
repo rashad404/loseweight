@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { localePath } from '@/i18n/routing';
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
   const t = await getTranslations({ locale: lang, namespace: 'pages' });
-  return { title: t('privacy'), alternates: { canonical: `/${lang}/privacy` } };
+  return { title: t('privacy'), alternates: { canonical: localePath(lang, '/privacy') } };
 }
 
 export default async function PrivacyPage({ params }: { params: Promise<{ lang: string }> }) {

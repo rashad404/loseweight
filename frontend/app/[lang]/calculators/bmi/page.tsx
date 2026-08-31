@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { localePath } from '@/i18n/routing';
 import BmiCalculator from '@/components/tools/BmiCalculator';
 
 export async function generateMetadata({
@@ -10,7 +11,7 @@ export async function generateMetadata({
   return {
     title: t('bmi'),
     description: t('bmiDesc'),
-    alternates: { canonical: `/${lang}/calculators/bmi` },
+    alternates: { canonical: localePath(lang, '/calculators/bmi') },
   };
 }
 

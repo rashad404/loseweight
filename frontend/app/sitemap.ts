@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { locales } from '@/i18n/routing';
+import { locales, localePath } from '@/i18n/routing';
 import { fetchGuideSitemap } from '@/lib/api/guides';
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://loseweight.net';
@@ -28,13 +28,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const locale of locales) {
     for (const item of STATIC_PATHS) {
       entries.push({
-        url: `${SITE}/${locale}${item.path}`,
+        url: `${SITE}${localePath(locale, item.path)}`,
         lastModified: new Date(),
         changeFrequency: item.changeFrequency,
         priority: item.priority,
         alternates: {
           languages: Object.fromEntries(
-            locales.map((l) => [l, `${SITE}/${l}${item.path}`]),
+            locales.map((l) => [l, `${SITE}${localePath(l, item.path)}`]),
           ),
         },
       });
@@ -45,7 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // hreflang alternates. Advertising alternates that 404 would be worse than none.
   for (const guide of await fetchGuideSitemap()) {
     entries.push({
-      url: `${SITE}/${guide.language}/guides/${guide.slug}`,
+      url: `${SITE}${localePath(guide.language, `/guides/${guide.slug}`)}`,
       lastModified: new Date(guide.updated_at),
       changeFrequency: 'monthly',
       priority: 0.7,

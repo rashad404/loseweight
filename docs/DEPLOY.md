@@ -15,19 +15,37 @@ Mirrors how `satis.az` is set up on the same cPanel server.
 | --- | --- | --- |
 | Frontend docroot | `/home/ugn/satis.az` (proxy only) | `/home/ugn/loseweight.net` |
 | Frontend process | pm2 `next.satis.az` on 127.0.0.1:3034 | pm2 `next.loseweight.net` on 127.0.0.1:3044 |
-| API docroot | `/home/ugn/api.satis.az/public` | `/home/ugn/api.loseweight.net/public` |
+| API docroot | `/home/ugn/api.satis.az/public` | `/home/ugn/loseweight-src/backend/public` |
 | Database | `ugn_satisaz` | `ugn_loseweight` |
 
 The public domain's document root holds nothing but an `.htaccess` that reverse-proxies
 every request to the Next.js process on localhost. Laravel is served normally from the
 API subdomain's `public/` directory.
 
+satisaz is two separate repositories cloned twice. loseweight is a single monorepo cloned
+once to `/home/ugn/loseweight-src`, so the API document root points into it and one
+`git pull` updates backend and frontend together.
+
+Two things cost real time on the first deploy, both worth knowing:
+
+1. **The API subdomain needs PHP 8.4 with PHP-FPM.** Laravel 13 pulls Symfony 8
+   components that require `>= 8.4.1`, enforced by `vendor/composer/platform_check.php`.
+   Setting the version alone is not enough: without an FPM pool the vhost silently falls
+   back to the system default (8.0 on this box) and every request returns the Composer
+   platform error. Set it in MultiPHP Manager with PHP-FPM ticked.
+2. **Changing a document root in cPanel may leave stale vhost blocks.** After repointing
+   `loseweight.net`, `httpd.conf` contained four blocks for it (two with the old
+   `public/` root, matched first) instead of two, producing a 502. WHM's Apache
+   Configuration rebuild, or `/usr/local/cpanel/scripts/rebuildhttpdconf` followed by
+   `apachectl graceful`, regenerates from `/var/cpanel/userdata` and clears them. Back up
+   `httpd.conf` first and diff the other domains' blocks afterward.
+
 ## One-time setup
 
 ### 1. Subdomain and document roots (in WHM/cPanel)
 
 - Create subdomain `api.loseweight.net` with document root
-  `/home/ugn/api.loseweight.net/public`, PHP version `ea-php84`.
+  `/home/ugn/loseweight-src/backend/public`, PHP version `ea-php84`, PHP-FPM enabled.
 - Change `loseweight.net`'s document root from `/home/ugn/loseweight.net/public` to
   `/home/ugn/loseweight.net`. It currently points at a Laravel-style `public/` directory
   left over from an earlier attempt; the Next.js proxy needs the parent.
@@ -70,8 +88,8 @@ su - ugn
 cd /home/ugn
 
 git clone https://github.com/rashad404/loseweight.git loseweight-src
-ln -s /home/ugn/loseweight-src/backend  /home/ugn/api.loseweight.net
-# The frontend lives in the repo; the proxy docroot stays a separate thin directory.
+# api.loseweight.net's document root points straight at
+# /home/ugn/loseweight-src/backend/public. No symlink needed.
 
 cd /home/ugn/loseweight-src/backend
 composer install --optimize-autoloader --no-dev
@@ -93,8 +111,8 @@ pm2 start npm --name next.loseweight.net -- start -- -p 3044
 pm2 save
 ```
 
-If symlinking the backend into the docroot is awkward on this host, clone twice instead
-(as satis.az does) and keep the two checkouts independent.
+The proxy document root `/home/ugn/loseweight.net` stays a thin directory holding only
+`.htaccess` and `.well-known`, exactly like `/home/ugn/satis.az`.
 
 ## Environment
 
@@ -169,8 +187,11 @@ curl -sI https://loseweight.net | head -1
 curl -s https://api.loseweight.net/api/health
 curl -s https://loseweight.net/sitemap.xml | head -5
 curl -s -o /dev/null -w '%{http_code}\n' https://loseweight.net/az/guides
+curl -s -o /dev/null -w '%{http_code}\n' https://loseweight.net/guides/kalori-defisiti
+curl -s -o /dev/null -w '%{http_code} %{redirect_url}\n' https://loseweight.net/en/planner
 ```
 
-The last one should be 200 with Azerbaijani guides listed, and
-`https://loseweight.net/en/guides/kalori-defisiti` should be 404: guides do not cross
-locales.
+`/az/guides` should be 200 with Azerbaijani guides listed. `/guides/kalori-defisiti`
+should be 404, because guides do not cross locales. `/en/planner` should be a 308 to
+`/planner`: English is the default locale and lives at the root, so it carries no prefix,
+and the old prefixed URLs redirect permanently.

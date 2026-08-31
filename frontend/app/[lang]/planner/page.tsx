@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { localePath } from '@/i18n/routing';
 import Planner from '@/components/tools/Planner';
 
 export async function generateMetadata({
@@ -10,7 +11,7 @@ export async function generateMetadata({
   return {
     title: t('title'),
     description: t('intro'),
-    alternates: { canonical: `/${lang}/planner` },
+    alternates: { canonical: localePath(lang, '/planner') },
   };
 }
 

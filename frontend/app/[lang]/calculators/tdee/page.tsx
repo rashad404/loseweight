@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { localePath } from '@/i18n/routing';
 import TdeeCalculator from '@/components/tools/TdeeCalculator';
 
 export async function generateMetadata({
@@ -10,7 +11,7 @@ export async function generateMetadata({
   return {
     title: t('tdee'),
     description: t('tdeeDesc'),
-    alternates: { canonical: `/${lang}/calculators/tdee` },
+    alternates: { canonical: localePath(lang, '/calculators/tdee') },
   };
 }
 

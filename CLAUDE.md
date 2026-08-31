@@ -29,6 +29,11 @@ Local database is MySQL `loseweight` (root/root). Seed with
   metabolic adaptation scaled to weight lost. This is the product's whole differentiator
   against fixed-rate calculators. Changing its constants changes a medical-adjacent
   claim, so read the comments in that file before touching them.
+- **English has no URL prefix.** `localePrefix` is `as-needed`, so English is served
+  from the root (`/planner`) while other locales keep theirs (`/az/planner`). Build every
+  canonical, hreflang and sitemap URL with `localePath()` from `i18n/routing.ts` rather
+  than interpolating `/${lang}`, or English pages will advertise `/en/...` URLs that
+  308 elsewhere.
 - **Guides are per language, never translated.** A guide has one `language` and is
   invisible in other locales rather than falling back. `Guide::scopeInLanguage` and the
   `lang` query parameter enforce this. Interface strings are localized in
@@ -193,3 +198,8 @@ Before publishing any Azerbaijani text:
 * Shorten unnecessarily formal phrases.
 * Confirm that terminology remains consistent across the website.
 * Preserve Azerbaijani characters correctly: ə, ı, ö, ü, ş, ç, and ğ.
+
+
+## git
+- never mention any ai, claude etc
+- use concise 1 sentence commit message

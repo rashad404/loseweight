@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { localePath } from '@/i18n/routing';
 import { Link } from '@/i18n/navigation';
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
   const t = await getTranslations({ locale: lang, namespace: 'pages' });
-  return { title: t('about'), alternates: { canonical: `/${lang}/about` } };
+  return { title: t('about'), alternates: { canonical: localePath(lang, '/about') } };
 }
 
 export default async function AboutPage({ params }: { params: Promise<{ lang: string }> }) {

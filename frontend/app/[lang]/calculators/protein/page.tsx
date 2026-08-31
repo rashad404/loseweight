@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { localePath } from '@/i18n/routing';
 import ProteinCalculator from '@/components/tools/ProteinCalculator';
 
 export async function generateMetadata({
@@ -10,7 +11,7 @@ export async function generateMetadata({
   return {
     title: t('protein'),
     description: t('proteinDesc'),
-    alternates: { canonical: `/${lang}/calculators/protein` },
+    alternates: { canonical: localePath(lang, '/calculators/protein') },
   };
 }
 

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { localePath } from '@/i18n/routing';
 import WaistCalculator from '@/components/tools/WaistCalculator';
 
 export async function generateMetadata({
@@ -10,7 +11,7 @@ export async function generateMetadata({
   return {
     title: t('whtr'),
     description: t('whtrDesc'),
-    alternates: { canonical: `/${lang}/calculators/waist-to-height` },
+    alternates: { canonical: localePath(lang, '/calculators/waist-to-height') },
   };
 }
 

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { localePath } from '@/i18n/routing';
 import PlateauAnalyzer from '@/components/tools/PlateauAnalyzer';
 
 export async function generateMetadata({
@@ -10,7 +11,7 @@ export async function generateMetadata({
   return {
     title: t('plateau'),
     description: t('plateauDesc'),
-    alternates: { canonical: `/${lang}/calculators/plateau` },
+    alternates: { canonical: localePath(lang, '/calculators/plateau') },
   };
 }
 

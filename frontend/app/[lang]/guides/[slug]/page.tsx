@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { localePath } from '@/i18n/routing';
 import { Link } from '@/i18n/navigation';
 import { fetchGuide, fetchGuides } from '@/lib/api/guides';
 import { AlertTriangle, ArrowLeft } from 'lucide-react';
@@ -19,7 +20,7 @@ export async function generateMetadata({
   return {
     title: guide.meta_title ?? guide.title,
     description: guide.meta_description ?? guide.excerpt ?? undefined,
-    alternates: { canonical: `/${lang}/guides/${slug}` },
+    alternates: { canonical: localePath(lang, `/guides/${slug}`) },
     openGraph: {
       title: guide.title,
       description: guide.excerpt ?? undefined,

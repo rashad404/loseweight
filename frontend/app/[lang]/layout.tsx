@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { localePath } from '@/i18n/routing';
 import { Geist } from 'next/font/google';
 import { routing } from '@/i18n/routing';
 
@@ -31,8 +32,8 @@ export async function generateMetadata({
     title: { default: `${t('name')}: ${t('tagline')}`, template: `%s | ${t('name')}` },
     description: t('description'),
     alternates: {
-      canonical: `/${lang}`,
-      languages: Object.fromEntries(routing.locales.map((l) => [l, `/${l}`])),
+      canonical: localePath(lang),
+      languages: Object.fromEntries(routing.locales.map((l) => [l, localePath(l)])),
     },
     openGraph: {
       siteName: t('name'),
