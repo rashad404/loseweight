@@ -1,13 +1,13 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { AlertTriangle, Info } from 'lucide-react';
 import ProjectionChart, { type Series } from './ProjectionChart';
 import PlanActions from './PlanActions';
 import FirstWeeks from './FirstWeeks';
 import ScenarioCompare from './ScenarioCompare';
-import type { SavedPlan } from '@/lib/plan/storage';
+import { DRAFT_KEY, type SavedPlan } from '@/lib/plan/storage';
 import {
   ACTIVITY_LEVELS, CALORIE_FLOOR, KCAL_PER_KG,
   bmi, bmr, fiberTarget, healthyWeightRange, intakeForRate,
@@ -44,6 +44,32 @@ export default function Planner() {
   const tc = useTranslations('common');
   const ta = useTranslations('activity');
   const [form, setForm] = useState<Form>(DEFAULTS);
+
+  // Pick up whatever the homepage quick start collected, so the visitor does not
+  // retype the five fields they just filled in.
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      try {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if (!raw) return;
+        const d = JSON.parse(raw) as Partial<Form> & { weightKg?: number; goalKg?: number };
+        setForm((f) => ({
+          ...f,
+          sex: d.sex ?? f.sex,
+          age: d.age ?? f.age,
+          heightCm: d.heightCm ?? f.heightCm,
+          weightKg: d.weightKg ?? f.weightKg,
+          goalKg: d.goalKg ?? f.goalKg,
+          activityFactor: d.activityFactor ?? f.activityFactor,
+          units: d.units ?? f.units,
+          rate: d.rate ?? f.rate,
+        }));
+      } catch {
+        // A malformed draft should never block the planner.
+      }
+    });
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   const set = <K extends keyof Form>(key: K, value: Form[K]) =>
     setForm((f) => ({ ...f, [key]: value }));

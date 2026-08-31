@@ -12,6 +12,7 @@ export default function Header() {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const isHome = pathname === '/';
 
   const links = [
     { href: '/planner', label: t('planner') },
@@ -50,9 +51,13 @@ export default function Header() {
           <div className="flex items-center gap-1">
             <LanguageSwitcher />
             <ThemeToggle />
-            <Link href="/planner" className="btn btn-primary hidden sm:inline-flex ml-2">
-              {t('planner')}
-            </Link>
+            {/* The homepage is the planner, so a header button pointing at it
+                would be a second call to action competing with the form. */}
+            {!isHome && (
+              <Link href="/planner" className="btn btn-primary hidden sm:inline-flex ml-2">
+                {t('planner')}
+              </Link>
+            )}
             <button
               type="button"
               className="md:hidden p-2 rounded-lg hover:sunken ml-1"

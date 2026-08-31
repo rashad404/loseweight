@@ -12,6 +12,12 @@ import type { Units } from '@/lib/health/units';
  */
 export const PLAN_KEY = 'lw_plan_v1';
 export const ENTRIES_KEY = 'lw_entries_v1';
+/**
+ * Inputs handed from the homepage quick start to the full planner. Kept in
+ * storage rather than the URL so body measurements never appear in a query
+ * string, browser history, or a referrer header.
+ */
+export const DRAFT_KEY = 'lw_draft_v1';
 /** The key the first version of the tracker used, before plans existed. */
 const LEGACY_ENTRIES_KEY = 'lw_entries';
 
