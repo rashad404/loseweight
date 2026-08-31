@@ -1,0 +1,325 @@
+/*
+ * Geist is the body face WeightWatchers uses, and unlike Inter it covers Latin,
+ * Latin Extended (for ə, ğ, ş, ı) and Cyrillic, so all three locales get the
+ * same typography. Their display face is Druk Condensed, which is commercially
+ * licensed and has no Cyrillic, so the display voice here comes from Geist at
+ * weight 800 with tight tracking rather than a second family.
+ *
+ * The font itself is self-hosted through next/font in app/[lang]/layout.tsx,
+ * which avoids a render-blocking request to Google on every page load.
+ */
+@import "tailwindcss";
+
+@variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: var(--font-geist), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --color-brand-50:  #e9f7f1;
+  --color-brand-100: #cdefe1;
+  --color-brand-200: #9adfc4;
+  --color-brand-300: #5fc9a1;
+  --color-brand-400: #2bae81;
+  --color-brand-500: #16a374;
+  --color-brand-600: #0e7a57;
+  --color-brand-700: #0a5c43;
+  --color-brand-800: #094735;
+  --color-brand-900: #08382b;
+
+  --color-lime: #d8f26b;
+  --color-clay: #d8734a;
+
+  --color-ink-50:  #f6f6f3;
+  --color-ink-100: #ecebe6;
+  --color-ink-200: #d9d7ce;
+  --color-ink-300: #b4b1a5;
+  --color-ink-400: #85837a;
+  --color-ink-500: #5f5e58;
+  --color-ink-600: #454540;
+  --color-ink-700: #33332f;
+  --color-ink-800: #1f2320;
+  --color-ink-900: #101613;
+}
+
+:root {
+  color-scheme: light;
+  /* A warm paper white rather than #fff. Pure white plus a card grid is what
+     makes a page read as an untouched framework default. */
+  --paper: #fcfbf8;
+  --raised: #ffffff;
+  --sunken: #f2f1ea;
+  --text: #101613;
+  --text-muted: #5f5e58;
+  --line: #e4e2d8;
+  --line-strong: #d0cdc0;
+}
+
+.dark {
+  color-scheme: dark;
+  --paper: #0c110f;
+  --raised: #141a17;
+  --sunken: #101613;
+  --text: #eceae2;
+  --text-muted: #9d9f97;
+  --line: #242c27;
+  --line-strong: #35403a;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection { background: var(--color-lime); color: var(--color-ink-900); }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-600);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* ---- Type scale. Fluid, with real contrast between display and body. ---- */
+  .t-display {
+    font-size: clamp(2.75rem, 7vw, 4.75rem);
+    font-weight: 800;
+    letter-spacing: -0.038em;
+    line-height: 0.98;
+  }
+  .t-h1 {
+    font-size: clamp(2.125rem, 4.5vw, 3.125rem);
+    font-weight: 800;
+    letter-spacing: -0.032em;
+    line-height: 1.06;
+  }
+  .t-h2 {
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -0.024em;
+    line-height: 1.15;
+  }
+  .t-h3 {
+    font-size: 1.1875rem;
+    font-weight: 650;
+    letter-spacing: -0.014em;
+    line-height: 1.3;
+  }
+  .t-lead {
+    font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+    line-height: 1.55;
+    color: var(--text-muted);
+  }
+  .t-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-brand-600);
+  }
+  /* Tabular figures so numbers in results do not jitter as they update. */
+  .t-num {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    font-weight: 800;
+  }
+
+  /* ---- Surfaces. Hairline borders, no drop shadows. ---- */
+  .paper { background: var(--paper); }
+  .raised { background: var(--raised); }
+  .sunken { background: var(--sunken); }
+  .text-muted { color: var(--text-muted); }
+  .border-line { border-color: var(--line); }
+
+  .panel {
+    background: var(--raised);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+  }
+
+  /* A full-bleed dark block used to break the page into bands instead of
+     stacking identical cards down the whole scroll.
+     It stays dark in both themes on purpose: if it flipped to light under dark
+     mode the page would read inverted, with the hero brighter than the body. */
+  .band-dark {
+    background: #101613;
+    color: #f6f6f3;
+  }
+  .dark .band-dark {
+    background: #080c0a;
+    border-block: 1px solid #202824;
+  }
+  .band-dark .text-muted { color: #a8a89f; }
+  .band-dark .t-eyebrow { color: var(--color-brand-400); }
+  .band-dark .panel {
+    background: rgba(246, 246, 243, 0.05);
+    border-color: rgba(246, 246, 243, 0.13);
+  }
+  .band-dark .border-line { border-color: rgba(246, 246, 243, 0.15); }
+
+  .rule {
+    height: 1px;
+    background: var(--line);
+    border: 0;
+  }
+
+  /* ---- Controls ---- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    letter-spacing: -0.01em;
+    padding: 0.6875rem 1.375rem;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    cursor: pointer;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+  .btn-lg { font-size: 1.0625rem; padding: 0.9375rem 1.875rem; }
+
+  .btn-primary { background: var(--color-brand-600); color: #fff; }
+  .btn-primary:hover { background: var(--color-brand-700); }
+
+  .btn-lime { background: var(--color-lime); color: var(--color-ink-900); }
+  .btn-lime:hover { background: #cbe956; }
+
+  .btn-ghost { border-color: var(--line-strong); color: var(--text); }
+  .btn-ghost:hover { background: var(--sunken); }
+
+  .band-dark .btn-ghost { border-color: rgba(246, 246, 243, 0.32); color: #f6f6f3; }
+  .band-dark .btn-ghost:hover { background: rgba(246, 246, 243, 0.1); }
+
+  /* Segmented control, for unit and sex toggles. Reads as one control rather
+     than two competing buttons. */
+  .segment {
+    display: flex;
+    padding: 3px;
+    gap: 3px;
+    background: var(--sunken);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+  }
+  .segment > button {
+    flex: 1;
+    border-radius: 999px;
+    padding: 0.4375rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: background-color 0.15s ease, color 0.15s ease;
+    cursor: pointer;
+  }
+  .segment > button[data-active='true'] {
+    background: var(--raised);
+    color: var(--text);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+  }
+
+  .field-label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.375rem;
+  }
+  .field {
+    width: 100%;
+    border: 1px solid var(--line-strong);
+    border-radius: 10px;
+    padding: 0.625rem 0.8125rem;
+    background: var(--raised);
+    color: var(--text);
+    font-size: 1rem;
+    font-variant-numeric: tabular-nums;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field:focus {
+    border-color: var(--color-brand-500);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand-500) 16%, transparent);
+  }
+  select.field { cursor: pointer; }
+
+  .notice {
+    border-left: 3px solid var(--color-brand-500);
+    background: var(--sunken);
+    border-radius: 0 10px 10px 0;
+    padding: 0.875rem 1rem;
+  }
+  .notice-warn { border-left-color: var(--color-clay); }
+
+  /* ---- Article typography ---- */
+  .prose-guide {
+    color: var(--text);
+    font-size: 1.125rem;
+    line-height: 1.7;
+    /* Caps the measure at a comfortable reading width regardless of container. */
+    max-width: 68ch;
+  }
+  .prose-guide > p { margin: 1.35rem 0; }
+  .prose-guide > p:first-child {
+    font-size: 1.3125rem;
+    line-height: 1.5;
+    color: var(--text);
+    font-weight: 450;
+  }
+  .prose-guide h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    margin: 3rem 0 1rem;
+  }
+  .prose-guide h3 {
+    font-size: 1.1875rem;
+    font-weight: 650;
+    letter-spacing: -0.015em;
+    margin: 2rem 0 0.5rem;
+  }
+  .prose-guide ul, .prose-guide ol { margin: 1.35rem 0; padding-left: 1.4rem; }
+  .prose-guide ul { list-style: disc; }
+  .prose-guide ol { list-style: decimal; }
+  .prose-guide li { margin: 0.55rem 0; padding-left: 0.25rem; }
+  .prose-guide li::marker { color: var(--color-brand-500); }
+  .prose-guide a {
+    color: var(--color-brand-600);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .prose-guide strong { font-weight: 650; }
+  .prose-guide table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.75rem 0;
+    font-size: 1rem;
+  }
+  .prose-guide th, .prose-guide td {
+    border-bottom: 1px solid var(--line);
+    padding: 0.75rem 0.875rem;
+    text-align: left;
+  }
+  .prose-guide th {
+    font-weight: 650;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    border-bottom-color: var(--line-strong);
+  }
+  .prose-guide tbody tr:last-child td { border-bottom: 0; }
+}

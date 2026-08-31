@@ -1,0 +1,39 @@
+# Dependencies
+/node_modules
+/backend/vendor
+/frontend/node_modules
+
+# Environment
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Laravel
+/backend/storage/*.key
+/backend/storage/framework/cache/*
+/backend/storage/framework/sessions/*
+/backend/storage/framework/views/*
+/backend/storage/logs/*
+/backend/bootstrap/cache/*
+/backend/public/storage
+/backend/public/hot
+/backend/.phpunit.result.cache
+/backend/database/*.sqlite
+
+# Next.js
+/frontend/.next
+/frontend/out
+/frontend/build
+/frontend/.vercel
+/frontend/next-env.d.ts
+/frontend/tsconfig.tsbuildinfo
+/frontend/.turbo
+
+# OS and editors
+.DS_Store
+Thumbs.db
+*.swp
+.idea
+.vscode/*
+!.vscode/extensions.json
