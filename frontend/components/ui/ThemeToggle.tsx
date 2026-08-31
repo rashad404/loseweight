@@ -10,9 +10,10 @@ export default function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem('lw_theme');
-    const prefers = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const isDark = stored ? stored === 'dark' : prefers;
+    // Light is the default. Only an explicit stored choice turns on dark, so
+    // this must match the inline script in the layout or the two disagree on
+    // first paint.
+    const isDark = localStorage.getItem('lw_theme') === 'dark';
     document.documentElement.classList.toggle('dark', isDark);
     setDark(isDark);
     setMounted(true);

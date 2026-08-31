@@ -72,10 +72,14 @@ export default async function LocaleLayout({
   return (
     <html lang={lang} className={geist.variable} suppressHydrationWarning>
       <head>
-        {/* Applied before paint so a dark-mode reader never sees a white flash. */}
+        {/* Light is the default for everyone. The OS preference is deliberately
+            not consulted: long-form guides are the SEO engine and read better on
+            light, and it means the design signed off on is the one people see.
+            A visitor who picks dark has it remembered from then on.
+            Applied before paint so returning dark readers see no white flash. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var s=localStorage.getItem('lw_theme');var d=s?s==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark')}catch(e){}})()`,
+            __html: `(function(){try{if(localStorage.getItem('lw_theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}})()`,
           }}
         />
       </head>
