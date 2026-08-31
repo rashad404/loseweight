@@ -22,25 +22,26 @@ const LOCALIZED_PATHS = [
 ];
 
 /**
- * Policy and trust pages. Their bodies are written in English only, so only the
- * English URL is listed. The other locales render the same English text and are
- * marked noindex, and a noindex URL has no business in a sitemap.
+ * Policy pages are now written natively in all three languages, so they carry
+ * full hreflang alternates like any other localized page. Contact is the one
+ * exception: it is still English-only prose.
  */
-const ENGLISH_ONLY_PATHS = [
-  { path: '/about', priority: 0.4 },
-  { path: '/editorial-policy', priority: 0.4 },
-  { path: '/medical-disclaimer', priority: 0.4 },
-  { path: '/corrections', priority: 0.3 },
-  { path: '/privacy', priority: 0.3 },
-  { path: '/terms', priority: 0.3 },
-  { path: '/contact', priority: 0.3 },
+const POLICY_PATHS = [
+  { path: '/about', priority: 0.4, changeFrequency: 'yearly' as const },
+  { path: '/editorial-policy', priority: 0.4, changeFrequency: 'yearly' as const },
+  { path: '/medical-disclaimer', priority: 0.4, changeFrequency: 'yearly' as const },
+  { path: '/corrections', priority: 0.3, changeFrequency: 'yearly' as const },
+  { path: '/privacy', priority: 0.3, changeFrequency: 'yearly' as const },
+  { path: '/terms', priority: 0.3, changeFrequency: 'yearly' as const },
 ];
+
+const ENGLISH_ONLY_PATHS = [{ path: '/contact', priority: 0.3 }];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
   for (const locale of locales) {
-    for (const item of LOCALIZED_PATHS) {
+    for (const item of [...LOCALIZED_PATHS, ...POLICY_PATHS]) {
       entries.push({
         url: `${SITE}${localePath(locale, item.path)}`,
         lastModified: new Date(),

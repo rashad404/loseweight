@@ -1,86 +1,47 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
-import { Link } from '@/i18n/navigation';
 import { policyMetadata } from '@/lib/seo';
+import { POLICY_LOCALES, policyLocale } from '@/content/policies';
+import EnContent, { meta as enMeta } from '@/content/policies/en/corrections';
+import AzContent, { meta as azMeta } from '@/content/policies/az/corrections';
+import RuContent, { meta as ruMeta } from '@/content/policies/ru/corrections';
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+const CONTENT = {
+  en: { Body: EnContent, meta: enMeta },
+  az: { Body: AzContent, meta: azMeta },
+  ru: { Body: RuContent, meta: ruMeta },
+} as const;
+
+const SLUG = 'corrections' as const;
+
+export async function generateMetadata({
+  params,
+}: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
+  const { meta } = CONTENT[policyLocale(SLUG, lang) as keyof typeof CONTENT];
 
   return policyMetadata({
     lang,
-    path: '/corrections',
-    title: 'Corrections policy',
-    description:
-      'How LoseWeight.net handles errors: how to report one, how quickly we act on medical corrections, and how changes are recorded on the page.',
+    path: `/${SLUG}`,
+    title: meta.title,
+    description: meta.description,
+    // Written natively in every locale, so all three are indexable and belong
+    // in the hreflang cluster.
+    translated: POLICY_LOCALES[SLUG],
   });
 }
 
-export default async function CorrectionsPage({ params }: { params: Promise<{ lang: string }> }) {
+export default async function Page({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   setRequestLocale(lang);
 
+  const { Body, meta } = CONTENT[policyLocale(SLUG, lang) as keyof typeof CONTENT];
+
   return (
     <div className="mx-auto max-w-[860px] px-5 sm:px-8 py-14 sm:py-20">
-      <h1 className="t-h1 max-w-[16ch]">Corrections</h1>
-
+      <h1 className="t-h1 max-w-[18ch]">{meta.title}</h1>
       <div className="prose-guide mt-8">
-        <p>
-          Health content that stays wrong does real harm, so corrections get handled
-          before anything else on this site. If you find an error, tell us and we will
-          fix it.
-        </p>
-
-        <h2>How to report an error</h2>
-        <p>
-          Email hello@loseweight.net with the page address, the sentence you think is
-          wrong, and, if you have one, a source that contradicts it. You don&apos;t need
-          to be a clinician to report something, and you don&apos;t need to be certain.
-        </p>
-
-        <h2>What happens next</h2>
-        <ol>
-          <li>
-            We check the claim against the sources cited on the page and against current
-            guidance.
-          </li>
-          <li>
-            If it&apos;s wrong, we correct it. Factual medical errors are fixed ahead of
-            every other kind of work.
-          </li>
-          <li>
-            The page records that it changed and what changed. We don&apos;t quietly edit
-            a claim and leave the original review date in place.
-          </li>
-          <li>
-            If it turns out to be right, we&apos;ll reply explaining why, with the
-            source.
-          </li>
-        </ol>
-
-        <h2>What counts as a correction</h2>
-        <p>
-          A factual error, a citation that doesn&apos;t support the claim attached to it,
-          an out-of-date guideline, a broken calculation, or a translation that changes
-          the meaning. Disagreement about emphasis or interpretation is worth raising too,
-          though the outcome may be a clarification rather than a change.
-        </p>
-
-        <h2>Review status</h2>
-        <p>
-          Every guide states plainly whether a clinician has reviewed it, and guides that
-          have not been reviewed say so at the top rather than implying an endorsement
-          that doesn&apos;t exist. If you spot a page whose stated review status looks
-          wrong, that is itself worth reporting. The standards we hold ourselves to are in
-          the <Link href="/editorial-policy">editorial policy</Link>.
-        </p>
-
-        <h2>What we can&apos;t do</h2>
-        <p>
-          We can&apos;t give personal medical advice, interpret your results, or tell you
-          whether a medication suits you. Those need a clinician with your history. If
-          you&apos;re having a medical emergency, contact your local emergency number
-          rather than emailing us.
-        </p>
+        <Body />
       </div>
     </div>
   );
