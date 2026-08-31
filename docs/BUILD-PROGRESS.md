@@ -36,8 +36,9 @@ each step lands. Do not mark a step done until it has been tested, not merely wr
 
 - `reviewed_at` is null on every guide. Only Rashad can set it.
 - `hello@loseweight.net` must receive mail.
-- No AI provider key is configured, so parsing runs through a deterministic
-  fallback until one exists. Real AI call count is therefore zero so far.
+- AI parsing is live. Measured cost: about $0.0021 per onboarding parse on
+  Haiku, roughly $2.12 per 1000. Misspelled foods parse correctly but will not
+  match a nutrition source, which the correction UI is there to handle.
 - Russian has never had a native review.
 
 ## Decisions already made

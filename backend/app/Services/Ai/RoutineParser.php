@@ -127,13 +127,22 @@ TXT;
                 'whenDescribed' => is_string($m['whenDescribed'] ?? null) ? mb_substr($m['whenDescribed'], 0, 60) : null,
                 'items' => collect($m['items'] ?? [])
                     ->filter(fn ($i) => is_array($i) && is_string($i['text'] ?? null) && mb_strlen(trim($i['text'])) > 1)
-                    ->take(12)
                     ->map(fn ($i) => [
                         'text' => mb_substr($i['text'], 0, 120),
                         'quantity' => is_numeric($i['quantity'] ?? null) ? (float) $i['quantity'] : null,
                         'unit' => is_string($i['unit'] ?? null) ? mb_substr($i['unit'], 0, 20) : null,
                         'household' => is_string($i['household'] ?? null) ? mb_substr($i['household'], 0, 40) : null,
-                    ])->values()->all(),
+                    ])
+                    // A range returned as two items is one food counted twice.
+                    // The prompt asks the model not to do it; this makes sure.
+                    ->groupBy(fn ($i) => mb_strtolower(trim($i['text'])))
+                    ->map(fn ($group) => [
+                        'text' => $group->first()['text'],
+                        'quantity' => $group->pluck('quantity')->filter()->max(),
+                        'unit' => $group->pluck('unit')->filter()->first(),
+                        'household' => $group->pluck('household')->filter()->first(),
+                    ])
+                    ->take(12)->values()->all(),
             ])
             ->filter(fn ($m) => $m['items'] !== [])
             ->take(8)->values()->all();

@@ -157,6 +157,29 @@ class AiSpendTest extends TestCase
         $this->assertStringContainsString('live', $body);
     }
 
+    /**
+     * Regression: the model turned "2-3 cokes a day" into two coke items, one
+     * with quantity 2 and one with 3, which double counted a single drink.
+     */
+    public function test_a_food_repeated_in_one_meal_is_collapsed(): void
+    {
+        $method = new \ReflectionMethod(\App\Services\Ai\RoutineParser::class, 'sanitise');
+        $method->setAccessible(true);
+
+        $result = $method->invoke(null, ['meals' => [[
+            'slot' => 'drink',
+            'items' => [
+                ['text' => 'cokes', 'quantity' => 2, 'unit' => null, 'household' => null],
+                ['text' => 'Cokes', 'quantity' => 3, 'unit' => null, 'household' => '2-3 a day'],
+            ],
+        ]]]);
+
+        $items = $result['meals'][0]['items'];
+        $this->assertCount(1, $items, 'one food counted twice is one food');
+        $this->assertSame(3.0, $items[0]['quantity'], 'keeps the larger stated quantity');
+        $this->assertSame('2-3 a day', $items[0]['household']);
+    }
+
     public function test_an_identical_description_is_served_from_cache(): void
     {
         AiParseCache::create([
