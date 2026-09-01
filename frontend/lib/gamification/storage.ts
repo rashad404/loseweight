@@ -8,6 +8,18 @@ export const GAME_KEY = 'lw_game_v1';
 export const GAME_CHANGED = 'lw:game-changed';
 export const WEEKLY_PLAN_KEY = 'lw_weekly_plan_v1';
 
+export function createLocalId(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') return crypto.randomUUID();
+  if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+    const bytes = crypto.getRandomValues(new Uint8Array(16));
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    const hex = Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+  }
+  return `local-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
 function plannedActions(date: string) {
   if (typeof window === 'undefined') return [];
   try {
@@ -17,7 +29,7 @@ function plannedActions(date: string) {
 }
 
 export function initialState(date = isoDay()): GamificationState {
-  const deviceId = typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : `device-${date}`;
+  const deviceId = typeof window !== 'undefined' ? createLocalId() : `device-${date}`;
   return {
     version: 1, actions: plannedActions(date), quest: buildQuest(new Date(`${date}T12:00:00Z`)), achievements: [],
     preferences: { enabled: true, celebrations: true, landscape: true, mode: 'loss', theme: 'mint' },
