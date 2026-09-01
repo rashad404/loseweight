@@ -97,8 +97,8 @@ export default function TodayDashboard({ locale }: { locale: string }) {
         <section className="game-hero">
           <div className="relative z-10 max-w-xl">
             <p className="t-eyebrow !text-white/70">{c.pace}</p>
-            <h1 className="mt-2 text-4xl sm:text-5xl font-extrabold tracking-[-0.04em] text-white">{doneToday} / {accepted.length} {c.complete}</h1>
-            <p className="mt-3 text-white/75">{feedback}</p>
+            <h1 className="mt-2 text-4xl sm:text-5xl font-extrabold tracking-[-0.04em] text-white">{accepted.length > 0 ? `${doneToday} / ${accepted.length} ${c.complete}` : c.emptyTitle}</h1>
+            <p className="mt-3 text-white/75">{accepted.length > 0 ? feedback : c.emptyBody}</p>
             <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-white/12 px-4 py-2 text-sm text-white"><ShieldCheck size={16} />{state.preferences.mode === 'maintenance' ? c.modes[1] : state.preferences.mode === 'paused' ? c.modes[2] : c.modes[0]}</div>
           </div>
           <ProgressLandscape ratio={accepted.length ? doneToday / accepted.length : 0} enabled={state.preferences.landscape && state.preferences.enabled} />
@@ -134,10 +134,10 @@ export default function TodayDashboard({ locale }: { locale: string }) {
 
         {state.preferences.enabled && state.preferences.celebrations && doneToday === accepted.length && doneToday > 0 && <div className="game-celebration" role="status"><Sparkles size={20} />{feedback}</div>}
 
-        {state.preferences.enabled ? <section className="grid gap-4 lg:grid-cols-[1.15fr_.85fr]">
+        {accepted.length > 0 && (state.preferences.enabled ? <section className="grid gap-4 lg:grid-cols-[1.15fr_.85fr]">
           <div className="game-soft-card flex items-center gap-5"><ProgressRing completed={consistency.completed} planned={consistency.planned} /><div><p className="t-eyebrow">{c.momentum}</p><h2 className="t-h3 mt-2">{consistency.completed} / {consistency.planned} {c.planned}</h2><p className="text-sm text-muted mt-2">{consistency.activeDays} {c.activeDays}</p></div></div>
           <div className="game-quest"><Sparkles size={20} /><div><p className="text-xs uppercase tracking-wider font-bold opacity-70">{c.quest}</p><h2 className="font-bold mt-1">{questChange ? tc(questChange.title, questChange.params) : c.questTitle}</h2><p className="text-sm opacity-75 mt-1">{state.quest.progress} / {state.quest.target} {c.days}</p><div className="game-quest-bar"><span style={{ width: `${state.quest.progress / state.quest.target * 100}%` }} /></div></div></div>
-        </section> : <section className="game-soft-card"><p className="font-semibold">{consistency.completed} / {consistency.planned} {c.planned}</p><p className="text-sm text-muted mt-1">{c.progressOff}</p></section>}
+        </section> : <section className="game-soft-card"><p className="font-semibold">{consistency.completed} / {consistency.planned} {c.planned}</p><p className="text-sm text-muted mt-1">{c.progressOff}</p></section>)}
 
         {plan && <section className="grid gap-4 lg:grid-cols-2">
           {plan.templates.length > 0 && <div className="game-soft-card lg:col-span-2"><h2 className="t-h3">{t('eatTitle')}</h2><p className="text-sm text-muted mt-1">{t('eatIntro')}</p><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mt-4">{plan.templates.map((template) => <div className="sunken rounded-xl p-4" key={template.slot}><p className="field-label">{t(`slot.${template.slot}`)}</p><div className="flex flex-wrap gap-1.5 mt-2">{template.options.map((option) => <span className="text-xs px-2.5 py-1.5 rounded-lg border border-line" key={option}>{option}</span>)}</div></div>)}</div></div>}
