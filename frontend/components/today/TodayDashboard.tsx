@@ -1,96 +1,103 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { Award, Check, ChevronDown, CircleDashed, HeartHandshake, Palette, RefreshCw, ShieldCheck, Sparkles, Trophy } from 'lucide-react';
+import { Award, Check, ChevronDown, CircleDashed, Copy, Heart, HeartHandshake, Palette, RefreshCw, ShieldCheck, Sparkles, Trophy, Upload } from 'lucide-react';
 import ProgressRing from './ProgressRing';
 import ProgressLandscape from './ProgressLandscape';
-import { calculateConsistency, isoDay, specificFeedback } from '@/lib/gamification/engine';
-import { initialState, loadGame, saveGame, transitionAction } from '@/lib/gamification/storage';
+import { calculateConsistency, isoDay } from '@/lib/gamification/engine';
+import { exportGame, importGame, initialState, loadGame, rescheduleAction, saveGame, transitionAction } from '@/lib/gamification/storage';
+import { recordGameEvent } from '@/lib/gamification/analytics';
 import type { ActionState, DailyAction, GamificationState, PlanMode } from '@/lib/gamification/models';
+import { gameCopy, type GameLocale } from './copy';
 
-const achievementCopy = {
-  'first-check': ['First step', 'Completed your first planned action'],
-  'flexible-plan': ['Plan shaper', 'Made the plan easier instead of abandoning it'],
-  'welcome-back': ['Welcome back', 'Returned after time away'],
-  'steady-week': ['Steady week', 'Showed up on five of the last seven days'],
-  'quest-complete': ['Quest complete', 'Repeated one workable change'],
-} as const;
+const achievementIds = ['first-check', 'flexible-plan', 'welcome-back', 'steady-week', 'quest-complete'] as const;
 
-export default function TodayDashboard() {
+export default function TodayDashboard({ locale }: { locale: string }) {
+  const c = gameCopy[(locale in gameCopy ? locale : 'en') as GameLocale];
   const date = isoDay();
   const [state, setState] = useState<GamificationState>(() => initialState(date));
   const [ready, setReady] = useState(false);
   const [tab, setTab] = useState<'today' | 'progress' | 'circle' | 'settings'>('today');
   const [open, setOpen] = useState<string | null>(null);
+  const [syncText, setSyncText] = useState('');
 
   useEffect(() => { const id = requestAnimationFrame(() => { setState(loadGame(date)); setReady(true); }); return () => cancelAnimationFrame(id); }, [date]);
-  const update = (next: GamificationState) => { setState(next); saveGame(next); };
+  const update = (next: GamificationState) => { const saved = saveGame(next); setState(saved ?? next); };
   const today = state.actions.filter((a) => a.date === date).slice(0, 3);
   const doneToday = today.filter((a) => a.state === 'completed' || a.state === 'adjusted').length;
   const consistency = useMemo(() => calculateConsistency(state.actions), [state.actions]);
+  const adjustedToday = today.some((a) => a.state === 'adjusted');
+  const feedback = adjustedToday ? c.feedback[2] : doneToday === today.length && doneToday > 0 ? c.feedback[3] : doneToday > 0 ? `${doneToday} ${c.feedback[1]}` : c.feedback[0];
   const changeAction = (a: DailyAction, next: ActionState, replacement?: string) => {
+    const event = next === 'completed' ? 'action_completed' : next === 'adjusted' ? 'action_adjusted' : next === 'rescheduled' ? 'action_rescheduled' : next === 'skipped_reasonable' ? 'action_skipped_reasonable' : next === 'skipped' ? 'action_skipped' : null;
+    if (event) recordGameEvent(event, { sourceType: a.sourceType, actionState: next, mode: state.preferences.mode });
     update(transitionAction(state, a.id, next, replacement)); setOpen(null);
   };
   const setMode = (mode: PlanMode) => update({ ...state, preferences: { ...state.preferences, mode } });
+  const tomorrow = (() => { const d = new Date(); d.setDate(d.getDate() + 1); return isoDay(d); })();
 
   if (!ready) return <div className="panel min-h-96 animate-pulse sunken" aria-label="Loading today" />;
 
   return (
-    <div className="game-shell">
+    <div className="game-shell" data-game-theme={state.preferences.theme}>
       <nav className="game-tabs" aria-label="Today sections">
-        {([['today', CircleDashed, 'Today'], ['progress', Trophy, 'Progress'], ['circle', HeartHandshake, 'Circle'], ['settings', Palette, 'Settings']] as const).map(([id, Icon, label]) => (
-          <button key={id} data-active={tab === id} onClick={() => setTab(id)}><Icon size={17} />{label}</button>
+        {([['today', CircleDashed], ['progress', Trophy], ['circle', HeartHandshake], ['settings', Palette]] as const).map(([id, Icon], index) => (
+          <button key={id} data-active={tab === id} onClick={() => setTab(id)}><Icon size={17} />{c.tabs[index]}</button>
         ))}
       </nav>
 
       {tab === 'today' && <>
         <section className="game-hero">
           <div className="relative z-10 max-w-xl">
-            <p className="t-eyebrow !text-white/70">Your day, your pace</p>
-            <h1 className="mt-2 text-4xl sm:text-5xl font-extrabold tracking-[-0.04em] text-white">{doneToday} of {today.length} complete</h1>
-            <p className="mt-3 text-white/75">{specificFeedback(state.actions, date)}</p>
+            <p className="t-eyebrow !text-white/70">{c.pace}</p>
+            <h1 className="mt-2 text-4xl sm:text-5xl font-extrabold tracking-[-0.04em] text-white">{doneToday} / {today.length} {c.complete}</h1>
+            <p className="mt-3 text-white/75">{feedback}</p>
             <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-white/12 px-4 py-2 text-sm text-white">
-              <ShieldCheck size={16} /> {state.preferences.mode === 'maintenance' ? 'Maintenance week' : state.preferences.mode === 'paused' ? 'Plan paused' : 'Active weekly plan'}
+              <ShieldCheck size={16} /> {state.preferences.mode === 'maintenance' ? c.modes[1] : state.preferences.mode === 'paused' ? c.modes[2] : c.modes[0]}
             </div>
           </div>
           <ProgressLandscape ratio={today.length ? doneToday / today.length : 0} enabled={state.preferences.landscape && state.preferences.enabled} />
         </section>
 
         {state.preferences.mode === 'paused' ? (
-          <section className="game-soft-card text-center py-12"><RefreshCw className="mx-auto text-violet-500" /><h2 className="t-h2 mt-4">Your plan is paused</h2><p className="text-muted mt-2">Nothing is being counted. Everything you earned is still here.</p><button className="btn btn-primary mt-5" onClick={() => setMode('maintenance')}>Resume in maintenance</button></section>
+          <section className="game-soft-card text-center py-12"><RefreshCw className="mx-auto text-violet-500" /><h2 className="t-h2 mt-4">{c.pausedTitle}</h2><p className="text-muted mt-2">{c.pausedBody}</p><button className="btn btn-primary mt-5" onClick={() => setMode('maintenance')}>{c.resume}</button></section>
         ) : <section className="space-y-3" aria-labelledby="actions-heading">
-          <div className="flex items-end justify-between gap-4"><div><p className="t-eyebrow">Today</p><h2 id="actions-heading" className="t-h2 mt-1">Three things that matter</h2></div><span className="text-sm text-muted">Change any action</span></div>
+          <div className="flex items-end justify-between gap-4"><div><p className="t-eyebrow">{c.today}</p><h2 id="actions-heading" className="t-h2 mt-1">{c.matters}</h2></div><span className="text-sm text-muted">{c.change}</span></div>
           {today.map((action, index) => <article key={action.id} className="game-action" data-state={action.state}>
             <button className="game-check" aria-label={`Mark ${action.title} complete`} onClick={() => changeAction(action, action.state === 'completed' ? 'available' : 'completed')}>
               {action.state === 'completed' || action.state === 'adjusted' ? <Check size={20} /> : <span>{index + 1}</span>}
             </button>
-            <div className="min-w-0 flex-1"><h3 className="font-bold leading-snug">{action.title}</h3><p className="mt-1 text-sm text-muted">{action.rationale}</p><p className="mt-2 text-xs font-semibold text-violet-500">{action.sourceLabel}</p></div>
+            <div className="min-w-0 flex-1"><h3 className="font-bold leading-snug">{action.state === 'adjusted' ? c.actions[index][1] : c.actions[index][0]}</h3><p className="mt-1 text-sm text-muted">{c.actions[index][2]}</p><p className="mt-2 text-xs font-semibold text-violet-500">{c.actions[index][3]}</p></div>
             <button className="game-more" aria-expanded={open === action.id} onClick={() => setOpen(open === action.id ? null : action.id)} aria-label={`Options for ${action.title}`}><ChevronDown size={19} /></button>
             {open === action.id && <div className="game-action-menu">
-              <button onClick={() => changeAction(action, 'adjusted')}>Make easier</button>
-              {action.alternatives.map((alt) => <button key={alt} onClick={() => changeAction(action, 'adjusted', alt)}>Replace: {alt}</button>)}
-              <button onClick={() => changeAction(action, 'rescheduled')}>Move to another day</button>
-              <button onClick={() => changeAction(action, 'skipped_reasonable')}>Does not fit today</button>
-              <button onClick={() => changeAction(action, 'skipped')}>Skip</button>
+              <button onClick={() => changeAction(action, 'adjusted')}>{c.makeEasier}</button>
+              {c.alternatives[index].map((alt) => <button key={alt} onClick={() => changeAction(action, 'adjusted', alt)}>{c.replace}: {alt}</button>)}
+              <button onClick={() => { update(rescheduleAction(state, action.id, tomorrow)); recordGameEvent('action_rescheduled', { sourceType: action.sourceType, actionState: 'rescheduled', mode: state.preferences.mode }); setOpen(null); }}>{c.move}</button>
+              <button onClick={() => changeAction(action, 'skipped_reasonable')}>{c.unsuitable}</button>
+              <button onClick={() => changeAction(action, 'skipped')}>{c.skip}</button>
             </div>}
           </article>)}
         </section>}
 
-        <section className="grid gap-4 lg:grid-cols-[1.15fr_.85fr]">
-          <div className="game-soft-card flex items-center gap-5"><ProgressRing completed={consistency.completed} planned={consistency.planned} /><div><p className="t-eyebrow">Weekly momentum</p><h2 className="t-h3 mt-2">{consistency.completed} of {consistency.planned} planned actions</h2><p className="text-sm text-muted mt-2">Across {consistency.activeDays} active days. Weight never changes this count.</p></div></div>
-          <div className="game-quest"><Sparkles size={20} /><div><p className="text-xs uppercase tracking-wider font-bold opacity-70">Weekly quest</p><h2 className="font-bold mt-1">{state.quest.title}</h2><p className="text-sm opacity-75 mt-1">{state.quest.progress} of {state.quest.target} days</p><div className="game-quest-bar"><span style={{ width: `${state.quest.progress / state.quest.target * 100}%` }} /></div></div></div>
-        </section>
+        {state.preferences.enabled && state.preferences.celebrations && doneToday === today.length && doneToday > 0 && <div className="game-celebration" role="status"><Sparkles size={20} />{feedback}</div>}
+
+        {state.preferences.enabled ? <section className="grid gap-4 lg:grid-cols-[1.15fr_.85fr]">
+          <div className="game-soft-card flex items-center gap-5"><ProgressRing completed={consistency.completed} planned={consistency.planned} /><div><p className="t-eyebrow">{c.momentum}</p><h2 className="t-h3 mt-2">{consistency.completed} / {consistency.planned} {c.planned}</h2><p className="text-sm text-muted mt-2">{consistency.activeDays} {c.activeDays}</p></div></div>
+          <div className="game-quest"><Sparkles size={20} /><div><p className="text-xs uppercase tracking-wider font-bold opacity-70">{c.quest}</p><h2 className="font-bold mt-1">{c.questTitle}</h2><p className="text-sm opacity-75 mt-1">{state.quest.progress} / {state.quest.target} {c.days}</p><div className="game-quest-bar"><span style={{ width: `${state.quest.progress / state.quest.target * 100}%` }} /></div></div></div>
+        </section> : <section className="game-soft-card"><p className="font-semibold">{consistency.completed} / {consistency.planned} {c.planned}</p><p className="text-sm text-muted mt-1">{c.progressOff}</p></section>}
       </>}
 
-      {tab === 'progress' && <section className="space-y-6"><header><p className="t-eyebrow">Your progress</p><h1 className="t-h1 mt-2">What you have built</h1><p className="t-lead mt-3">Actions and flexibility, never body size or speed of loss.</p></header><div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">{Object.entries(achievementCopy).map(([id, copy]) => { const earned = state.achievements.find((a) => a.id === id); return <article key={id} className={`game-achievement ${earned ? '' : 'opacity-45'}`}><Award size={24} /><h2 className="font-bold mt-4">{copy[0]}</h2><p className="text-sm text-muted mt-1">{copy[1]}</p><p className="text-xs mt-4 font-semibold">{earned ? `Earned ${earned.earnedAt.slice(0, 10)}` : 'Still available'}</p></article>; })}</div></section>}
+      {tab === 'progress' && <section className="space-y-6"><header><p className="t-eyebrow">{c.progressEye}</p><h1 className="t-h1 mt-2">{c.progressTitle}</h1><p className="t-lead mt-3">{c.progressBody}</p></header>{!state.preferences.enabled ? <div className="game-soft-card"><p>{c.progressOff}</p></div> : <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">{achievementIds.map((id, index) => { const earned = state.achievements.find((a) => a.id === id); const copy = c.achievements[index]; return <article key={id} className={`game-achievement ${earned ? '' : 'opacity-45'}`}><Award size={24} /><h2 className="font-bold mt-4">{copy[0]}</h2><p className="text-sm text-muted mt-1">{copy[1]}</p><p className="text-xs mt-4 font-semibold">{earned ? `${c.earned} ${earned.earnedAt.slice(0, 10)}` : c.available}</p></article>; })}</div>}</section>}
 
-      {tab === 'circle' && <section className="space-y-6"><header><p className="t-eyebrow">Cooperative, never comparative</p><h1 className="t-h1 mt-2">Your circle</h1><p className="t-lead mt-3">Build a private group around encouragement and shared actions. Weight, calories, and rankings are never shared.</p></header><div className="game-circle"><HeartHandshake size={30} /><h2 className="t-h2 mt-4">Create a private circle</h2><p className="text-muted mt-2 max-w-xl">Invite people you trust, choose a collective consistency goal, and send simple encouragement. This device-local preview is ready for account synchronization.</p><button className="btn btn-primary mt-5">Create circle</button></div></section>}
+      {tab === 'circle' && <section className="space-y-6"><header><p className="t-eyebrow">{c.circleEye}</p><h1 className="t-h1 mt-2">{c.circleTitle}</h1><p className="t-lead mt-3">{c.circleBody}</p></header>{!state.circle ? <div className="game-circle"><HeartHandshake size={30} /><h2 className="t-h2 mt-4">{c.createTitle}</h2><p className="text-muted mt-2 max-w-xl">{c.createBody}</p><button className="btn btn-primary mt-5" onClick={() => { const circle = { id: crypto.randomUUID(), name: c.circleTitle, collectiveTarget: 20, inviteCode: crypto.randomUUID().slice(0, 8).toUpperCase(), members: [{ id: 'me', name: c.today, contribution: consistency.completed, reaction: null }] }; update({ ...state, circle }); recordGameEvent('circle_created', { circleSize: 1 }); }}>{c.create}</button></div> : <div className="game-circle"><div className="flex flex-wrap justify-between gap-4"><div><p className="t-eyebrow">{c.private}</p><h2 className="t-h2 mt-2">{state.circle.name}</h2></div><button className="btn btn-ghost" onClick={() => navigator.clipboard?.writeText(state.circle!.inviteCode)}><Copy size={16} />{state.circle.inviteCode}</button></div><p className="mt-6 text-sm text-muted">{c.collective}</p><p className="t-num text-3xl mt-1">{state.circle.members.reduce((sum, m) => sum + m.contribution, 0)} / {state.circle.collectiveTarget}</p><div className="mt-6 grid gap-3">{state.circle.members.map((member) => <div className="flex items-center justify-between rounded-xl sunken p-4" key={member.id}><div><strong>{member.name}</strong><p className="text-sm text-muted">{member.contribution} {c.shared}</p></div><button className="btn btn-ghost" onClick={() => { const circle = { ...state.circle!, members: state.circle!.members.map((m) => m.id === member.id ? { ...m, reaction: 'heart' as const } : m) }; update({ ...state, circle }); recordGameEvent('encouragement_sent', { circleSize: circle.members.length }); }}><Heart size={16} fill={member.reaction === 'heart' ? 'currentColor' : 'none'} />{c.encourage}</button></div>)}</div></div>}</section>}
 
-      {tab === 'settings' && <section className="space-y-6"><header><p className="t-eyebrow">You are in control</p><h1 className="t-h1 mt-2">Experience settings</h1></header><div className="game-settings">
-        <Setting title="Supportive game layer" body="Turn off rings, quests, achievements, and celebrations. Your plan and tracker continue to work." checked={state.preferences.enabled} onChange={(enabled) => update({ ...state, preferences: { ...state.preferences, enabled } })} />
-        <Setting title="Celebrations" body="Show brief motion for meaningful milestones." checked={state.preferences.celebrations} onChange={(celebrations) => update({ ...state, preferences: { ...state.preferences, celebrations } })} />
-        <Setting title="Evolving landscape" body="Let the Today landscape reflect completed planned actions." checked={state.preferences.landscape} onChange={(landscape) => update({ ...state, preferences: { ...state.preferences, landscape } })} />
-        <div className="p-5"><h2 className="font-bold">Plan mode</h2><p className="text-sm text-muted mt-1">Maintenance and recovery count exactly like an active loss plan.</p><div className="segment mt-4">{(['loss', 'maintenance', 'paused'] as PlanMode[]).map((m) => <button key={m} data-active={state.preferences.mode === m} onClick={() => setMode(m)}>{m}</button>)}</div></div>
+      {tab === 'settings' && <section className="space-y-6"><header><p className="t-eyebrow">{c.control}</p><h1 className="t-h1 mt-2">{c.settings}</h1></header><div className="game-settings">
+        <Setting title={c.game} body={c.gameBody} checked={state.preferences.enabled} onChange={(enabled) => { update({ ...state, preferences: { ...state.preferences, enabled } }); if (!enabled) recordGameEvent('gamification_disabled', { mode: state.preferences.mode }); }} />
+        <Setting title={c.celebrations} body={c.celebrationsBody} checked={state.preferences.celebrations} onChange={(celebrations) => update({ ...state, preferences: { ...state.preferences, celebrations } })} />
+        <Setting title={c.landscape} body={c.landscapeBody} checked={state.preferences.landscape} onChange={(landscape) => update({ ...state, preferences: { ...state.preferences, landscape } })} />
+        <div className="p-5 border-b border-line"><h2 className="font-bold">Theme</h2><div className="segment mt-4">{(['mint', 'violet', 'sunrise'] as const).map((theme) => <button key={theme} data-active={state.preferences.theme === theme} onClick={() => update({ ...state, preferences: { ...state.preferences, theme } })}>{theme}</button>)}</div></div>
+        <div className="p-5"><h2 className="font-bold">{c.planMode}</h2><p className="text-sm text-muted mt-1">{c.planModeBody}</p><div className="segment mt-4">{(['loss', 'maintenance', 'paused'] as PlanMode[]).map((m) => <button key={m} data-active={state.preferences.mode === m} onClick={() => setMode(m)}>{m}</button>)}</div></div>
+        <div className="p-5 border-t border-line"><h2 className="font-bold">{c.sync}</h2><p className="text-sm text-muted mt-1">{c.syncBody}</p><div className="mt-4 flex flex-wrap gap-2"><button className="btn btn-ghost" onClick={() => { const text = exportGame(state); setSyncText(text); navigator.clipboard?.writeText(text); }}><Copy size={16} />{c.copy}</button><button className="btn btn-ghost" onClick={() => { const imported = importGame(syncText); if (imported) update(imported); }}><Upload size={16} />{c.import}</button></div><textarea className="field mt-3 min-h-24 text-xs" value={syncText} onChange={(e) => setSyncText(e.target.value)} aria-label={c.sync} /></div>
       </div></section>}
     </div>
   );

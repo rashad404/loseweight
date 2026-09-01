@@ -5,6 +5,7 @@
     "description": "Pulsuz kalkulyatorlar və elmi mənbələrə əsaslanan məqalələr. Mənbələr və yoxlanma statusu açıq göstərilir. Real müddət, gündəlik kalori norması və həftəlik hədəflər."
   },
   "nav": {
+    "today": "Bu gün",
     "planner": "Plan",
     "tracker": "Çəki izləmə",
     "calculators": "Kalkulyatorlar",

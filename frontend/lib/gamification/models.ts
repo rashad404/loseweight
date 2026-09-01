@@ -36,6 +36,28 @@ export interface GamificationPreferences {
   celebrations: boolean;
   landscape: boolean;
   mode: PlanMode;
+  theme: 'mint' | 'violet' | 'sunrise';
+}
+
+export interface CircleMember {
+  id: string;
+  name: string;
+  contribution: number;
+  reaction: 'heart' | 'clap' | 'support' | null;
+}
+
+export interface SupportCircle {
+  id: string;
+  name: string;
+  collectiveTarget: number;
+  members: CircleMember[];
+  inviteCode: string;
+}
+
+export interface SyncMetadata {
+  deviceId: string;
+  revision: number;
+  updatedAt: string;
 }
 
 export interface GamificationState {
@@ -44,6 +66,8 @@ export interface GamificationState {
   quest: WeeklyQuest;
   achievements: Achievement[];
   preferences: GamificationPreferences;
+  circle: SupportCircle | null;
+  sync: SyncMetadata;
   lastVisit: string | null;
 }
 

@@ -1,0 +1,55 @@
+export const gameCopy = {
+  en: {
+    tabs: ['Today', 'Progress', 'Circle', 'Settings'], pace: 'Your day, your pace', complete: 'complete',
+    modes: ['Active weekly plan', 'Maintenance week', 'Plan paused'], pausedTitle: 'Your plan is paused', pausedBody: 'Nothing is being counted. Everything you earned is still here.', resume: 'Resume in maintenance',
+    today: 'Today', matters: 'Three things that matter', change: 'Change any action', makeEasier: 'Make easier', replace: 'Replace', move: 'Move to tomorrow', unsuitable: 'Does not fit today', skip: 'Skip',
+    momentum: 'Weekly momentum', planned: 'planned actions', activeDays: 'active days. Weight never changes this count.', quest: 'Weekly quest', days: 'days',
+    progressEye: 'Your progress', progressTitle: 'What you have built', progressBody: 'Actions and flexibility, never body size or speed of loss.', progressOff: 'Progress decorations are off. Your action history and plan remain available.', earned: 'Earned', available: 'Still available',
+    circleEye: 'Cooperative, never comparative', circleTitle: 'Your circle', circleBody: 'Build a private group around encouragement and shared actions. Weight, calories, and rankings are never shared.', createTitle: 'Create a private circle', createBody: 'Start a collective consistency goal. Your invite code contains no weight, calories, or health notes.', create: 'Create circle', private: 'Private circle', collective: 'Collective goal', shared: 'shared actions', encourage: 'Encourage',
+    control: 'You are in control', settings: 'Experience settings', game: 'Supportive game layer', gameBody: 'Turn off rings, quests, achievements, and celebrations. Your plan and tracker continue to work.', celebrations: 'Celebrations', celebrationsBody: 'Show brief motion for meaningful milestones.', landscape: 'Evolving landscape', landscapeBody: 'Let the Today landscape reflect completed planned actions.', planMode: 'Plan mode', planModeBody: 'Maintenance and recovery count exactly like an active loss plan.', sync: 'Sync your progress', syncBody: 'Copy a private snapshot or paste one from another device. No meal text or body measurements are included.', copy: 'Copy snapshot', import: 'Import snapshot',
+    actions: [
+      ['Use your planned breakfast change', 'Make one part of breakfast match the plan', 'This comes from the routine and change you accepted.', 'Accepted weekly change'],
+      ['Prepare your planned hunger option', 'Choose the hunger option you would use', 'Planning before hunger makes the choice easier to follow.', 'Accepted weekly change'],
+      ['Check whether today still feels realistic', 'Take a ten-second plan check', 'An unrealistic plan should be adjusted, not silently abandoned.', 'Weekly review'],
+    ],
+    alternatives: [['Use the protein option', 'Use the portion option'], ['Prepare a smaller option', 'Move it to your hungriest time'], ['Keep the plan', 'Make one action easier']],
+    questTitle: 'Use one planned change on three days', feedback: ['Start with the action that feels easiest today.', 'planned actions completed today.', 'You made the plan easier and kept it workable.', 'All planned actions are complete.'],
+    achievements: [['First step', 'Completed your first planned action'], ['Plan shaper', 'Made the plan easier instead of abandoning it'], ['Welcome back', 'Returned after time away'], ['Steady week', 'Showed up on five of the last seven days'], ['Quest complete', 'Repeated one workable change']],
+  },
+  az: {
+    tabs: ['Bu gün', 'Nəticələr', 'Dəstək qrupu', 'Ayarlar'], pace: 'Bu gün, sizin tempiniz', complete: 'tamamlandı',
+    modes: ['Aktiv həftəlik plan', 'Çəkini qoruma həftəsi', 'Plan dayandırılıb'], pausedTitle: 'Planınız dayandırılıb', pausedBody: 'Hazırda heç nə hesablanmır. Əldə etdiyiniz nəticələr qalır.', resume: 'Çəkini qoruma rejimində davam et',
+    today: 'Bu gün', matters: 'Bu gün üçün üç əsas addım', change: 'İstənilən addımı dəyişin', makeEasier: 'Asanlaşdır', replace: 'Əvəz et', move: 'Sabaha keçir', unsuitable: 'Bu gün uyğun deyil', skip: 'Keç',
+    momentum: 'Həftəlik davamlılıq', planned: 'planlaşdırılmış addım', activeDays: 'aktiv gün. Çəkiniz bu göstəriciyə təsir etmir.', quest: 'Həftəlik tapşırıq', days: 'gün',
+    progressEye: 'Nəticələriniz', progressTitle: 'Qurduğunuz vərdişlər', progressBody: 'Addımlar və çeviklik. Bədən ölçüsü və ya arıqlama sürəti deyil.', progressOff: 'Vizual irəliləyiş söndürülüb. Addım tarixçəniz və planınız qalır.', earned: 'Qazanılıb', available: 'Hələ açıqdır',
+    circleEye: 'Müqayisə deyil, qarşılıqlı dəstək', circleTitle: 'Dəstək qrupunuz', circleBody: 'Yaxınlarınızla addımları və dəstəyi paylaşın. Çəki, kalori və sıralama paylaşılmır.', createTitle: 'Şəxsi qrup yaradın', createBody: 'Birgə davamlılıq hədəfi seçin. Dəvət kodunda çəki, kalori və sağlamlıq qeydləri yoxdur.', create: 'Qrup yarat', private: 'Şəxsi qrup', collective: 'Birgə hədəf', shared: 'paylaşılan addım', encourage: 'Dəstək ol',
+    control: 'İdarə sizdədir', settings: 'Təcrübə ayarları', game: 'Dəstəkləyici oyun elementləri', gameBody: 'Dairələri, tapşırıqları, nailiyyətləri və təbrikləri söndürün. Plan və izləmə işləməyə davam edir.', celebrations: 'Təbriklər', celebrationsBody: 'Əhəmiyyətli nəticələr üçün qısa animasiya göstərin.', landscape: 'Dəyişən mənzərə', landscapeBody: 'Mənzərə tamamlanan plan addımlarını əks etdirsin.', planMode: 'Plan rejimi', planModeBody: 'Çəkini qoruma və bərpa dövrü aktiv planla eyni qaydada hesablanır.', sync: 'Nəticələri köçürün', syncBody: 'Şəxsi nüsxəni köçürün və ya digər cihazdan əlavə edin. Yemək mətni və bədən ölçüləri daxil edilmir.', copy: 'Nüsxəni köçür', import: 'Nüsxəni əlavə et',
+    actions: [
+      ['Səhər yeməyi üçün seçdiyiniz dəyişikliyi edin', 'Səhər yeməyinin bir hissəsini plana uyğunlaşdırın', 'Bu addım təsdiqlədiyiniz gündəlik rejim və dəyişiklikdən götürülüb.', 'Təsdiqlənmiş həftəlik dəyişiklik'],
+      ['Aclıq üçün seçdiyiniz variantı hazırlayın', 'Lazım olanda istifadə edəcəyiniz variantı seçin', 'Əvvəlcədən seçim etmək aclıq vaxtı plana əməl etməyi asanlaşdırır.', 'Təsdiqlənmiş həftəlik dəyişiklik'],
+      ['Bugünkü planın real olub-olmadığını yoxlayın', 'Plana qısa nəzər salın', 'Real olmayan planı yarımçıq qoymaq əvəzinə dəyişmək daha düzgündür.', 'Həftəlik baxış'],
+    ],
+    alternatives: [['Proteinli variantı seçin', 'Porsiyanı dəyişin'], ['Daha kiçik variant hazırlayın', 'Ən çox acdığınız vaxta keçirin'], ['Planı saxlayın', 'Bir addımı asanlaşdırın']],
+    questTitle: 'Seçdiyiniz bir dəyişikliyi üç gün edin', feedback: ['Bu gün ən asan görünən addımdan başlayın.', 'planlaşdırılmış addım bu gün tamamlandı.', 'Planı asanlaşdırdınız və onu real saxladınız.', 'Bugünkü bütün addımlar tamamlandı.'],
+    achievements: [['İlk addım', 'İlk plan addımınızı tamamladınız'], ['Planı uyğunlaşdırdınız', 'Planı yarımçıq qoymaq əvəzinə asanlaşdırdınız'], ['Yenidən xoş gəldiniz', 'Fasilədən sonra geri qayıtdınız'], ['Davamlı həftə', 'Son yeddi günün beşində plana baxdınız'], ['Tapşırıq tamamlandı', 'Real bir dəyişikliyi təkrarladınız']],
+  },
+  ru: {
+    tabs: ['Сегодня', 'Прогресс', 'Круг', 'Настройки'], pace: 'Ваш день, ваш темп', complete: 'выполнено',
+    modes: ['Активный недельный план', 'Неделя поддержания', 'План приостановлен'], pausedTitle: 'Ваш план приостановлен', pausedBody: 'Сейчас ничего не учитывается. Весь достигнутый прогресс сохранен.', resume: 'Продолжить в режиме поддержания',
+    today: 'Сегодня', matters: 'Три важных действия', change: 'Любое действие можно изменить', makeEasier: 'Упростить', replace: 'Заменить', move: 'Перенести на завтра', unsuitable: 'Сегодня не подходит', skip: 'Пропустить',
+    momentum: 'Недельная регулярность', planned: 'запланированных действий', activeDays: 'активных дней. Вес не влияет на этот показатель.', quest: 'Задание недели', days: 'дней',
+    progressEye: 'Ваш прогресс', progressTitle: 'Что вы уже создали', progressBody: 'Действия и гибкость, а не размер тела или скорость снижения веса.', progressOff: 'Визуальный прогресс отключен. История действий и план сохранены.', earned: 'Получено', available: 'Еще доступно',
+    circleEye: 'Сотрудничество без сравнения', circleTitle: 'Ваш круг', circleBody: 'Поддерживайте друг друга и выполняйте общие действия. Вес, калории и рейтинги не публикуются.', createTitle: 'Создать закрытый круг', createBody: 'Выберите общую цель регулярности. Код приглашения не содержит вес, калории или медицинские заметки.', create: 'Создать круг', private: 'Закрытый круг', collective: 'Общая цель', shared: 'общих действий', encourage: 'Поддержать',
+    control: 'Все под вашим контролем', settings: 'Настройки опыта', game: 'Поддерживающие игровые элементы', gameBody: 'Отключите кольца, задания, достижения и поздравления. План и трекер продолжат работать.', celebrations: 'Поздравления', celebrationsBody: 'Показывать короткую анимацию для важных результатов.', landscape: 'Развивающийся пейзаж', landscapeBody: 'Пейзаж отражает выполненные действия плана.', planMode: 'Режим плана', planModeBody: 'Поддержание и восстановление учитываются так же, как активный план.', sync: 'Перенос прогресса', syncBody: 'Скопируйте личный снимок или вставьте его с другого устройства. Тексты о еде и параметры тела не включаются.', copy: 'Копировать снимок', import: 'Импортировать снимок',
+    actions: [
+      ['Выполните выбранное изменение завтрака', 'Сделайте одну часть завтрака ближе к плану', 'Это действие основано на распорядке и изменении, которые вы приняли.', 'Принятое недельное изменение'],
+      ['Подготовьте выбранный вариант на случай голода', 'Выберите вариант, который сможете использовать', 'Заранее принятое решение легче выполнить в момент голода.', 'Принятое недельное изменение'],
+      ['Проверьте, реалистичен ли план на сегодня', 'Быстро оцените план', 'Нереалистичный план нужно скорректировать, а не молча бросать.', 'Недельный обзор'],
+    ],
+    alternatives: [['Выберите белковый вариант', 'Измените порцию'], ['Подготовьте меньший вариант', 'Перенесите на самое голодное время'], ['Оставьте план', 'Упростите одно действие']],
+    questTitle: 'Выполните одно выбранное изменение в течение трех дней', feedback: ['Начните с самого простого действия на сегодня.', 'запланированных действий выполнено сегодня.', 'Вы упростили план и сохранили его реалистичным.', 'Все действия на сегодня выполнены.'],
+    achievements: [['Первый шаг', 'Вы выполнили первое действие плана'], ['Гибкий план', 'Вы упростили план вместо того, чтобы отказаться от него'], ['С возвращением', 'Вы вернулись после перерыва'], ['Регулярная неделя', 'Вы были активны пять из последних семи дней'], ['Задание выполнено', 'Вы повторили одно реалистичное изменение']],
+  },
+} as const;
+
+export type GameLocale = keyof typeof gameCopy;

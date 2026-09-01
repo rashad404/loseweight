@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { ArrowRight } from 'lucide-react';
@@ -35,6 +35,12 @@ export default function QuickStart() {
   const [weightKg, setWeightKg] = useState(88);
   const [goalKg, setGoalKg] = useState(72);
   const [activityFactor, setActivityFactor] = useState(1.375);
+  const [calculationStartedAt, setCalculationStartedAt] = useState<number | null>(null);
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setCalculationStartedAt(Date.now()));
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   const isMetric = units === 'metric';
   const wUnit = isMetric ? tc('kg') : tc('lb');
@@ -52,8 +58,8 @@ export default function QuickStart() {
       sex, age, heightCm, startWeightKg: weightKg, goalWeightKg: goalKg, activityFactor, intake,
     });
 
-    const target = projection.weeksToGoal
-      ? new Date(Date.now() + projection.weeksToGoal * 7 * 86_400_000)
+    const target = projection.weeksToGoal && calculationStartedAt
+      ? new Date(calculationStartedAt + projection.weeksToGoal * 7 * 86_400_000)
       : null;
 
     return {
@@ -66,7 +72,7 @@ export default function QuickStart() {
       target,
       points: projection.points,
     };
-  }, [sex, age, heightCm, weightKg, goalKg, activityFactor, goalKg]);
+  }, [sex, age, heightCm, weightKg, goalKg, activityFactor, calculationStartedAt]);
 
   const openPlanner = () => {
     try {

@@ -13,7 +13,7 @@
 @variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: var(--font-geist), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: var(--font-geist-sans), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   /* Brand palette taken from the logo. Mint #0bd3bf and violet #6353e9 are
      the exact logo colors. The darker steps exist because mint only reaches
@@ -122,6 +122,10 @@
 
 @layer components {
   .game-shell { display: grid; gap: 1.5rem; }
+  .game-shell[data-game-theme='violet'] .game-hero { background: radial-gradient(circle at 78% 20%,rgba(169,159,252,.38),transparent 30%),linear-gradient(130deg,#251d46,#5341d4 62%,#8b7dfa); }
+  .game-shell[data-game-theme='sunrise'] .game-hero { background: radial-gradient(circle at 78% 20%,rgba(255,216,131,.48),transparent 30%),linear-gradient(130deg,#352758,#c45e72 62%,#ef9d68); }
+  .game-celebration { display: flex; align-items: center; gap: .65rem; width: fit-content; padding: .75rem 1rem; border-radius: 999px; color: var(--color-violet-600); background: color-mix(in srgb,var(--color-violet-300) 20%,var(--raised)); font-size: .875rem; font-weight: 700; animation: game-pop 420ms ease both; }
+  @keyframes game-pop { from { opacity: 0; transform: translateY(8px) scale(.96); } to { opacity: 1; transform: none; } }
   .game-tabs { display: flex; gap: .4rem; padding: .35rem; width: fit-content; max-width: 100%; overflow-x: auto; background: var(--sunken); border: 1px solid var(--line); border-radius: 999px; }
   .game-tabs button { display: inline-flex; align-items: center; gap: .45rem; white-space: nowrap; padding: .55rem .9rem; border-radius: 999px; color: var(--text-muted); font-size: .84rem; font-weight: 650; transition: 180ms ease; }
   .game-tabs button[data-active='true'] { color: var(--text); background: var(--raised); box-shadow: 0 3px 14px rgba(19,28,38,.08); }

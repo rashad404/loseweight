@@ -5,6 +5,7 @@
     "description": "Free calculators and evidence-based guides with transparent sourcing and review status. Get a realistic timeline, calorie range, and weekly milestones for your goal weight."
   },
   "nav": {
+    "today": "Today",
     "planner": "Planner",
     "tracker": "Tracker",
     "calculators": "Calculators",

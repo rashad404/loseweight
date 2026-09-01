@@ -3,17 +3,10 @@ import { notFound } from 'next/navigation';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { localePath } from '@/i18n/routing';
-import { Geist } from 'next/font/google';
+import { GeistSans } from 'geist/font/sans';
 import { routing } from '@/i18n/routing';
 import { alternatesFor, absolute } from '@/lib/seo';
 
-const geist = Geist({
-  subsets: ['latin', 'latin-ext', 'cyrillic'],
-  // Only the weights actually used. Each extra weight is another font file.
-  weight: ['400', '500', '600', '700', '800'],
-  variable: '--font-geist',
-  display: 'swap',
-});
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import '../globals.css';
@@ -69,7 +62,7 @@ export default async function LocaleLayout({
   setRequestLocale(lang);
 
   return (
-    <html lang={lang} className={geist.variable} suppressHydrationWarning>
+    <html lang={lang} className={GeistSans.variable} suppressHydrationWarning>
       <head>
         {/* Light is the default for everyone. The OS preference is deliberately
             not consulted: long-form guides are the SEO engine and read better on

@@ -15,7 +15,7 @@ export default function Header() {
   const isHome = pathname === '/';
 
   const links = [
-    { href: '/today', label: 'Today' },
+    { href: '/today', label: t('today') },
     { href: '/planner', label: t('planner') },
     { href: '/tracker', label: t('tracker') },
     { href: '/calculators', label: t('calculators') },

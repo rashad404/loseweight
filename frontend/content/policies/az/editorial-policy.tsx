@@ -36,7 +36,7 @@ export default function EditorialPolicy() {
       </p>
       <p>
         Müəllif və yoxlayıcı eyni şəxs olduqda bunu açıq bildiririk. Belə halda mətn
-        "yazılıb və tibbi dəqiqliyi yoxlanılıb" deyir, "müstəqil şəkildə yoxlanılıb" yox.
+        &quot;yazılıb və tibbi dəqiqliyi yoxlanılıb&quot; deyir, &quot;müstəqil şəkildə yoxlanılıb&quot; yox.
       </p>
 
       <h2>Dillər</h2>
@@ -63,7 +63,7 @@ export default function EditorialPolicy() {
         <li>18 yaşdan kiçiklər, hamiləlik və süd vermə dövrü, habelə qidalanma pozğunluğu olan şəxslər üçün fərdi plan hazırlamırıq.</li>
         <li>Nə qədər və nə sürətlə arıqlayacağınıza dair vəd yoxdur.</li>
         <li>Uydurma xəstə hekayəsi, sitat, statistika və ya diplom yoxdur.</li>
-        <li>"Əvvəl və sonra" reklamı, utandırma və qidaya əxlaqi qiymət yoxdur.</li>
+        <li>&quot;Əvvəl və sonra&quot; reklamı, utandırma və qidaya əxlaqi qiymət yoxdur.</li>
         <li>İnsanı önə çəkən, hörmətli dil.</li>
       </ul>
       <p>

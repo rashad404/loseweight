@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildInitialActions, buildQuest, calculateConsistency, evaluateAchievements, updateQuest } from '../lib/gamification/engine.ts';
 import type { GamificationState } from '../lib/gamification/models.ts';
+import { exportGame, importGame, rescheduleAction } from '../lib/gamification/storage.ts';
 
 const dated = (state: 'available' | 'completed' | 'adjusted' | 'rescheduled' | 'skipped_reasonable' | 'skipped', date = '2026-08-31') => ({
   ...buildInitialActions(date)[0], id: `${date}:${state}`, state,
@@ -39,7 +40,8 @@ test('quest counts distinct days, not repeated taps', () => {
 test('achievements are deterministic and idempotent', () => {
   const state: GamificationState = {
     version: 1, actions: [dated('completed'), dated('adjusted')], quest: { ...buildQuest(), completed: true },
-    achievements: [], preferences: { enabled: true, celebrations: true, landscape: true, mode: 'maintenance' }, lastVisit: null,
+    achievements: [], preferences: { enabled: true, celebrations: true, landscape: true, mode: 'maintenance', theme: 'mint' },
+    circle: null, sync: { deviceId: 'test', revision: 0, updatedAt: '2026-08-31T00:00:00Z' }, lastVisit: null,
   };
   const once = evaluateAchievements(state, new Date('2026-08-31T12:00:00Z'));
   const twice = evaluateAchievements({ ...state, achievements: once }, new Date('2026-08-31T12:00:00Z'));
@@ -51,4 +53,29 @@ test('every generated action has explicit provenance', () => {
     assert.ok(action.sourceType);
     assert.ok(action.sourceLabel);
   }
+});
+
+test('rescheduling is neutral and creates one action on the new date', () => {
+  const base = dated('available');
+  const state: GamificationState = {
+    version: 1, actions: [base], quest: buildQuest(), achievements: [],
+    preferences: { enabled: true, celebrations: true, landscape: true, mode: 'loss', theme: 'mint' },
+    circle: null, sync: { deviceId: 'test', revision: 0, updatedAt: '2026-08-31T00:00:00Z' }, lastVisit: null,
+  };
+  const moved = rescheduleAction(state, base.id, '2026-09-01');
+  assert.equal(moved.actions[0].state, 'rescheduled');
+  assert.equal(moved.actions[1].date, '2026-09-01');
+  assert.equal(rescheduleAction(moved, base.id, '2026-09-01').actions.length, 2);
+});
+
+test('sync snapshot round trips without health measurements', () => {
+  const state: GamificationState = {
+    version: 1, actions: [dated('completed')], quest: buildQuest(), achievements: [],
+    preferences: { enabled: true, celebrations: true, landscape: true, mode: 'maintenance', theme: 'mint' },
+    circle: null, sync: { deviceId: 'test', revision: 1, updatedAt: '2026-08-31T00:00:00Z' }, lastVisit: null,
+  };
+  const raw = exportGame(state);
+  assert.deepEqual(importGame(raw), state);
+  assert.equal(raw.includes('weightKg'), false);
+  assert.equal(raw.includes('calories'), false);
 });
