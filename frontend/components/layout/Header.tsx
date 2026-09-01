@@ -16,6 +16,7 @@ export default function Header() {
 
   const links = [
     { href: '/planner', label: t('planner') },
+    { href: '/today', label: t('today') },
     { href: '/tracker', label: t('tracker') },
     { href: '/calculators', label: t('calculators') },
     { href: '/guides', label: t('guides') },

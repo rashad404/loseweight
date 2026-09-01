@@ -44,6 +44,21 @@ test('a stated amount stays with the food it was written before', async () => {
   assert.equal(rows[1].portion.household, null, 'the butter is not measured in slices');
 });
 
+test('a phrase the model already named is not split again', async () => {
+  // The model returns "pasta with olive oil" named as cooked pasta, and lists
+  // the oil separately. Splitting anyway gave the oil half the canonical
+  // "cooked pasta", so a phantom 240-325 kcal of pasta appeared beside the
+  // real oil.
+  const rows = flat(await resolveRoutine(routine([
+    item('pasta with olive oil', null, null, { canonical: 'cooked pasta' }),
+    item('olive oil', null, null, { canonical: 'olive oil' }),
+  ])));
+
+  assert.equal(rows.length, 2, 'two items in, two items out');
+  assert.equal(rows[0].match!.name, 'Pasta, cooked');
+  assert.equal(rows[1].match!.name, 'Oil, olive, salad or cooking');
+});
+
 test('a phrase is left whole when one half is not a food we can price', async () => {
   const r = await resolveRoutine(routine([item('bread with zzzqqq')]));
   const rows = flat(r);

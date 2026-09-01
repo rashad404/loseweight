@@ -10,11 +10,11 @@ each step lands. Do not mark a step done until it has been tested, not merely wr
 | 3 | Food provider abstraction | **done**, 11 tests, USDA + 12 curated AZ dishes |
 | 4 | Deterministic change-selection rules | **done**, 17 tests, 7 rules |
 | 5 | Natural-language parsing with correction UI | **done**, 95 TS + 42 PHP tests |
-| 6 | Side-by-side original versus modified | not started |
-| 7 | Save accepted changes | not started |
-| 8 | `/today` | not started |
-| 9 | Connect tracker and adaptive review engine | not started |
-| 10 | Situation-based assistance | not started |
+| 6 | Side-by-side original versus modified | **done** |
+| 7 | Save accepted changes | **done** |
+| 8 | `/today` | **done** |
+| 9 | Connect tracker and adaptive review engine | **done**, 11 review tests |
+| 10 | Situation-based assistance | **done**, eating out and hunger rules on `/today` |
 
 ## How a food becomes a number
 
@@ -35,6 +35,25 @@ A model's dish composition is never promoted to fact by use. "Plov" is not one
 recipe, and gram estimates are the weakest thing a model produces, so a
 composition stays `generated` until a person reviews it. Confirmations are
 counted, not treated as evidence: agreement with a default is not review.
+
+## Adjusting a plan
+
+`frontend/lib/routine/review.ts` decides whether a plan is working. Nothing in
+it asks a model anything: an adjustment changes how much someone eats, so it is
+a safety decision and it is made by rules that can be read and tested.
+
+Three things it refuses to do, each because the obvious alternative is worse:
+
+- **Judge anything before day 21.** Water, salt and glycogen move weight by more
+  than a week of real fat loss.
+- **Read silence as failure.** A day nobody answered is unknown. Counting
+  unopened days as misses turns "did not visit the site" into "the plan failed".
+- **Tighten a plan that was not followed.** Below 60% adherence the verdict is
+  about adherence, not calories. Making an unfollowed plan harder helps nobody.
+
+A followed plan with no movement at all sends the reader to a clinician rather
+than cutting further, because thyroid disease, several medications and fluid
+retention all produce exactly that and none improve with less food.
 
 ## Standing constraints
 

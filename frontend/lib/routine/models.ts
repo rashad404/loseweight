@@ -145,8 +145,16 @@ export interface PlanChange {
   /** Which meal and item this acts on, when it targets something specific. */
   targetMealId: string | null;
   targetItemId: string | null;
-  /** Short imperative, written by AI from the deterministic decision. */
+  /** Message key for the short imperative. Rendered in the reader's language. */
   title: string;
+  /**
+   * Values the title and rationale need, stored with the change.
+   *
+   * They are computed once when the rules run, from a routine the user may
+   * later edit, so recomputing them elsewhere would risk a different answer.
+   * Without them a saved plan renders "Measure the  instead of pouring it".
+   */
+  params: Record<string, string | number>;
   /** Why this change and not another. Traceable to the rule that chose it. */
   rationale: string;
   /** The rule id that selected it, for auditing an explanation against reality. */

@@ -60,6 +60,15 @@ async function split(
   const out: ParsedRoutine['meals'][number]['items'] = [];
 
   for (const item of items) {
+    // A canonical name means the model already decided what this item is, and
+    // listed anything else in the phrase as its own item. Splitting anyway
+    // produced "olive oil" carrying the canonical "cooked pasta", which
+    // resolved to a phantom 240-325 kcal of pasta beside the real oil.
+    if (item.canonical || item.dish) {
+      out.push(item);
+      continue;
+    }
+
     const parts = item.text.split(JOINERS).map((s) => s.trim()).filter(Boolean);
 
     if (parts.length < 2 || parts.length > 3) {

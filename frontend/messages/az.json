@@ -14,7 +14,8 @@
     "closeMenu": "Bağla",
     "language": "Dil",
     "theme": "Rejimi dəyiş",
-    "home": "Ana səhifə"
+    "home": "Ana səhifə",
+    "today": "Bu gün"
   },
   "home": {
     "allGuides": "Bütün məqalələr",
@@ -394,5 +395,179 @@
     "recipeConfirmed": "Təsdiqləndi",
     "recipeShow": "Nəyi təxmin etdik",
     "recipeHide": "Bağla"
+  },
+  "change": {
+    "fat": {
+      "title": "{food} tökmək əvəzinə ölçün",
+      "rationale": "Yağı azaltmaq ən asan yoldur, çünki nə yediyinizi yox, nə qədər yediyinizi dəyişir. Gözəyarı tökülən bir xörək qaşığı çox vaxt iki olur. Eyni yeməyi ölçməklə gündə təxminən {saved} kkal qazanırsınız, dad isə dəyişmir.",
+      "alt": {
+        "spray": "Qızartma üçün sprey yağ işlədin",
+        "measure": "Qaşıqla ölçün, birbaşa tökməyin",
+        "nonstick": "Yapışmayan qabda az yağla bişirin"
+      }
+    },
+    "liquid": {
+      "title": "İçdiyiniz {food} əvəzinə başqa bir şey",
+      "rationale": "Kalorili içkilər sizi doydurmur, ona görə yeməyin yerini tutmur, üstünə gəlir. Bu, təxminən {saved} kkal edir. Dəyişdirsəniz, yeməklərinizdə heç nə dəyişmir.",
+      "alt": {
+        "sparkling": "Limonlu qazlı su",
+        "half": "Yarısını için, qalanını saxlayın",
+        "smaller": "Eyni içki, kiçik stəkanda"
+      }
+    },
+    "protein": {
+      "title": "{meal} təxminən {grams} q zülal əlavə edin",
+      "rationale": "Az yeyirsiniz, ona görə bu işi yarımçıq qoyduracaq əsas şey aclıqdır. Zülal yeməyin ən uzun müddət tox saxlayan hissəsidir. Bu, yemək çıxarmır, əksinə əlavə edir, ona görə özlüyündə kalori qazandırmır.",
+      "alt": {
+        "yogurt": "Yunan qatığı",
+        "eggs": "İki yumurta",
+        "legumes": "Lobya və ya mərcimək"
+      }
+    },
+    "fiber": {
+      "title": "Təxminən {grams} q lif artırın",
+      "rationale": "Lif tox saxlayır və az yeyəndə yaranan həzm problemlərinə kömək edir. Həm də çoxumuzun ən az aldığı şeydir. Zülal kimi bu da yemək əlavə edir, özü kalori qazandırmır.",
+      "alt": {
+        "beans": "Bir porsiya lobya və ya mərcimək",
+        "veg": "İki yeməyin yanında tərəvəz",
+        "wholegrain": "Ağ çörək əvəzinə tam dənli"
+      }
+    },
+    "portion": {
+      "title": "{food} təxminən {percent}% az götürün",
+      "rationale": "Yeməyi saxlayırsınız. Ən böyük porsiyanın dörddə birini azaltmaq bir həftədən sonra adətən hiss olunmur, burada isə gündə təxminən {saved} kkal deməkdir. Sevdiyiniz yeməyi qadağan etməkdənsə, porsiyanı kiçiltmək daha yaxşıdır.",
+      "alt": {
+        "smallerplate": "Kiçik boşqabda yeyin",
+        "serveless": "Az çəkin, hələ acsınızsa, bir də çəkin",
+        "halfnow": "Başlamazdan əvvəl yarısını ayırın"
+      }
+    },
+    "snack": {
+      "title": "Ən çox acdığınız vaxt üçün nəsə hazırlayın",
+      "rationale": "{when} ac olduğunuzu yazmısınız. Plansız aclıq günü pozan əsas andır, ona görə həmin an gəlməmiş qərar vermək daha yaxşıdır. Burada məqsəd kalori azaltmaq deyil.",
+      "alt": {
+        "yogurt": "Qatıq və meyvə",
+        "fruitnuts": "Meyvə və bir ovuc qoz-fındıq",
+        "cottage": "Süzmə pendir"
+      }
+    },
+    "cooking": {
+      "title": "Bir dəfə bişirin, iki dəfə yeyin",
+      "rationale": "Nadir hallarda yemək bişirdiyinizi yazmısınız. Bu isə adətən ac vəziyyətdə qərar verilən yeməklər deməkdir. Bir dəfə iki porsiya bişirsəniz, ertəsi gün o qərarı verməli olmursunuz. Bu, adətən 100-250 kkal qazandırır, çünki alternativ əlinizin altındakı ilk şeydir.",
+      "alt": {
+        "batch": "İkiqat bişirin, yarısını saxlayın",
+        "assembly": "Bişirmək tələb etməyən məhsullar saxlayın",
+        "repeat": "Eyni asan şam yeməyini təkrarlayın"
+      }
+    }
+  },
+  "situation": {
+    "out": {
+      "often": {
+        "order": "Menyuya baxmamışdan əvvəl nə yeyəcəyinizi qərarlaşdırın. Ac halda sifariş vermək planı pozan əsas şeydir.",
+        "drink": "Yeməklə su için. Restoran içkiləri çox vaxt kalorinin üçdə biri olur, amma heç doydurmur.",
+        "half": "Elə əvvəldən yarısını qabla götürməyi xahiş edin və ya başlamazdan əvvəl kənara qoyun."
+      },
+      "rare": {
+        "enjoy": "Siz nadir hallarda çöldə yeyirsiniz, ona görə həqiqətən istədiyinizi yeyin. Bir yemək bütün həftəni pozmur.",
+        "drink": "İçki istəyirsinizsə, şirniyyatın əvəzinə için, üstünə yox.",
+        "next": "Növbəti yeməkdə adi qaydaya qayıdın, sabahdan yox. Kompensasiya etməli bir şey yoxdur."
+      }
+    },
+    "hunger": {
+      "morning": "Səhərlər daha çox acırsınız, ona görə zülalın böyük hissəsini səhər yeməyinə saxlayın, sonraya yox.",
+      "afternoon": "Aclıq günortadan sonra gəlir. Səhər saatlarında bir şey hazırlayın, çünki saat 16-da qərar vermək çox vaxt yaxşı bitmir.",
+      "evening": "Ən çətin vaxtınız axşamdır. Gündəlik yeməyin çoxunu axşama saxlayın, gün boyu az yeyib axşam mübarizə aparmaqdansa.",
+      "late-night": "Gecə saatlarında nizam pozulur. Şam yeməyindən əvvəl qərar verin: bir də yeyəcəksiniz, yoxsa yox, və nə yeyəcəksiniz.",
+      "varies": "Aclığınızın müəyyən saatı yoxdur, ona görə vaxt seçməkdənsə, gün boyu hazır bir seçim saxlayın.",
+      "protein": "Yeməklər arasında acanda əvvəlcə zülal yeyin. Bu, adamı bir azdan yenə axtarışa çıxaran kiçik şirin şeydən daha yaxşı işləyir.",
+      "wait": "Bunun aclıq olub-olmadığına əmin deyilsinizsə, bir stəkan su için və on dəqiqə gözləyin. Bəzən doğrudan aclıqdır, onda yeyirsiniz."
+    },
+    "flexible": "Həftədə bir yemək tamamilə sizindir: nə planlaşdırılır, nə də sayılır. Bu, planın pozulması yox, elə özüdür."
+  },
+  "weekly": {
+    "title": "Üç dəyişiklik, elə sizin yediklərinizin içindən",
+    "intro": "Burada imtina etmək istəmədiyinizi yazdığınız heç bir yemək çıxarılmır. Həftənizə uyğun gəlməyəni ləğv edin.",
+    "keepTitle": "Nə olduğu kimi qalır",
+    "keepBody": "Yeməklərinizin {count} ədədinə toxunulmur. Məsələ elə bundadır: davam etdirə biləcəyiniz plan sizin adi həftənizə oxşayan plandır.",
+    "changeTitle": "Nə dəyişir",
+    "originalCol": "İndi",
+    "modifiedCol": "Bundan sonra",
+    "whyThis": "Niyə məhz bu",
+    "worth": "Gündə təxminən {low}-{high} kkal",
+    "worthNothing": "Özlüyündə kalori qazandırmır, bu da qəsdəndir",
+    "difficulty": {
+      "easy": "Asan",
+      "moderate": "Bir az səy tələb edir",
+      "hard": "Çətin"
+    },
+    "otherWays": "Bunu başqa cür etmək olar",
+    "reject": "Bunu istəmirəm",
+    "restore": "Geri qaytar",
+    "replaceWith": "Bunun əvəzinə",
+    "rejected": "Ləğv edildi",
+    "totalTitle": "Bunlar birlikdə nə verir",
+    "totalDaily": "Gündə təxminən {low}-{high} kkal",
+    "totalWeekly": "Riayət etsəniz, həftədə təxminən {low}-{high} kq",
+    "totalCaveat": "Bu, enerji balansı hesabıdır, vəd deyil. Real çəki suya və qlikogenə görə də dəyişir, xüsusən ilk iki həftədə. Öz ölçmələriniz bunu üç həftə ərzində dəqiqləşdirəcək.",
+    "shortOfTarget": "Bu dəyişikliklər təkbaşına kalori hədəfinizə çatmır. Bu, heç kimin davam gətirmədiyi qədər dəyişiklik yığmaqdan yaxşıdır. İndi daha çox güman etmək əvəzinə, real ölçmələrinizə görə düzəliş edəcəyik.",
+    "noneAccepted": "Bütün dəyişiklikləri ləğv etmisiniz. Ən azı birini geri qaytarın və ya rejimi yenidən yazın.",
+    "accept": "Bu həftədən başla",
+    "back": "Rejimimə qayıt",
+    "noPlan": "Əvvəlcə kalori hədəfinizi müəyyən edin, sonra qayıdın. Dəyişikliklər indi yediklərinizlə həmin hədəf arasındakı fərqi bağlamaq üçün seçilir.",
+    "goPlanner": "Plana keç",
+    "noRoutine": "Əvvəlcə adətən nə yediyinizi yazın.",
+    "savedTitle": "İlk həftəniz hazırdır",
+    "savedBody": "Üç dəyişiklik, qalan hər şey olduğu kimi. Bundan sonra əsas səhifə \"Bu gün\"dür: orada yalnız bugünkü işləriniz görünür.",
+    "goToday": "Bu günə keç",
+    "noSaving": "Yazdıqlarınız artıq kalori hədəfinizə yaxındır, ona görə burada heç bir kalori kəsilmir.",
+    "noSavingWhy": "Buna sevinmək yox, ehtiyatla yanaşmaq lazımdır. Bir günün yeməyini təsvirdən hesablamaq təxminidir və çox adam bilmədən az yazır: adətən yağ, içkilər və əlavə çəkilən porsiyalar unudulur. Yuxarıdakı dəyişikliklər aclıq və vərdişlə bağlıdır, növbəti üç həftəni məhz bu asanlaşdırır. Hesabı isə bizim indiki güman deyil, sizin ölçmələriniz dəqiqləşdirəcək."
+  },
+  "today": {
+    "title": "Bu gün",
+    "weekOf": "Planınızın {n}-ci həftəsi",
+    "changesTitle": "Bu gün nə etməlisiniz",
+    "done": "Edildi",
+    "markDone": "Edildi kimi işarələ",
+    "skip": "Bu gün yox",
+    "skipped": "Bu gün olmadı",
+    "undo": "Geri al",
+    "eatTitle": "Nə yeyirsiniz",
+    "eatIntro": "Menyu deyil, sizin öz yeməkləriniz. Günə hansı uyğun gəlirsə, onu seçin.",
+    "flexTitle": "Sərbəst yeməyiniz",
+    "flexUsed": "Bu həftə istifadə olunub",
+    "flexUse": "Bu gün istifadə et",
+    "outTitle": "Çöldə yeyəcəksinizsə",
+    "hungerTitle": "Acsanız",
+    "streak": "Son {total} gündən {done} gün riayət etmisiniz",
+    "noPlan": "Hələ həftə başlatmamısınız.",
+    "startPlan": "Həftəmi hazırla",
+    "noJudgement": "Buraxılan gün uğursuzluq deyil, sadəcə məlumatdır. Plan real baş verənlərə görə dəyişir.",
+    "slot": {
+      "breakfast": "Səhər yeməyi",
+      "lunch": "Nahar",
+      "dinner": "Axşam yeməyi",
+      "snack": "Qəlyanaltı",
+      "drink": "İçkilər"
+    }
+  },
+  "review": {
+    "title": "Plan necə gedir",
+    "tooEarly": "Hələ {days}-ci gündür. Çəki suya, duza və qlikogenə görə real yağ itkisindən çox dəyişir, ona görə indi buradakı rəqəmləri oxumağın mənası yoxdur. Biz {min}-ci gündən əvvəl düzəliş etmirik, siz də etməyin.",
+    "notEnoughData": "Başlayandan bəri {weighIns} dəfə çəkilmisiniz. Meylin bir məna kəsb etməsi üçün ən azı dörd ölçmə lazımdır. Bir neçə dəfə də çəkilin, mümkünsə günün eyni vaxtında.",
+    "notFollowing": "Cavab verdiyiniz günlərin {percent}%-də planı tam yerinə yetirmisiniz. Bu, iradı deyil, rəqəmləri dəyişməmək üçün səbəbdir: riayət etmədiyiniz planı ağırlaşdırmaq kömək etməyəcək. Üç dəyişiklikdən hansının mane olduğunu düşünmək daha faydalıdır.",
+    "onTrack": "Həftədə təxminən {actual} kq itirirsiniz, plan isə təxminən {expected} idi. Bu fərq ölçmə xətası səviyyəsindədir. Dəyişməli bir şey yoxdur.",
+    "faster": "Həftədə təxminən {actual} kq itirirsiniz, plandakı {expected} rəqəmindən sürətlidir. Bu adətən hədəfdən xeyli az yemək deməkdir. Belədə əzələ itir və uzun müddət davam etmir. İndi bir az yumşaltmaq geriyə addım deyil.",
+    "slower": "Həftədə təxminən {actual} kq itirirsiniz, plan isə {expected} idi. Bu fərq gündə təxminən {gap} kkal edir. Hər şeyi daha da kəsmək əvəzinə bir dəyişiklik əlavə etmək ölçüyə uyğun cavabdır.",
+    "noChange": "Riayət etdiyiniz halda {days} gündür çəkiniz dəyişmir. Daha çox kəsməkdənsə, bunu həkimlə müzakirə etmək lazımdır: qalxanabənzər vəzi problemləri, bəzi dərmanlar və orqanizmdə su yığılması eyni nəticəni verir və heç biri az yeməklə düzəlmir.",
+    "action": {
+      "wait": "Davam edin, dəyişiklik lazım deyil",
+      "keep-going": "Davam edin",
+      "ease-off": "Bir az yumşaldın",
+      "add-a-change": "Bir dəyişiklik əlavə edin",
+      "fix-adherence": "Nəyin mane olduğuna baxın",
+      "see-a-clinician": "Həkimlə danışın"
+    },
+    "noPlan": "Əvvəlcə həftə başladın, sonra bu səhifənin müqayisə edəcəyi bir şey olar."
   }
 }

@@ -14,7 +14,8 @@
     "closeMenu": "Close menu",
     "language": "Language",
     "theme": "Switch theme",
-    "home": "Home"
+    "home": "Home",
+    "today": "Today"
   },
   "home": {
     "allGuides": "All guides",
@@ -394,5 +395,179 @@
     "recipeConfirmed": "Confirmed",
     "recipeShow": "What we assumed",
     "recipeHide": "Hide"
+  },
+  "change": {
+    "fat": {
+      "title": "Measure the {food} instead of pouring it",
+      "rationale": "Cooking fat is the cheapest calorie to cut, because it changes how much you eat, not what you eat. A tablespoon poured by eye is often two. Measuring the same dish saves about {saved} kcal a day and tastes the same.",
+      "alt": {
+        "spray": "Use a spray oil for frying",
+        "measure": "Measure with a spoon, do not pour",
+        "nonstick": "Use a nonstick pan and less fat"
+      }
+    },
+    "liquid": {
+      "title": "Replace the {food} you drink",
+      "rationale": "Drinks with calories do not make you feel full, so they add to the day rather than replacing part of it. This one is about {saved} kcal. Swapping it changes nothing about your meals.",
+      "alt": {
+        "sparkling": "Sparkling water with lemon",
+        "half": "Halve it, keep the rest",
+        "smaller": "A smaller glass, same drink"
+      }
+    },
+    "protein": {
+      "title": "Add about {grams} g of protein at {meal}",
+      "rationale": "You are eating less, so hunger is the thing most likely to end this. Protein is the part of a meal that keeps you full longest. This adds food rather than removing it, so it saves no calories by itself.",
+      "alt": {
+        "yogurt": "Greek yogurt",
+        "eggs": "Two eggs",
+        "legumes": "Beans or lentils"
+      }
+    },
+    "fiber": {
+      "title": "Add about {grams} g more fiber",
+      "rationale": "Fiber fills you up and helps with the digestion changes that often come with eating less. It is also where most people fall short. Like protein, this adds food and saves nothing on its own.",
+      "alt": {
+        "beans": "A portion of beans or lentils",
+        "veg": "Vegetables with two meals",
+        "wholegrain": "Wholegrain instead of white"
+      }
+    },
+    "portion": {
+      "title": "Take about {percent}% less {food}",
+      "rationale": "You keep the food. Cutting a quarter of the largest portion is usually not noticed after a week, and here it is worth roughly {saved} kcal a day. We would rather shrink a portion than ban a food you like.",
+      "alt": {
+        "smallerplate": "Serve on a smaller plate",
+        "serveless": "Serve less, go back only if still hungry",
+        "halfnow": "Put half away before you start"
+      }
+    },
+    "snack": {
+      "title": "Plan something to eat when you are hungriest",
+      "rationale": "You said {when} is when hunger hits. An unplanned hungry moment is where most days come apart, so it is worth deciding now rather than at the time. This is not about cutting calories.",
+      "alt": {
+        "yogurt": "Yogurt and fruit",
+        "fruitnuts": "Fruit and a small handful of nuts",
+        "cottage": "Cottage cheese"
+      }
+    },
+    "cooking": {
+      "title": "Cook once, eat twice",
+      "rationale": "You said you rarely cook, which usually means more meals decided while hungry. Cooking a double portion once removes that decision on the second day and typically saves 100 to 250 kcal, because the alternative is whatever is nearest.",
+      "alt": {
+        "batch": "Make double, keep half",
+        "assembly": "Keep ingredients that need no cooking",
+        "repeat": "Repeat the same easy dinner"
+      }
+    }
+  },
+  "situation": {
+    "out": {
+      "often": {
+        "order": "Decide what you are having before you look at the menu. Ordering hungry is how the plan goes sideways.",
+        "drink": "Drink water with the meal. Restaurant drinks are often a third of the calories and none of the fullness.",
+        "half": "Ask for half to be boxed at the start, or move it aside before you begin."
+      },
+      "rare": {
+        "enjoy": "You eat out rarely, so eat what you actually want. One meal does not undo a week.",
+        "drink": "If you want a drink, have it instead of dessert rather than as well as.",
+        "next": "Go back to normal at the next meal, not tomorrow. There is nothing to make up for."
+      }
+    },
+    "hunger": {
+      "morning": "You are hungriest in the morning, so put most of your protein at breakfast rather than saving it for later.",
+      "afternoon": "Your hunger comes in the afternoon. Have something ready by mid-morning, because deciding at 4pm rarely goes well.",
+      "evening": "Evening is your hard part. Keep more of the day's food for the evening rather than eating light and fighting it later.",
+      "late-night": "Late night is when it slips. Decide before dinner whether you are eating again, and what.",
+      "varies": "Your hunger is not on a schedule, so keep one planned option available all day rather than timing it.",
+      "protein": "When you are hungry between meals, eat protein first. It works better than a small sweet thing that leaves you looking for another.",
+      "wait": "If you are unsure whether it is hunger, have a glass of water and wait ten minutes. Sometimes it is, and then you eat."
+    },
+    "flexible": "One meal a week is yours, unplanned and uncounted. It is part of the plan, not a break from it."
+  },
+  "weekly": {
+    "title": "Three changes, built from what you already eat",
+    "intro": "Nothing here removes a food you said you will not give up. Reject anything that does not fit your week.",
+    "keepTitle": "What stays the same",
+    "keepBody": "{count} of your foods are untouched. That is the point: a plan you can follow is one that still looks like your week.",
+    "changeTitle": "What changes",
+    "originalCol": "Now",
+    "modifiedCol": "Changed to",
+    "whyThis": "Why this one",
+    "worth": "Worth about {low} to {high} kcal a day",
+    "worthNothing": "Saves nothing by itself, and that is deliberate",
+    "difficulty": {
+      "easy": "Easy",
+      "moderate": "Takes some effort",
+      "hard": "Hard"
+    },
+    "otherWays": "Other ways to do this",
+    "reject": "Not this one",
+    "restore": "Put it back",
+    "replaceWith": "Use instead",
+    "rejected": "Rejected",
+    "totalTitle": "What this adds up to",
+    "totalDaily": "About {low} to {high} kcal a day",
+    "totalWeekly": "Around {low} to {high} kg a week, if you follow it",
+    "totalCaveat": "This is energy balance arithmetic, not a promise. Real weight moves with water and glycogen too, especially in the first fortnight. Your own weigh-ins will correct this within three weeks.",
+    "shortOfTarget": "These changes do not reach your calorie target on their own. That is better than stacking more changes than anyone keeps up. We will adjust from your actual weigh-ins rather than guessing harder now.",
+    "noneAccepted": "You have rejected every change. Put at least one back, or start again with a different routine.",
+    "accept": "Start this week",
+    "back": "Back to my routine",
+    "noPlan": "Set a calorie target first, then come back. The changes are chosen to close the gap between what you eat now and that target.",
+    "goPlanner": "Go to the planner",
+    "noRoutine": "Describe how you normally eat first.",
+    "savedTitle": "Your first week is set",
+    "savedBody": "Three changes, everything else unchanged. From here the useful page is today, which shows only what this day asks of you.",
+    "goToday": "Go to today",
+    "noSaving": "What you described already lands near your calorie target, so nothing here cuts calories.",
+    "noSavingWhy": "That is worth treating with suspicion rather than satisfaction. Estimating a day of eating from a description is rough, and most people under-describe by more than they expect, usually the oil, the drinks and the second helpings. The changes above are about hunger and habit, which is what makes the next three weeks survivable. Your weigh-ins will settle the arithmetic better than any guess we can make now."
+  },
+  "today": {
+    "title": "Today",
+    "weekOf": "Week {n} of your plan",
+    "changesTitle": "What today asks of you",
+    "done": "Done",
+    "markDone": "Mark as done",
+    "skip": "Not today",
+    "skipped": "Not today",
+    "undo": "Undo",
+    "eatTitle": "What you are eating",
+    "eatIntro": "Your own foods, not a menu. Pick whichever fits the day.",
+    "flexTitle": "Your free meal",
+    "flexUsed": "Used this week",
+    "flexUse": "Use it today",
+    "outTitle": "If you eat out",
+    "hungerTitle": "If you get hungry",
+    "streak": "Followed on {done} of the last {total} days",
+    "noPlan": "You have not started a week yet.",
+    "startPlan": "Set up my week",
+    "noJudgement": "A missed day is data, not a failure. The plan adjusts from what actually happens.",
+    "slot": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snacks",
+      "drink": "Drinks"
+    }
+  },
+  "review": {
+    "title": "How the plan is going",
+    "tooEarly": "It is day {days}. Weight moves with water, salt and glycogen by more than a week of real fat loss, so nothing here is worth reading yet. We do not adjust before day {min}, and neither should you.",
+    "notEnoughData": "You have {weighIns} weigh-ins since starting. A trend needs at least four to mean anything. Weigh yourself a few more times, ideally at the same time of day.",
+    "notFollowing": "You followed the full plan on {percent}% of the days you answered. That is not a criticism, it is a reason not to change the numbers: making a plan you are not following harder will not help. Worth asking which of the three is the one getting in the way.",
+    "onTrack": "You are losing about {actual} kg a week, against roughly {expected} planned. That is close enough that the difference is measurement, not meaning. Nothing needs changing.",
+    "faster": "You are losing about {actual} kg a week, faster than the {expected} planned. That usually means eating well under target, which costs muscle and is hard to keep up. Easing off now is not losing ground.",
+    "slower": "You are losing about {actual} kg a week, against {expected} planned. The gap works out to roughly {gap} kcal a day. One more change is the measured response, rather than cutting everything further.",
+    "noChange": "Your weight has not moved in {days} days on a plan you did follow. That is worth asking a clinician about rather than cutting further, because thyroid problems, some medications and fluid retention all do this and none of them are fixed by eating less.",
+    "action": {
+      "wait": "Keep going, nothing to change",
+      "keep-going": "Keep going",
+      "ease-off": "Ease off",
+      "add-a-change": "Add one change",
+      "fix-adherence": "Look at what is getting in the way",
+      "see-a-clinician": "Talk to a clinician"
+    },
+    "noPlan": "Start a week first, then this page has something to compare against."
   }
 }
