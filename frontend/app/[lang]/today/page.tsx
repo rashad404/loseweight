@@ -25,7 +25,7 @@ export default async function TodayPage({
   setRequestLocale(lang);
 
   return (
-    <main className="wrap py-10 md:py-14">
+    <main className="mx-auto w-full max-w-[1160px] px-5 py-10 sm:px-8 md:py-14">
       <TodayDashboard locale={lang} />
     </main>
   );
