@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\FoodSearchController;
 use App\Http\Controllers\Api\GuideController;
 use App\Http\Controllers\Api\PlanController;
-use App\Http\Controllers\Api\FoodSearchController;
+use App\Http\Controllers\Api\ProgressSyncController;
 use App\Http\Controllers\Api\RoutineParseController;
 use App\Http\Controllers\Api\SubscriberController;
+use App\Http\Controllers\Api\SupportCircleController;
 use App\Http\Controllers\Api\WeightEntryController;
 use Illuminate\Support\Facades\Route;
 
@@ -59,4 +61,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/weight-entries', [WeightEntryController::class, 'index']);
     Route::post('/weight-entries', [WeightEntryController::class, 'store']);
     Route::delete('/weight-entries/{weightEntry}', [WeightEntryController::class, 'destroy']);
+
+    Route::get('/progress', [ProgressSyncController::class, 'show']);
+    Route::put('/progress', [ProgressSyncController::class, 'update']);
+
+    Route::post('/circles', [SupportCircleController::class, 'store']);
+    Route::post('/circles/join', [SupportCircleController::class, 'join']);
+    Route::get('/circles/{circle}', [SupportCircleController::class, 'show']);
+    Route::put('/circles/{circle}/contribution', [SupportCircleController::class, 'contribute']);
+    Route::post('/circles/{circle}/reaction', [SupportCircleController::class, 'react']);
 });

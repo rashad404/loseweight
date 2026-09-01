@@ -33,7 +33,7 @@ export function loadGame(date = isoDay()): GamificationState {
 export function prepareGame(state: GamificationState): GamificationState {
   const quest = updateQuest(state.quest, state.actions);
   const next = { ...state, quest, achievements: evaluateAchievements({ ...state, quest }), lastVisit: isoDay() };
-  return { ...next, sync: { ...next.sync, revision: next.sync.revision + 1, updatedAt: new Date().toISOString() } };
+  return { ...next, sync: { ...next.sync, updatedAt: new Date().toISOString() } };
 }
 
 export function saveGame(state: GamificationState): GamificationState | null {
