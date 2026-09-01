@@ -97,9 +97,9 @@ export default function TodayDashboard({ locale }: { locale: string }) {
         <section className="game-hero">
           <div className="relative z-10 max-w-xl">
             <p className="t-eyebrow !text-white/70">{c.pace}</p>
-            <h1 className="mt-2 text-4xl sm:text-5xl font-extrabold tracking-[-0.04em] text-white">{accepted.length > 0 ? `${doneToday} / ${accepted.length} ${c.complete}` : c.emptyTitle}</h1>
-            <p className="mt-3 text-white/75">{accepted.length > 0 ? feedback : c.emptyBody}</p>
-            <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-white/12 px-4 py-2 text-sm text-white"><ShieldCheck size={16} />{state.preferences.mode === 'maintenance' ? c.modes[1] : state.preferences.mode === 'paused' ? c.modes[2] : c.modes[0]}</div>
+            <h1 className="mt-2 text-4xl sm:text-5xl font-extrabold tracking-[-0.04em] text-white">{accepted.length > 0 ? `${doneToday} / ${accepted.length} ${c.complete}` : c.emptyHeroTitle}</h1>
+            <p className="mt-3 text-white/75">{accepted.length > 0 ? feedback : c.emptyHeroBody}</p>
+            {accepted.length > 0 && <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-white/12 px-4 py-2 text-sm text-white"><ShieldCheck size={16} />{state.preferences.mode === 'maintenance' ? c.modes[1] : state.preferences.mode === 'paused' ? c.modes[2] : c.modes[0]}</div>}
           </div>
           <ProgressLandscape ratio={accepted.length ? doneToday / accepted.length : 0} enabled={state.preferences.landscape && state.preferences.enabled} />
         </section>
