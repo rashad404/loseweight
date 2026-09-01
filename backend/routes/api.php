@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\GamificationEventController;
 use App\Http\Controllers\Api\GuideController;
 use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\ProgressSyncController;
+use App\Http\Controllers\Api\RecipeController;
 use App\Http\Controllers\Api\RoutineParseController;
 use App\Http\Controllers\Api\SubscriberController;
 use App\Http\Controllers\Api\SupportCircleController;
@@ -37,6 +38,12 @@ Route::post('/subscribers/{token}/unsubscribe', [SubscriberController::class, 'u
 Route::post('/routine/parse', [RoutineParseController::class, 'store'])
     ->middleware('throttle:20,1');
 Route::get('/ai/status', [RoutineParseController::class, 'status']);
+
+// Feedback on a proposed dish composition. Counted for later review, never
+// promoted automatically.
+Route::post('/recipes/{id}/confirm', [RecipeController::class, 'confirm'])
+    ->whereNumber('id')
+    ->middleware('throttle:30,1');
 
 // Food lookup. Only foods the client cannot resolve locally reach this.
 Route::get('/food/search', [FoodSearchController::class, 'search'])

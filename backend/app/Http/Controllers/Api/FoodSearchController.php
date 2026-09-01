@@ -64,6 +64,10 @@ class FoodSearchController extends Controller
                 ->map(fn ($food) => [
                     'id' => (string) ($food['fdcId'] ?? ''),
                     'name' => $food['description'] ?? '',
+                    // Kept with the figure. Foundation and SR Legacy entries
+                    // are measured differently, and which record answered a
+                    // word is part of being able to check the number later.
+                    'dataType' => $food['dataType'] ?? null,
                     'per100g' => [
                         'kcal' => self::energy($food),
                         'proteinG' => self::nutrient($food, 'protein'),
@@ -161,9 +165,12 @@ class FoodSearchController extends Controller
      */
     private static function score(string $query, string $name): int
     {
-        $clean = fn (string $s) => trim(preg_replace('/[^\p{L}\p{N} ]+/u', ' ', mb_strtolower($s)));
-        $q = $clean($query);
-        $n = $clean($name);
+        $q = self::words($query);
+        $n = self::words($name);
+
+        if ($q === [] || $n === []) {
+            return 0;
+        }
 
         if ($q === $n) {
             return 100;
@@ -172,24 +179,39 @@ class FoodSearchController extends Controller
         // USDA writes "Rice, white, cooked": the food itself comes first and
         // qualifiers follow. A description whose first comma-separated segment
         // is the query is the plain form of it.
-        $head = $clean(explode(',', $name)[0]);
-        if ($head === $q) {
+        if (self::words(explode(',', $name)[0]) === $q) {
             return 90;
         }
 
-        $words = preg_split('/\s+/u', $n, -1, PREG_SPLIT_NO_EMPTY);
-        $qWords = preg_split('/\s+/u', $q, -1, PREG_SPLIT_NO_EMPTY);
-
-        $present = count(array_intersect($qWords, $words));
-        if ($present === 0) {
+        // The first word is the food; the rest describe it. Without this,
+        // "onion, cooked" scored "Bulgur, cooked" on the shared word "cooked"
+        // and answered a recipe's onion with bulgur.
+        if (! in_array($q[0], $n, true)) {
             return 0;
         }
 
-        // All query words present, but wrapped in other words. The more extra
-        // words, the further from what was asked.
-        $coverage = $present / max(count($qWords), 1);
-        $extra = max(count($words) - count($qWords), 0);
+        $present = count(array_intersect($q, $n));
+        $coverage = $present / count($q);
+        $extra = max(count($n) - count($q), 0);
 
         return (int) round($coverage * 70 - min($extra * 6, 45));
+    }
+
+    /**
+     * Comparable words: lowercased, punctuation dropped, plurals folded.
+     *
+     * USDA names the food in the plural ("Onions, cooked") while a recipe names
+     * it in the singular ("onion, cooked"). Without folding those together the
+     * correct record scored no better than an unrelated one that happened to
+     * share the word "cooked".
+     */
+    private static function words(string $text): array
+    {
+        $parts = preg_split('/[^\p{L}\p{N}]+/u', mb_strtolower($text), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+
+        return array_values(array_map(
+            fn ($w) => mb_strlen($w) > 3 && str_ends_with($w, 's') ? mb_substr($w, 0, -1) : $w,
+            $parts,
+        ));
     }
 }

@@ -1,25 +1,8 @@
-export type ActionSource = 'accepted_change' | 'weekly_review' | 'user_created' | 'safety_adjustment';
-export type ActionState = 'available' | 'completed' | 'adjusted' | 'rescheduled' | 'skipped_reasonable' | 'skipped';
 export type PlanMode = 'loss' | 'maintenance' | 'paused';
-
-export interface DailyAction {
-  id: string;
-  date: string;
-  title: string;
-  easierTitle: string;
-  alternatives: string[];
-  rationale: string;
-  sourceType: ActionSource;
-  sourceLabel: string;
-  state: ActionState;
-  rescheduledTo: string | null;
-  completedAt: string | null;
-}
 
 export interface WeeklyQuest {
   id: string;
-  title: string;
-  rationale: string;
+  sourceChangeId: string | null;
   target: number;
   progress: number;
   weekStart: string;
@@ -61,8 +44,7 @@ export interface SyncMetadata {
 }
 
 export interface GamificationState {
-  version: 1;
-  actions: DailyAction[];
+  version: 2;
   quest: WeeklyQuest;
   achievements: Achievement[];
   preferences: GamificationPreferences;

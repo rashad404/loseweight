@@ -23,10 +23,12 @@ class ProgressSyncController extends Controller
         $data = $request->validate([
             'revision' => ['required', 'integer', 'min:0'],
             'state' => ['required', 'array'],
-            'state.version' => ['required', 'integer', 'in:1'],
-            'state.actions' => ['present', 'array', 'max:1000'],
-            'state.achievements' => ['present', 'array', 'max:100'],
-            'state.preferences' => ['required', 'array'],
+            'state.version' => ['required', 'integer', 'in:2'],
+            'state.game' => ['required', 'array'],
+            'state.game.version' => ['required', 'integer', 'in:2'],
+            'state.game.achievements' => ['present', 'array', 'max:100'],
+            'state.game.preferences' => ['required', 'array'],
+            'state.days' => ['present', 'array', 'max:31'],
         ]);
 
         $progress = $request->user()->progressState()->firstOrNew();

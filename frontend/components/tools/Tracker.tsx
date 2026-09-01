@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Download, Pencil, Trash2, Upload } from 'lucide-react';
+import PlanReview from '@/components/plan/PlanReview';
 import { Field, FieldGroup } from './shared';
 import TrendChart from './TrendChart';
 import { kgToLb, lbToKg, type Units } from '@/lib/health/units';
@@ -208,6 +209,10 @@ export default function Tracker() {
       </section>
 
       <div className="space-y-5">
+        {/* The verdict on the weekly plan sits above the raw numbers, because
+            "what should I do" is the question people open this page with. */}
+        <PlanReview />
+
         {!progress ? (
           <div className="panel p-8">
             <p className="text-muted">{t('noEntries')}</p>

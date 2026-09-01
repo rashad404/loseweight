@@ -42,7 +42,7 @@ test('Azerbaijani spelling variants and diacritics all match', async () => {
 
 test('every curated dish is reachable by at least one alias', async () => {
   const found = new Set<string>();
-  for (const name of ['plov','dolma','dushbara','qutab','piti','kebab','dovga','ajabsandal','bozbash','chigirtma','pendir','lavash']) {
+  for (const name of ['plov','dolma','dushbara','qutab','piti','kebab','dovga','ajabsandal','bozbash','chigirtma','pendir','lavash','sirin cay']) {
     const [m] = await resolve(providers, { name });
     if (m.source !== 'unmatched') found.add(m.name);
   }
@@ -67,9 +67,19 @@ test('an unknown food is reported as unmatched, not guessed', async () => {
   assert.equal(m.caveat, 'notFound');
 });
 
-test('a misspelling that contains a known food still matches', async () => {
+test('filler words around a known food do not prevent a match', async () => {
+  for (const phrase of ['some fresh banana', 'a plain apple', 'the butter']) {
+    const [m] = await resolve(providers, { name: phrase });
+    assert.notEqual(m.source, 'unmatched', phrase);
+  }
+});
+
+test('a second food in the phrase is not quietly discarded', async () => {
+  // This used to answer "greek yogurt" and drop the honey, which is most of
+  // the calories. Two foods are two rows, handled where the routine is built.
   const [m] = await resolve(providers, { name: 'greek yogurt with honey' });
-  assert.notEqual(m.source, 'unmatched');
+
+  assert.equal(m.source, 'unmatched', 'no half answer that looks whole');
 });
 
 test('portion confidence widens the range predictably', () => {
@@ -134,6 +144,55 @@ test('a plain word resolves from the curated table, not the remote search', asyn
   }
 
   assert.equal(calls, 0, 'common words must never cost a network call');
+});
+
+test('a qualifier is never dropped to force a curated match', async () => {
+  // Asked to name the form of a food, the model returns "white brined cheese"
+  // for pendir. Matching the bare word "cheese" inside it answered with
+  // cheddar at 403 kcal per 100 g, losing the part that changes the number.
+  const searched: string[] = [];
+  const remote = createUsdaProvider(async (name) => {
+    searched.push(name);
+    return { results: [], strong: false };
+  });
+
+  const [m] = await resolve([remote], { name: 'white brined cheese' });
+
+  assert.equal(m.source, 'unmatched', 'better to ask than to answer cheddar');
+  assert.deepEqual(searched, ['white brined cheese'], 'the whole phrase is searched');
+});
+
+test('a qualifier the curated record already describes is still a match', async () => {
+  // The check is that nothing meaningful is unaccounted for, not that the
+  // wording is identical, so naming the form does not cost a lookup.
+  const offline = createUsdaProvider(async () => ({ results: [], strong: false }));
+
+  for (const [query, expected] of [
+    ['cooked white rice', 'Rice, white, long-grain, cooked'],
+    ['brewed coffee', 'Coffee, brewed'],
+    ['black tea', 'Tea, black, brewed'],
+  ] as const) {
+    const [m] = await resolve([offline], { name: query });
+    assert.equal(m.name, expected, query);
+  }
+});
+
+test('a dish ingredient takes the best match instead of asking', async () => {
+  // Asking someone to pick a USDA record for the onion inside their plov is
+  // the wrong question, and refusing to price it made the dish understate
+  // itself. The composition lists every record it used, so the choice is still
+  // visible without becoming a prompt.
+  const remote = createUsdaProvider(async () => ({
+    results: [{ id: '1', name: 'Onions, cooked, boiled', per100g: { kcal: 42, proteinG: 1, fiberG: 1 } }],
+    strong: false,
+  }));
+
+  const asked = await resolve([remote], { name: 'onion, cooked' });
+  assert.equal(asked[0].nutrition, null, 'on its own it still asks');
+
+  const [used] = await resolve([remote], { name: 'onion, cooked', grams: 100, acceptBest: true });
+  assert.equal(used.name, 'Onions, cooked, boiled');
+  assert.ok(used.nutrition, 'inside a recipe it is priced');
 });
 
 test('a longer alias wins over a shorter one it contains', async () => {

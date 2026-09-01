@@ -20,17 +20,16 @@ class ProgressSyncTest extends TestCase
     {
         Sanctum::actingAs(User::factory()->create());
         $state = [
-            'version' => 1,
-            'actions' => [['id' => 'a', 'state' => 'completed']],
-            'achievements' => [],
-            'preferences' => ['enabled' => true, 'mode' => 'maintenance'],
+            'version' => 2,
+            'game' => ['version' => 2, 'achievements' => [], 'preferences' => ['enabled' => true, 'mode' => 'maintenance']],
+            'days' => [['date' => '2026-08-31', 'followed' => ['a'], 'skipped' => [], 'usedFlexibleMeal' => false]],
         ];
 
         $this->putJson('/api/progress', ['revision' => 0, 'state' => $state])
             ->assertOk()->assertJsonPath('data.revision', 1);
 
         $this->getJson('/api/progress')->assertOk()
-            ->assertJsonPath('data.state.actions.0.state', 'completed');
+            ->assertJsonPath('data.state.days.0.followed.0', 'a');
 
         $this->putJson('/api/progress', ['revision' => 0, 'state' => $state])
             ->assertConflict()->assertJsonPath('status', 'conflict')
@@ -42,7 +41,7 @@ class ProgressSyncTest extends TestCase
         Sanctum::actingAs(User::factory()->create());
         $this->putJson('/api/progress', [
             'revision' => 0,
-            'state' => ['version' => 2, 'actions' => [], 'achievements' => [], 'preferences' => []],
+            'state' => ['version' => 1, 'game' => [], 'days' => []],
         ])->assertUnprocessable();
     }
 }

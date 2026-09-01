@@ -2,6 +2,7 @@
 
 import type { Sex } from '@/lib/health/calculations';
 import type { Units } from '@/lib/health/units';
+import type { UserRoutine, WeeklyPlan } from '@/lib/routine/models';
 
 /**
  * The saved plan is the spine of the product: the planner writes it, the tracker
@@ -20,11 +21,33 @@ export const ENTRIES_KEY = 'lw_entries_v1';
 export const DRAFT_KEY = 'lw_draft_v1';
 /** The confirmed routine from onboarding. */
 export const ROUTINE_KEY = 'lw_routine_v1';
+
+/** The accepted weekly plan. Separate from the calorie plan it was built from. */
+export const WEEKLY_KEY = 'lw_weekly_v1';
+
+/** What the user actually did today, keyed by date. */
+export const TODAY_KEY = 'lw_today_v1';
 /** The key the first version of the tracker used, before plans existed. */
 const LEGACY_ENTRIES_KEY = 'lw_entries';
 
 export const PLAN_CHANGED = 'lw:plan-changed';
+export const WEEKLY_CHANGED = 'lw:weekly-changed';
 export const ENTRIES_CHANGED = 'lw:entries-changed';
+
+export type ActionState =
+  | 'available'
+  | 'completed'
+  | 'adjusted'
+  | 'rescheduled'
+  | 'skipped_reasonable'
+  | 'skipped';
+
+export interface ActionCheckIn {
+  state: ActionState;
+  completedAt: string | null;
+  replacement: string | null;
+  rescheduledTo: string | null;
+}
 
 export interface PlanInputs {
   sex: Sex;
@@ -84,6 +107,87 @@ function write(key: string, value: unknown, event: string): boolean {
 }
 
 export const loadPlan = () => read<SavedPlan>(PLAN_KEY);
+
+export const loadRoutine = () => read<UserRoutine>(ROUTINE_KEY);
+export const saveRoutine = (r: UserRoutine) => write(ROUTINE_KEY, r, PLAN_CHANGED);
+
+export const loadWeekly = () => read<WeeklyPlan>(WEEKLY_KEY);
+export const saveWeekly = (w: WeeklyPlan) => write(WEEKLY_KEY, w, WEEKLY_CHANGED);
+
+/**
+ * What the person actually did on a given day.
+ *
+ * Kept per date and only for the current week's worth of days, because this is
+ * a memory aid for today, not a food diary. Nothing here is sent anywhere.
+ */
+export interface DayRecord {
+  date: string;
+  /** Change ids followed today. */
+  followed: string[];
+  /** Change ids explicitly marked as not done, so silence is not read as failure. */
+  skipped: string[];
+  usedFlexibleMeal: boolean;
+  actions?: Record<string, ActionCheckIn>;
+}
+
+export function loadDay(date: string): DayRecord {
+  const all = read<Record<string, DayRecord>>(TODAY_KEY) ?? {};
+
+  return normalizeDay(all[date] ?? { date, followed: [], skipped: [], usedFlexibleMeal: false });
+}
+
+export function normalizeDay(record: DayRecord): DayRecord {
+  const actions = { ...(record.actions ?? {}) };
+  for (const id of record.followed) {
+    actions[id] ??= { state: 'completed', completedAt: null, replacement: null, rescheduledTo: null };
+  }
+  for (const id of record.skipped) {
+    actions[id] ??= { state: 'skipped', completedAt: null, replacement: null, rescheduledTo: null };
+  }
+  return { ...record, actions };
+}
+
+export function setActionState(
+  record: DayRecord,
+  id: string,
+  state: ActionState,
+  details: Partial<Pick<ActionCheckIn, 'replacement' | 'rescheduledTo'>> = {},
+): DayRecord {
+  const normalized = normalizeDay(record);
+  const actions = { ...normalized.actions };
+  if (state === 'available') delete actions[id];
+  else actions[id] = {
+    state,
+    completedAt: state === 'completed' || state === 'adjusted' ? new Date().toISOString() : null,
+    replacement: details.replacement ?? null,
+    rescheduledTo: details.rescheduledTo ?? null,
+  };
+  const followed = Object.entries(actions)
+    .filter(([, action]) => action.state === 'completed' || action.state === 'adjusted')
+    .map(([actionId]) => actionId);
+  const skipped = Object.entries(actions)
+    .filter(([, action]) => action.state === 'skipped')
+    .map(([actionId]) => actionId);
+  return { ...normalized, actions, followed, skipped };
+}
+
+export function saveDay(record: DayRecord): boolean {
+  const all = read<Record<string, DayRecord>>(TODAY_KEY) ?? {};
+  all[record.date] = normalizeDay(record);
+
+  // Keep a month at most. Older days are not used by anything and only grow
+  // the amount of personal data sitting in the browser.
+  const keep = Object.keys(all).sort().slice(-31);
+  const trimmed = Object.fromEntries(keep.map((d) => [d, all[d]]));
+
+  return write(TODAY_KEY, trimmed, WEEKLY_CHANGED);
+}
+
+export function loadDays(): DayRecord[] {
+  const all = read<Record<string, DayRecord>>(TODAY_KEY) ?? {};
+
+  return Object.values(all).map(normalizeDay).sort((a, b) => a.date.localeCompare(b.date));
+}
 
 export const savePlan = (plan: SavedPlan) => write(PLAN_KEY, plan, PLAN_CHANGED);
 

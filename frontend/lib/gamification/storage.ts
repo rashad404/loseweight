@@ -1,12 +1,13 @@
 'use client';
 
-import { buildActionsFromWeeklyPlan, buildQuest, evaluateAchievements, isoDay, updateQuest } from './engine.ts';
-import type { ActionState, GamificationState } from './models.ts';
-import type { WeeklyPlan } from '@/lib/routine/models';
+import { loadDay, saveDay, setActionState, type DayRecord } from '../plan/storage.ts';
+import type { WeeklyPlan } from '../routine/models.ts';
+import { buildQuest, evaluateAchievements, isoDay, updateQuest } from './engine.ts';
+import type { GamificationState } from './models.ts';
 
-export const GAME_KEY = 'lw_game_v1';
+export const GAME_KEY = 'lw_game_v2';
+export const LEGACY_GAME_KEY = 'lw_game_v1';
 export const GAME_CHANGED = 'lw:game-changed';
-export const WEEKLY_PLAN_KEY = 'lw_weekly_plan_v1';
 
 export function createLocalId(): string {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') return crypto.randomUUID();
@@ -20,82 +21,58 @@ export function createLocalId(): string {
   return `local-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
-function plannedActions(date: string) {
-  if (typeof window === 'undefined') return [];
+export function initialState(plan: WeeklyPlan | null, date = isoDay()): GamificationState {
+  return { version: 2, quest: buildQuest(plan, new Date(`${date}T12:00:00Z`)), achievements: [], preferences: { enabled: true, celebrations: true, landscape: true, mode: 'loss', theme: 'mint' }, circle: null, sync: { deviceId: typeof window === 'undefined' ? `device-${date}` : createLocalId(), revision: 0, updatedAt: new Date().toISOString() }, lastVisit: null };
+}
+
+function migrateLegacy(plan: WeeklyPlan | null, date: string): GamificationState | null {
   try {
-    const raw = localStorage.getItem(WEEKLY_PLAN_KEY);
-    return buildActionsFromWeeklyPlan(date, raw ? JSON.parse(raw) as WeeklyPlan : null);
-  } catch { return []; }
+    const raw = localStorage.getItem(LEGACY_GAME_KEY);
+    if (!raw) return null;
+    const legacy = JSON.parse(raw) as Omit<GamificationState, 'version'> & { version: 1; actions?: { date: string; id: string; state: string; rescheduledTo?: string | null }[] };
+    for (const action of legacy.actions ?? []) {
+      const changeId = action.id.split(':').slice(1).join(':');
+      if (!changeId || action.state === 'available') continue;
+      const current = loadDay(action.date);
+      saveDay(setActionState(current, changeId, action.state as Parameters<typeof setActionState>[2], { rescheduledTo: action.rescheduledTo ?? null }));
+    }
+    const next = { ...initialState(plan, date), preferences: legacy.preferences, achievements: legacy.achievements, circle: legacy.circle, sync: legacy.sync, lastVisit: legacy.lastVisit };
+    localStorage.removeItem(LEGACY_GAME_KEY);
+    return next;
+  } catch { return null; }
 }
 
-export function initialState(date = isoDay()): GamificationState {
-  const deviceId = typeof window !== 'undefined' ? createLocalId() : `device-${date}`;
-  return {
-    version: 1, actions: plannedActions(date), quest: buildQuest(new Date(`${date}T12:00:00Z`)), achievements: [],
-    preferences: { enabled: true, celebrations: true, landscape: true, mode: 'loss', theme: 'mint' },
-    circle: null, sync: { deviceId, revision: 0, updatedAt: new Date().toISOString() }, lastVisit: null,
-  };
-}
-
-export function loadGame(date = isoDay()): GamificationState {
+export function loadGame(plan: WeeklyPlan | null, date = isoDay()): GamificationState {
   try {
     const raw = localStorage.getItem(GAME_KEY);
-    const parsed = raw ? JSON.parse(raw) as GamificationState : initialState(date);
-    const defaults = initialState(date);
+    const parsed = raw ? JSON.parse(raw) as GamificationState : migrateLegacy(plan, date) ?? initialState(plan, date);
+    const defaults = initialState(plan, date);
     parsed.preferences = { ...defaults.preferences, ...parsed.preferences };
     parsed.circle ??= null;
     parsed.sync ??= defaults.sync;
-    if (!parsed.actions.some((a) => a.date === date) && parsed.preferences.mode !== 'paused') {
-      parsed.actions.push(...plannedActions(date));
-    }
+    if (parsed.quest.weekStart !== defaults.quest.weekStart || !plan?.changes.some((change) => change.id === parsed.quest.sourceChangeId && change.accepted)) parsed.quest = defaults.quest;
     return parsed;
-  } catch { return initialState(date); }
+  } catch { return initialState(plan, date); }
 }
 
-export function prepareGame(state: GamificationState): GamificationState {
-  const quest = updateQuest(state.quest, state.actions);
-  const next = { ...state, quest, achievements: evaluateAchievements({ ...state, quest }), lastVisit: isoDay() };
-  return { ...next, sync: { ...next.sync, updatedAt: new Date().toISOString() } };
-}
-
-export function saveGame(state: GamificationState): GamificationState | null {
+export function saveGame(state: GamificationState, days: DayRecord[], plan: WeeklyPlan | null): GamificationState | null {
   try {
-    const next = prepareGame(state);
+    const quest = updateQuest(state.quest, days);
+    const withQuest = { ...state, quest, lastVisit: isoDay(), sync: { ...state.sync, updatedAt: new Date().toISOString() } };
+    const next = { ...withQuest, achievements: evaluateAchievements(withQuest, days, plan) };
     localStorage.setItem(GAME_KEY, JSON.stringify(next));
     window.dispatchEvent(new Event(GAME_CHANGED));
     return next;
   } catch { return null; }
 }
 
-export function exportGame(state: GamificationState): string {
-  return JSON.stringify({ schema: 'loseweight-progress', exportedAt: new Date().toISOString(), state }, null, 2);
+export function exportGame(state: GamificationState, days: DayRecord[]): string {
+  return JSON.stringify({ schema: 'loseweight-progress', version: 2, exportedAt: new Date().toISOString(), state, days: days.slice(-31) }, null, 2);
 }
 
-export function importGame(raw: string): GamificationState | null {
+export function importGame(raw: string): { state: GamificationState; days: DayRecord[] } | null {
   try {
-    const payload = JSON.parse(raw) as { schema?: string; state?: GamificationState };
-    if (payload.schema !== 'loseweight-progress' || payload.state?.version !== 1) return null;
-    return payload.state;
+    const payload = JSON.parse(raw) as { schema?: string; version?: number; state?: GamificationState; days?: DayRecord[] };
+    return payload.schema === 'loseweight-progress' && payload.version === 2 && payload.state?.version === 2 && Array.isArray(payload.days) ? { state: payload.state, days: payload.days.slice(-31) } : null;
   } catch { return null; }
-}
-
-export function transitionAction(state: GamificationState, id: string, actionState: ActionState, replacement?: string): GamificationState {
-  return {
-    ...state,
-    actions: state.actions.map((a) => a.id === id ? {
-      ...a, state: actionState,
-      title: replacement ?? (actionState === 'adjusted' ? a.easierTitle : a.title),
-      completedAt: actionState === 'completed' || actionState === 'adjusted' ? new Date().toISOString() : null,
-    } : a),
-  };
-}
-
-export function rescheduleAction(state: GamificationState, id: string, nextDate: string): GamificationState {
-  const source = state.actions.find((a) => a.id === id);
-  if (!source || state.actions.some((a) => a.id === `${nextDate}:${source.id.split(':').at(-1)}`)) return state;
-  const moved = { ...source, id: `${nextDate}:${source.id.split(':').at(-1)}`, date: nextDate, state: 'available' as const, rescheduledTo: null, completedAt: null };
-  return {
-    ...state,
-    actions: [...state.actions.map((a) => a.id === id ? { ...a, state: 'rescheduled' as const, rescheduledTo: nextDate, completedAt: null } : a), moved],
-  };
 }

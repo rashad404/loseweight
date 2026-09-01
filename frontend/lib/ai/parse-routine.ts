@@ -8,11 +8,60 @@ import type { MealSlot } from '../routine/models.ts';
  * mistake can never become an invented calorie figure.
  */
 export interface ParsedItem {
+  /** The person's own words. Never replaced by a match or a translation. */
   text: string;
+  /**
+   * A searchable English food name, resolved in context: "yağ" eaten with
+   * bread and cheese is butter, not cooking oil. Null when the item is a
+   * composite dish, which `dish` then names.
+   *
+   * The form matters as much as the food. "rice", "cooked rice" and "dry rice"
+   * are three different calculations, so the model is asked to say which.
+   */
+  canonical: string | null;
+  /** fried, boiled, roasted, brewed, raw. Null when not known. */
+  preparation: string | null;
+  /** 0 to 1, how sure the model is that `canonical` is what was meant. */
+  confidence: number;
   quantity: number | null;
   unit: string | null;
   /** "1 bowl", "2 slices". Preserved for the correction UI. */
   household: string | null;
+  /** Names an entry in `ParsedRoutine.dishes` when this is not a single food. */
+  dish: string | null;
+}
+
+/** How sure the caller was told to be, when nothing said otherwise. */
+export const DEFAULT_CONFIDENCE = 0.5;
+
+export interface RecipeIngredient {
+  /** A searchable English food name. Nutrition comes from the database, not here. */
+  food: string;
+  gramsLow: number;
+  gramsHigh: number;
+}
+
+/**
+ * A proposed composition for a dish that is not a single food.
+ *
+ * `state` decides how it may be presented. Only `reviewed` and
+ * `curated_override` have been approved by a person; `generated` is a proposal
+ * and must be shown as one, because "plov" is not one recipe and a model's
+ * gram estimates are the weakest part of what it returns.
+ */
+export type RecipeState = 'generated' | 'user_confirmed' | 'reviewed' | 'curated_override';
+
+export interface ParsedDish {
+  dish: string;
+  recipeId: number | null;
+  state: RecipeState;
+  variant: string | null;
+  preparation: string | null;
+  /** Total grams of the serving the ingredient weights describe. */
+  servingG: number;
+  ingredients: RecipeIngredient[];
+  /** What the model had to assume. Shown to the user in their own reading. */
+  assumptions: string[];
 }
 
 export interface ParsedMeal {
@@ -23,8 +72,13 @@ export interface ParsedMeal {
 
 export interface ParsedRoutine {
   meals: ParsedMeal[];
+  dishes: ParsedDish[];
   nonNegotiables: string[];
 }
+
+/** Only a person's approval makes a composition safe to serve unprompted. */
+export const isApproved = (state: RecipeState) =>
+  state === 'reviewed' || state === 'curated_override';
 
 export const PARSE_SCHEMA_NAME = 'ParsedRoutine';
 
@@ -111,7 +165,19 @@ function parseItem(raw: string): ParsedItem | null {
   const quantity = q ? Number.parseFloat(q[1].replace(',', '.')) : null;
   const unit = q?.[2] ?? null;
 
-  return { text, quantity: Number.isFinite(quantity as number) ? quantity : null, unit, household };
+  // The offline parser reads the words but cannot translate or disambiguate
+  // them, so it claims no canonical name. The lookup then falls back to the
+  // person's own wording, which is what it did before any of this existed.
+  return {
+    text,
+    canonical: null,
+    preparation: null,
+    confidence: DEFAULT_CONFIDENCE,
+    quantity: Number.isFinite(quantity as number) ? quantity : null,
+    unit,
+    household,
+    dish: null,
+  };
 }
 
 /**
@@ -154,7 +220,7 @@ export function parseRoutineDeterministic(text: string): ParsedRoutine {
     else meals.push({ slot, whenDescribed: when, items });
   }
 
-  return { meals, nonNegotiables };
+  return { meals, dishes: [], nonNegotiables };
 }
 
 /** Cache key for a parsed routine, so the same text is never billed twice. */
