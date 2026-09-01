@@ -4,6 +4,8 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ['100.89.150.50'],
+
   /**
    * English moved from /en to the root. next-intl's middleware already
    * redirects, but it answers 307. These URLs were publicly live and listed in
