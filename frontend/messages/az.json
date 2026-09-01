@@ -15,8 +15,7 @@
     "closeMenu": "Bağla",
     "language": "Dil",
     "theme": "Rejimi dəyiş",
-    "home": "Ana səhifə",
-    "today": "Bu gün"
+    "home": "Ana səhifə"
   },
   "home": {
     "allGuides": "Bütün məqalələr",
@@ -399,8 +398,21 @@
   },
   "change": {
     "param": {
-      "meal": { "breakfast": "səhər yeməyinə", "lunch": "nahara", "dinner": "axşam yeməyinə", "snack": "qəlyanaltıya", "drink": "içkilərə" },
-      "when": { "unknown": "uyğun bir vaxt", "morning": "səhər", "afternoon": "günorta", "evening": "axşam", "late-night": "gecə gec saatlarda", "varies": "aclğın dəyişdiyi vaxt" }
+      "meal": {
+        "breakfast": "səhər yeməyinə",
+        "lunch": "nahara",
+        "dinner": "axşam yeməyinə",
+        "snack": "qəlyanaltıya",
+        "drink": "içkilərə"
+      },
+      "when": {
+        "unknown": "uyğun bir vaxt",
+        "morning": "səhər",
+        "afternoon": "günorta",
+        "evening": "axşam",
+        "late-night": "gecə gec saatlarda",
+        "varies": "aclğın dəyişdiyi vaxt"
+      }
     },
     "fat": {
       "title": "{food} tökmək əvəzinə ölçün",
@@ -580,6 +592,7 @@
       "fix-adherence": "Nəyin mane olduğuna baxın",
       "see-a-clinician": "Həkimlə danışın"
     },
-    "noPlan": "Əvvəlcə həftə başladın, sonra bu səhifənin müqayisə edəcəyi bir şey olar."
+    "noPlan": "Əvvəlcə həftə başladın, sonra bu səhifənin müqayisə edəcəyi bir şey olar.",
+    "allDeferred": "Hər gün cavab vermisiniz, amma hər dəfə səbəb göstərib dəyişiklikləri təxirə salmısınız. Buna olduğu kimi baxmaq lazımdır: plan əslində sınaqdan keçməyib, ona görə rəqəmləri dəyişmək güman olardı. Daha faydalı sual budur: üç dəyişiklikdən hansı davamlı olaraq mane olur və onun əvəzinə başqası həftənizə daha yaxşı uyğun gələrdimi."
   }
 }

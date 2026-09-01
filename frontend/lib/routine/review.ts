@@ -101,7 +101,19 @@ export function trendKgPerWeek(entries: WeightEntry[]): number | null {
   return Math.round(slopePerDay * 7 * 1000) / 1000;
 }
 
-/** Share of answered days on which every accepted change was followed. */
+/**
+ * Share of answered days on which every accepted change was followed.
+ *
+ * Three outcomes, and the difference between the last two is a safety matter:
+ *  - `answered: 0`, adherence null: the person never told us anything.
+ *  - `answered > 0`, adherence null: they answered, and deferred every change
+ *    with a reason. That is not adherence data, but it is emphatically not
+ *    evidence that the plan was followed.
+ *  - adherence set: a real proportion.
+ *
+ * Collapsing the middle case into the first let someone who reasonably skipped
+ * every change for three weeks be judged as though they had done all of them.
+ */
 export function adherenceFrom(days: DayRecord[], plan: WeeklyPlan): {
   adherence: number | null;
   answered: number;
@@ -121,7 +133,9 @@ export function adherenceFrom(days: DayRecord[], plan: WeeklyPlan): {
       return state !== 'skipped_reasonable' && state !== 'rescheduled';
     }),
   })).filter(({ changes }) => changes.length > 0);
-  if (eligible.length === 0) return { adherence: null, answered: 0 };
+  // Answered, but every change was deferred or rescheduled. There is nothing
+  // to take a proportion of, so the count is reported without one.
+  if (eligible.length === 0) return { adherence: null, answered: answered.length };
   const followed = eligible.filter(({ day, changes }) => changes.every((change) => {
     const state = day.actions?.[change.id]?.state;
     return state === 'completed' || state === 'adjusted' || day.followed.includes(change.id);
@@ -180,6 +194,16 @@ export function reviewPlan(
     };
   }
 
+  // Answered every day and deferred every change. Each skip may have been
+  // entirely reasonable, and none of them tested the plan, so the useful
+  // question is what keeps getting in the way rather than what to cut next.
+  if (adherence === null && answered > 0) {
+    return {
+      ...base, verdict: 'not-following', action: 'fix-adherence',
+      explanationKey: 'review.allDeferred',
+    };
+  }
+
   // Losing much faster than intended is not a success to encourage. It usually
   // means eating far below target, which costs muscle and rarely lasts.
   const fasterLimit = expectedKgPerWeek * (1 + TOLERANCE) - 0.25;
@@ -194,7 +218,10 @@ export function reviewPlan(
   if (actual > slowerLimit) {
     // Weight that has not moved at all, on a plan that was followed, is worth
     // a conversation with a clinician rather than another calorie cut.
-    if (Math.abs(actual) < 0.05 && (adherence ?? 1) >= 0.8) {
+    // Only when we actually know the plan was followed. Reading unknown
+    // adherence as full adherence sent people to a clinician on the stated
+    // grounds that they had followed a plan we had no evidence they followed.
+    if (Math.abs(actual) < 0.05 && adherence !== null && adherence >= 0.8) {
       return {
         ...base, verdict: 'no-change', action: 'see-a-clinician',
         explanationKey: 'review.noChange',

@@ -15,8 +15,7 @@
     "closeMenu": "Close menu",
     "language": "Language",
     "theme": "Switch theme",
-    "home": "Home",
-    "today": "Today"
+    "home": "Home"
   },
   "home": {
     "allGuides": "All guides",
@@ -399,8 +398,21 @@
   },
   "change": {
     "param": {
-      "meal": { "breakfast": "breakfast", "lunch": "lunch", "dinner": "dinner", "snack": "snacks", "drink": "drinks" },
-      "when": { "unknown": "an appropriate time", "morning": "morning", "afternoon": "afternoon", "evening": "evening", "late-night": "late at night", "varies": "whenever hunger varies" }
+      "meal": {
+        "breakfast": "breakfast",
+        "lunch": "lunch",
+        "dinner": "dinner",
+        "snack": "snacks",
+        "drink": "drinks"
+      },
+      "when": {
+        "unknown": "an appropriate time",
+        "morning": "morning",
+        "afternoon": "afternoon",
+        "evening": "evening",
+        "late-night": "late at night",
+        "varies": "whenever hunger varies"
+      }
     },
     "fat": {
       "title": "Measure the {food} instead of pouring it",
@@ -580,6 +592,7 @@
       "fix-adherence": "Look at what is getting in the way",
       "see-a-clinician": "Talk to a clinician"
     },
-    "noPlan": "Start a week first, then this page has something to compare against."
+    "noPlan": "Start a week first, then this page has something to compare against.",
+    "allDeferred": "You answered every day and set every change aside, each time for a reason. That is worth taking at face value: the plan has not really been tested, so changing the numbers would be guesswork. The more useful question is which of the three keeps getting in the way, and whether a different one would fit your week better."
   }
 }

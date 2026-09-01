@@ -118,7 +118,12 @@ test('reasonable skips and reschedules stay neutral in adaptive review', () => {
     date: '2026-08-31', followed: [], skipped: [], usedFlexibleMeal: false,
     actions: Object.fromEntries(weekly.changes.filter((change) => change.accepted).map((change) => [change.id, { state: 'skipped_reasonable' as const, completedAt: null, replacement: null, rescheduledTo: null }])),
   }];
-  assert.deepEqual(adherenceFrom(neutral, weekly), { adherence: null, answered: 0 });
+  // Neutral means it does not count against them: adherence stays null rather
+  // than becoming 0, so no "not following" verdict is triggered by one day of
+  // legitimate skips. The day is still counted as answered, because reporting
+  // it as unanswered made deferring everything indistinguishable from never
+  // opening the page, and the plan was then judged as though it had been kept.
+  assert.deepEqual(adherenceFrom(neutral, weekly), { adherence: null, answered: 1 });
 });
 
 test('maintenance never labels stable weight as stalled progress', () => {
@@ -133,4 +138,38 @@ test('the measured gap is reported in calories, signed the readable way', () => 
 
   assert.ok(gap > 0, 'losing slower means more calories than assumed');
   assert.ok(gap < 400, `a plausible size, got ${gap}`);
+});
+
+/* --------------------------------- deferring every change is not adherence -- */
+
+/** Every accepted change given the same action state, every day. */
+const deferred = (state: string, total = 20): DayRecord[] =>
+  Array.from({ length: total }, (_, i) => ({
+    date: `2026-01-${String(i + 1).padStart(2, '0')}`,
+    followed: [], skipped: [], usedFlexibleMeal: false,
+    actions: { c1: { state } },
+  } as unknown as DayRecord));
+
+test('deferring every change is never read as having followed the plan', () => {
+  // Excluding reasonable skips from the denominator made "answered and did
+  // nothing" look identical to "never answered", so a fourth change was
+  // proposed to someone doing none of the first three.
+  for (const state of ['skipped_reasonable', 'rescheduled']) {
+    const slow = reviewPlan(plan(), weighIns(-0.05), deferred(state), later);
+    assert.equal(slow.action, 'fix-adherence', state);
+    assert.notEqual(slow.action, 'add-a-change');
+  }
+});
+
+test('a stall is only sent to a clinician when the plan was demonstrably followed', () => {
+  // The message says "on a plan you did follow". Reading unknown adherence as
+  // full adherence made that claim on no evidence at all.
+  const noRecords = reviewPlan(plan(), weighIns(0), [], later);
+  assert.notEqual(noRecords.action, 'see-a-clinician', 'nobody marked a single day');
+
+  const deferredStall = reviewPlan(plan(), weighIns(0), deferred('skipped_reasonable'), later);
+  assert.notEqual(deferredStall.action, 'see-a-clinician');
+
+  const reallyFollowed = reviewPlan(plan(), weighIns(0), days(20, 20), later);
+  assert.equal(reallyFollowed.action, 'see-a-clinician', 'the real case still reaches it');
 });
