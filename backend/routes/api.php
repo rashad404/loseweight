@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\FoodSearchController;
+use App\Http\Controllers\Api\GamificationEventController;
 use App\Http\Controllers\Api\GuideController;
 use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\ProgressSyncController;
@@ -64,6 +65,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/progress', [ProgressSyncController::class, 'show']);
     Route::put('/progress', [ProgressSyncController::class, 'update']);
+    Route::post('/progress/events', [GamificationEventController::class, 'store']);
+    Route::get('/progress/insights', [GamificationEventController::class, 'report']);
 
     Route::post('/circles', [SupportCircleController::class, 'store']);
     Route::post('/circles/join', [SupportCircleController::class, 'join']);

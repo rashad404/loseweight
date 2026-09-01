@@ -1,4 +1,4 @@
-import type { Achievement, Consistency, DailyAction, GamificationState, WeeklyQuest } from './models.ts';
+import type { Achievement, Consistency, DailyAction, GamificationState, Progression, WeeklyQuest } from './models.ts';
 
 export const isoDay = (date = new Date()) => date.toISOString().slice(0, 10);
 
@@ -90,4 +90,17 @@ export function specificFeedback(actions: DailyAction[], date: string): string {
   if (done === today.length && done > 0) return `All ${done} planned actions are complete.`;
   if (done > 0) return `${done} of ${today.length} planned actions completed today.`;
   return 'Start with the action that feels easiest today.';
+}
+
+/** Cosmetic progression only. No health outcome or calorie value enters here. */
+export function calculateProgression(state: GamificationState): Progression {
+  const earnedActions = state.actions.filter((a) => a.state === 'completed' || a.state === 'adjusted').length;
+  const current = earnedActions + state.achievements.length * 2;
+  const level = current >= 30 ? 4 : current >= 15 ? 3 : current >= 5 ? 2 : 1;
+  return {
+    level,
+    current,
+    next: [0, 5, 15, 30, 50][level],
+    unlockedThemes: level >= 3 ? ['mint', 'violet', 'sunrise'] : level >= 2 ? ['mint', 'violet'] : ['mint'],
+  };
 }

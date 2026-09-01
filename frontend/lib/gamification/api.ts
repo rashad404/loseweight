@@ -1,5 +1,6 @@
 import { apiClient } from '@/lib/api/client';
 import type { GamificationState, SupportCircle } from './models';
+import { clearGameEvents, pendingGameEvents } from './analytics';
 
 interface ProgressPayload { revision: number; state: GamificationState; updated_at: string }
 
@@ -36,4 +37,12 @@ export async function createRemoteCircle(name: string, displayName: string): Pro
 export async function sendRemoteReaction(circleId: string, memberId: string): Promise<SupportCircle> {
   const response = await apiClient.post<{ data: ApiCircle }>(`/circles/${circleId}/reaction`, { member_id: Number(memberId), reaction: 'heart' });
   return mapCircle(response.data.data);
+}
+
+export async function flushGameEvents(): Promise<number> {
+  const events = pendingGameEvents();
+  if (!events.length) return 0;
+  await apiClient.post('/progress/events', { events });
+  clearGameEvents();
+  return events.length;
 }

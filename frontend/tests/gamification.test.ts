@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildInitialActions, buildQuest, calculateConsistency, evaluateAchievements, updateQuest } from '../lib/gamification/engine.ts';
+import { buildInitialActions, buildQuest, calculateConsistency, calculateProgression, evaluateAchievements, updateQuest } from '../lib/gamification/engine.ts';
 import type { GamificationState } from '../lib/gamification/models.ts';
 import { exportGame, importGame, rescheduleAction } from '../lib/gamification/storage.ts';
 
@@ -78,4 +78,18 @@ test('sync snapshot round trips without health measurements', () => {
   assert.deepEqual(importGame(raw), state);
   assert.equal(raw.includes('weightKg'), false);
   assert.equal(raw.includes('calories'), false);
+});
+
+test('progression uses actions and achievements, never health outcomes', () => {
+  const state: GamificationState = {
+    version: 1,
+    actions: Array.from({ length: 5 }, (_, index) => ({ ...dated('completed'), id: `done-${index}` })),
+    quest: buildQuest(), achievements: [],
+    preferences: { enabled: true, celebrations: true, landscape: true, mode: 'loss', theme: 'mint' },
+    circle: null, sync: { deviceId: 'test', revision: 0, updatedAt: '2026-08-31T00:00:00Z' }, lastVisit: null,
+  };
+  const progress = calculateProgression(state);
+  assert.equal(progress.level, 2);
+  assert.deepEqual(progress.unlockedThemes, ['mint', 'violet']);
+  assert.equal(JSON.stringify(progress).includes('weight'), false);
 });

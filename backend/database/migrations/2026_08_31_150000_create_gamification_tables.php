@@ -35,10 +35,21 @@ return new class extends Migration
             $table->timestamps();
             $table->unique(['support_circle_id', 'user_id']);
         });
+
+        Schema::create('gamification_events', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('name', 40);
+            $table->json('properties');
+            $table->timestamp('occurred_at');
+            $table->timestamps();
+            $table->index(['name', 'occurred_at']);
+        });
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('gamification_events');
         Schema::dropIfExists('support_circle_members');
         Schema::dropIfExists('support_circles');
         Schema::dropIfExists('progress_states');

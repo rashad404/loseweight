@@ -77,3 +77,10 @@ export interface Consistency {
   ratio: number;
   activeDays: number;
 }
+
+export interface Progression {
+  level: number;
+  current: number;
+  next: number;
+  unlockedThemes: GamificationPreferences['theme'][];
+}

@@ -30,3 +30,7 @@ export function recordGameEvent(name: GameEventName, properties: Record<string, 
 export function pendingGameEvents(): GameEvent[] {
   try { return JSON.parse(localStorage.getItem(EVENT_KEY) ?? '[]') as GameEvent[]; } catch { return []; }
 }
+
+export function clearGameEvents(): void {
+  try { localStorage.removeItem(EVENT_KEY); } catch { /* Nothing to clear. */ }
+}
