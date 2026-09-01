@@ -1,4 +1,4 @@
-import { API_URL } from '../api/client.ts';
+import { API_URL } from '../api/base.ts';
 import { screenTopics } from '../safety/boundaries.ts';
 import { parseRoutineDeterministic, type ParsedRoutine } from './parse-routine.ts';
 

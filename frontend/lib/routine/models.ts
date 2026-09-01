@@ -41,6 +41,12 @@ export interface FoodMatch {
   nutrition: Nutrition | null;
   /** Shown to the user wherever the estimate is uncertain. */
   caveat?: string;
+  /**
+   * Candidates offered when no single result clearly answers what the user
+   * wrote. Present with `caveat: 'needsChoice'` and a null `nutrition`, so the
+   * food counts for nothing until the user picks one.
+   */
+  alternatives?: FoodMatch[];
 }
 
 export interface PortionEstimate {

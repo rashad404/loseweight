@@ -1,0 +1,1 @@
+-[ ] http://100.89.150.50:3044/az/calculators make user friendly cards with images. from the first look it should be clear what is each calculator for

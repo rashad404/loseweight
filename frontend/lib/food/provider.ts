@@ -12,6 +12,11 @@ export interface FoodQuery {
   /** Canonical-ish name, already normalised by the caller. */
   name: string;
   grams?: number | null;
+  /**
+   * A count with no unit: "2 cokes", "3 eggs". Multiplies the food's typical
+   * portion. Ignored when `grams` is given, since a weight already covers it.
+   */
+  servings?: number | null;
   /** Narrows the search when the user's locale suggests a regional dish. */
   locale?: string;
 }

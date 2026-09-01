@@ -224,10 +224,15 @@ function matches(needle: string, haystack: string): boolean {
 export const azerbaijaniProvider: FoodProvider = {
   id: 'curated-az',
 
-  async search({ name, grams }: FoodQuery): Promise<FoodMatch[]> {
+  async search({ name, grams, servings }: FoodQuery): Promise<FoodMatch[]> {
     const n = normalise(name);
     const dish = DISHES.find((d) => d.aliases.some((a) => matches(normalise(a), n)));
-    return dish ? [compose(dish, grams)] : [];
+    if (!dish) return [];
+
+    // Two portions of plov is twice the plov. Without this a stated count with
+    // no unit was dropped and a second helping cost nothing.
+    const count = servings && servings >= 1 && servings <= 12 ? Math.round(servings) : 1;
+    return [compose(dish, grams ?? (count > 1 ? dish.servingG * count : null))];
   },
 };
 

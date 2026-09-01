@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\GuideController;
 use App\Http\Controllers\Api\PlanController;
+use App\Http\Controllers\Api\FoodSearchController;
 use App\Http\Controllers\Api\RoutineParseController;
 use App\Http\Controllers\Api\SubscriberController;
 use App\Http\Controllers\Api\WeightEntryController;
@@ -33,6 +34,10 @@ Route::post('/subscribers/{token}/unsubscribe', [SubscriberController::class, 'u
 Route::post('/routine/parse', [RoutineParseController::class, 'store'])
     ->middleware('throttle:20,1');
 Route::get('/ai/status', [RoutineParseController::class, 'status']);
+
+// Food lookup. Only foods the client cannot resolve locally reach this.
+Route::get('/food/search', [FoodSearchController::class, 'search'])
+    ->middleware('throttle:60,1');
 
 // Kimlik.az OAuth (PKCE)
 Route::post('/auth/wallet/callback', [AuthController::class, 'walletCallback'])->middleware('throttle:20,1');

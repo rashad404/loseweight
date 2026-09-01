@@ -9,7 +9,7 @@ each step lands. Do not mark a step done until it has been tested, not merely wr
 | 2 | Structured models: user routine, meal, food match, plan change, weekly plan | **done** |
 | 3 | Food provider abstraction | **done**, 11 tests, USDA + 12 curated AZ dishes |
 | 4 | Deterministic change-selection rules | **done**, 17 tests, 7 rules |
-| 5 | Natural-language parsing with correction UI | parsing **done** (18 TS + 15 PHP tests); correction UI next |
+| 5 | Natural-language parsing with correction UI | **done**, 83 TS + 21 PHP tests |
 | 6 | Side-by-side original versus modified | not started |
 | 7 | Save accepted changes | not started |
 | 8 | `/today` | not started |
@@ -39,6 +39,10 @@ each step lands. Do not mark a step done until it has been tested, not merely wr
 - AI parsing is live. Measured cost: about $0.0021 per onboarding parse on
   Haiku, roughly $2.12 per 1000. Misspelled foods parse correctly but will not
   match a nutrition source, which the correction UI is there to handle.
+- The 34 curated foods in `frontend/lib/food/usda.ts` were each verified
+  against FoodData Central by fdcId. Re-verify before adding to that table:
+  several original entries cited an id for the raw food while quoting the
+  cooked figure, and one cited butter for cheese.
 - Russian has never had a native review.
 
 ## Decisions already made

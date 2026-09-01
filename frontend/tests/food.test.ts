@@ -1,10 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { resolve, scale } from '../lib/food/provider.ts';
-import { usdaProvider } from '../lib/food/usda.ts';
+import { offlineUsdaProvider, createUsdaProvider } from '../lib/food/usda.ts';
 import { azerbaijaniProvider, AZ_DISH_COUNT } from '../lib/food/azerbaijani.ts';
 
-const providers = [usdaProvider, azerbaijaniProvider];
+// Offline by default: a test that depends on the network, on the API being
+// up, or on USDA quota is a test that fails for reasons unrelated to the code.
+const providers = [offlineUsdaProvider, azerbaijaniProvider];
 
 test('a common US food resolves from USDA with provenance', async () => {
   const [m] = await resolve(providers, { name: 'chicken breast', grams: 150 });
@@ -78,6 +80,72 @@ test('portion confidence widens the range predictably', () => {
   assert.ok(low.kcalLow < low.kcalHigh, 'a guessed portion has a band');
   assert.equal(low.kcalLow, 70);
   assert.equal(low.kcalHigh, 130);
+});
+
+test('a food only the remote source knows is resolved through it', async () => {
+  const remote = createUsdaProvider(async (name) => ({
+    results: [{ id: '99999', name: `Remote: ${name}`, per100g: { kcal: 200, proteinG: 10, fiberG: 1 } }],
+    strong: true,
+  }));
+  const [m] = await resolve([remote], { name: 'something obscure', grams: 100 });
+  assert.equal(m.source, 'usda');
+  // A remote match stays medium confidence even with a stated portion, because
+  // the food match itself came from a fuzzy search. The band reflects that.
+  assert.ok(m.nutrition!.kcalLow < 200 && m.nutrition!.kcalHigh > 200,
+    `200 should sit inside ${m.nutrition!.kcalLow}-${m.nutrition!.kcalHigh}`);
+  assert.equal(m.confidence, 'medium');
+});
+
+test('an ambiguous remote result asks the user instead of picking one', async () => {
+  // USDA ranks rice crackers above rice and chocolate syrup above chocolate.
+  // When nothing clearly answers the word, guessing produces a calorie figure
+  // the user never chose, so the candidates come back uncounted.
+  const remote = createUsdaProvider(async () => ({
+    results: [
+      { id: '1', name: 'Rice crackers', per100g: { kcal: 416, proteinG: 8, fiberG: 3 } },
+      { id: '2', name: 'Snacks, rice cakes', per100g: { kcal: 380, proteinG: 8, fiberG: 4 } },
+    ],
+    strong: false,
+  }));
+  const [m] = await resolve([remote], { name: 'zzz obscure grain' });
+
+  assert.equal(m.nutrition, null, 'nothing is counted until the user picks');
+  assert.equal(m.caveat, 'needsChoice');
+  assert.equal(m.alternatives?.length, 2);
+  assert.equal(m.alternatives![0].name, 'Rice crackers');
+  assert.ok(m.alternatives!.every((a) => a.nutrition), 'each candidate carries its own figure');
+});
+
+test('a plain word resolves from the curated table, not the remote search', async () => {
+  // "rice" reaching USDA came back as rice crackers at 416 kcal per 100 g.
+  // The alias has to catch it before the network is involved at all.
+  let calls = 0;
+  const remote = createUsdaProvider(async () => { calls++; return { results: [], strong: false }; });
+
+  for (const [word, expected] of [
+    ['rice', 'Rice, white, long-grain, cooked'],
+    ['bread', 'Bread, white, commercially prepared'],
+    ['chicken', 'Chicken, meat only, cooked, roasted'],
+    ['coke', 'Beverages, carbonated, cola, regular'],
+    ['coffee', 'Coffee, brewed'],
+  ] as const) {
+    const [m] = await resolve([remote], { name: word });
+    assert.equal(m.name, expected, word);
+  }
+
+  assert.equal(calls, 0, 'common words must never cost a network call');
+});
+
+test('a longer alias wins over a shorter one it contains', async () => {
+  const offline = createUsdaProvider(async () => ({ results: [], strong: false }));
+  const [m] = await resolve([offline], { name: 'chicken breast' });
+  assert.equal(m.name, 'Chicken, meat only, cooked, roasted');
+});
+
+test('a remote lookup that fails degrades to unmatched, not to a guess', async () => {
+  const broken = createUsdaProvider(async () => { throw new Error('network'); });
+  const [m] = await resolve([broken], { name: 'zzzz not a food' });
+  assert.equal(m.source, 'unmatched');
 });
 
 test('a provider that throws does not lose other providers matches', async () => {
