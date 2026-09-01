@@ -129,7 +129,10 @@
     "scenarioMilestone": "Çəkinin 10%-i təxminən {weeks} həftəyə",
     "scenarioAllSafe": "Hər üçü sizin rəqəmləriniz üçün təhlükəsiz həddin içindədir. Ən sürətlisi ya 25% defisitlə, ya da həkim nəzarəti olmadan təklif etdiyimiz ən aşağı kalori ilə məhdudlaşdırılır.",
     "fwMovement": "Hərəkət",
-    "fwMovementValue": "Adi gündəlik hərəkətinizi saxlayın. İndi onu dəyişsəniz, kalori hesablamasını yoxlamaq mümkün olmayacaq."
+    "fwMovementValue": "Adi gündəlik hərəkətinizi saxlayın. İndi onu dəyişsəniz, kalori hesablamasını yoxlamaq mümkün olmayacaq.",
+    "routineTitle": "Bu rəqəmi həftəlik plana çevirin",
+    "routineBody": "Yuxarıdakı rəqəm sadəcə hədəfdir. Adətən nə yediyinizi yazın, biz də elə həmin yeməklərin içindən üç dəyişiklik seçək.",
+    "routineCta": "Nə yediyinizi yazın"
   },
   "tracker": {
     "title": "Çəki izləmə",
@@ -337,8 +340,8 @@
     "consentTitle": "Mətnin təhlilə göndərilməsi",
     "consentBody": "Yazdığınızı düzgün oxumaq üçün yalnız bu mətni süni intellekt provayderinə göndəririk, başqa heç nəyi. Adınız, e-poçtunuz və çəki ölçmələriniz göndərilmir, mətnin modelin öyrədilməsində istifadəsinə icazə vermirik. Biz xam mətni yox, struktur nəticəni saxlayırıq.",
     "consentAccept": "Mətni təhlilə göndər",
-    "consentDecline": "Göndərmə. Cihazda təhlil et. Sadə təsvirləri oxuyur, mürəkkəb mətnlə çətinlik çəkir.",
-    "submit": "Rejimimi oxu",
+    "consentDecline": "Göndərilməsin. Mətn elə bu cihazda oxunsun, heç nə brauzerdən kənara çıxmır. Hər yeməyi ayrıca sətirdə yazsanız, daha dəqiq oxuyacaq.",
+    "submit": "Siyahıya çevir",
     "reading": "Oxunur",
     "reviewTitle": "Belə başa düşdük",
     "reviewIntro": "Hələ heç nə hesablanmayıb. Səhv olanı düzəldin və davam edin.",
@@ -380,6 +383,7 @@
     "chooseMatch": "Buna bir neçə məhsul uyğun gəlir",
     "chooseMatchHelp": "Ən yaxınını seçin. Seçməyincə bu məhsul hesaba daxil edilmir.",
     "chooseNone": "Heç biri uyğun deyil",
-    "portionFromWords": "Sizin yazdığınıza əsasən hesablanıb, ona görə təxminidir"
+    "portionFromWords": "Sizin yazdığınıza əsasən hesablanıb, ona görə təxminidir",
+    "fieldLabel": "Adi bir gününüz"
   }
 }

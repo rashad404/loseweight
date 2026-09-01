@@ -129,7 +129,10 @@
     "scenarioMilestone": "10% of body weight in about {weeks} weeks",
     "scenarioAllSafe": "All three sit inside safe limits for your numbers. The fastest is capped at a 25% deficit, or the lowest intake we will suggest without medical supervision, whichever comes first.",
     "fwMovement": "Movement",
-    "fwMovementValue": "Keep your usual activity. Changing it now makes the calorie estimate impossible to check."
+    "fwMovementValue": "Keep your usual activity. Changing it now makes the calorie estimate impossible to check.",
+    "routineTitle": "Turn this into a weekly plan",
+    "routineBody": "The target above is a number. Tell us how you normally eat and we will pick three changes that get you there, built from the food you already have.",
+    "routineCta": "Describe how you eat"
   },
   "tracker": {
     "title": "Progress tracker",
@@ -337,7 +340,7 @@
     "consentTitle": "Sending this for interpretation",
     "consentBody": "To read this properly we send the text you write above, and nothing else, to an AI provider. Your name, email and weigh-ins are not included, and we do not allow it to be used for training. We keep the structured result, not the raw text.",
     "consentAccept": "Send the text to be interpreted",
-    "consentDecline": "Do not send it. Interpret it here instead, which handles plain descriptions but struggles with messy ones.",
+    "consentDecline": "Do not send it. Read it on this device, where nothing leaves your browser. Writing one meal per line helps it read you accurately.",
     "submit": "Read my routine",
     "reading": "Reading",
     "reviewTitle": "Here is what we understood",
@@ -380,6 +383,7 @@
     "chooseMatch": "Several foods could match this",
     "chooseMatchHelp": "Pick the closest one. Until you do, it counts as nothing.",
     "chooseNone": "None of these",
-    "portionFromWords": "Worked out from how you described it, so it is approximate"
+    "portionFromWords": "Worked out from how you described it, so it is approximate",
+    "fieldLabel": "A typical day"
   }
 }

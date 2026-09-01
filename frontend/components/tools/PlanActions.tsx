@@ -77,6 +77,19 @@ export default function PlanActions({ plan }: { plan: SavedPlan }) {
         )}
       </div>
 
+      {existing && (
+        // The plan is offered here rather than in the nav because it only
+        // means anything once there is a target to build a week against.
+        <div className="mt-6 panel p-5">
+          <h3 className="t-h4">{t('routineTitle')}</h3>
+          <p className="mt-1.5 text-[0.9375rem] text-muted max-w-prose">{t('routineBody')}</p>
+          <Link href="/onboarding" className="btn btn-primary mt-4">
+            {t('routineCta')}
+            <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+        </div>
+      )}
+
       <p aria-live="polite" className="mt-3 text-[0.8125rem] text-muted">
         {state === 'saved' && <span className="text-brand-800 font-medium">{t('planSaved')}. </span>}
         {state === 'failed' && (

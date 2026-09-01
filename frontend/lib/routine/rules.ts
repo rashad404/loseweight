@@ -52,8 +52,35 @@ export interface ChangeCandidate {
 
 const mid = (low: number, high: number) => Math.round((low + high) / 2);
 
-const FAT_WORDS = /\b(oil|butter|ghee|margarine|yağ|kərə|масло)\b/i;
-const LIQUID_KCAL_WORDS = /\b(juice|cola|soda|beer|wine|latte|smoothie|şirə|pivə|сок|пиво)\b/i;
+/**
+ * Food-word matching across three alphabets.
+ *
+ * JavaScript's \b is defined against [A-Za-z0-9_], so it never matches beside
+ * a Cyrillic letter or an "ə". Written as \bмасло\b and \byağ\b, every
+ * Azerbaijani and Russian term in these two lists was dead, and the cooking-fat
+ * and liquid-calorie rules only ever fired in English.
+ *
+ * Azerbaijani and Russian also take case endings, so "yağ" appears as "yağı"
+ * and "şirə" as "şirəsi". Those stems match a word start with any ending after
+ * it. English terms stay whole-word, so "soda" cannot match "sodium".
+ */
+const L = String.raw`\p{L}\p{N}`;
+
+/** Whole word, in any alphabet. */
+const whole = (terms: string[]) =>
+  new RegExp(String.raw`(?<![${L}])(?:${terms.join('|')})(?![${L}])`, 'iu');
+
+/** Word start, any ending. For languages that suffix the noun. */
+const stem = (terms: string[]) =>
+  new RegExp(String.raw`(?<![${L}])(?:${terms.join('|')})`, 'iu');
+
+const FAT_EN = whole(['oil', 'butter', 'ghee', 'margarine']);
+const FAT_STEM = stem(['yağ', 'kərə', 'масл', 'маргарин']);
+const LIQUID_EN = whole(['juice', 'cola', 'soda', 'beer', 'wine', 'latte', 'smoothie']);
+const LIQUID_STEM = stem(['şirə', 'pivə', 'пив', 'сок', 'кола', 'лимонад']);
+
+const FAT_WORDS = { test: (s: string) => FAT_EN.test(s) || FAT_STEM.test(s) };
+const LIQUID_KCAL_WORDS = { test: (s: string) => LIQUID_EN.test(s) || LIQUID_STEM.test(s) };
 
 function itemKcal(item: RoutineItem): number {
   if (!item.match?.nutrition) return 0;

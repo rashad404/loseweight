@@ -78,7 +78,9 @@ export default function RoutineCapture({
       <p className="t-lead mt-3 max-w-[58ch]">{t('intro')}</p>
 
       <form onSubmit={submit} className="mt-7">
-        <label htmlFor={textId} className="field-label">{t('title')}</label>
+        {/* Not the page title again. The heading asks the question; this
+            names the field, so a screen reader does not hear it twice. */}
+        <label htmlFor={textId} className="field-label">{t('fieldLabel')}</label>
         <textarea
           id={textId}
           className="field"

@@ -133,3 +133,44 @@ test('an Azerbaijani routine produces workable changes without touching the tea'
   assert.ok(s.chosen.length <= 3);
   assert.ok(!s.chosen.some((c) => String(c.params.food ?? '').includes('sweet tea')));
 });
+
+test('cooking fat is recognised in Azerbaijani and Russian, not only English', () => {
+  // These rules matched with \b, which JavaScript defines against ASCII word
+  // characters, so every non-English term in them was dead and neither rule
+  // ever fired for an Azerbaijani or Russian routine.
+  for (const fat of ['zeytun yağı', 'kərə yağı', 'подсолнечное масло']) {
+    const r = routine([
+      meal('breakfast', [item('çörək', 160, { protein: 5 })]),
+      meal('lunch', [item(fat, 240), item('düyü', 300, { protein: 5 })]),
+    ]);
+    const { chosen } = selectChanges(ctx({ routine: r, currentKcal: 700, targetKcal: 450 }));
+    assert.ok(
+      chosen.some((c) => c.kind === 'reduce-cooking-fat'),
+      `cooking fat not recognised in "${fat}"`,
+    );
+  }
+});
+
+test('liquid calories are recognised in Azerbaijani and Russian', () => {
+  for (const drink of ['meyvə şirəsi', 'апельсиновый сок', 'пиво']) {
+    const r = routine([
+      meal('breakfast', [item('çörək', 200, { protein: 5 })]),
+      meal('lunch', [item('düyü', 400, { protein: 5 })]),
+      meal('snack', [item(drink, 220)]),
+    ]);
+    const { chosen } = selectChanges(ctx({ routine: r, currentKcal: 820, targetKcal: 550 }));
+    assert.ok(
+      chosen.some((c) => c.kind === 'swap-liquid-calories'),
+      `liquid calories not recognised in "${drink}"`,
+    );
+  }
+});
+
+test('a word that merely starts like a food term is not treated as one', () => {
+  const r = routine([
+    meal('breakfast', [item('sodium supplement', 200), item('winery tour snack', 300)]),
+  ]);
+  const { chosen } = selectChanges(ctx({ routine: r, currentKcal: 500, targetKcal: 400 }));
+  assert.ok(!chosen.some((c) => c.kind === 'swap-liquid-calories'),
+    '"sodium" and "winery" must not read as drinks');
+});
