@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Link } from '@/i18n/navigation';
 import RoutineCapture from './RoutineCapture';
 import type { UserRoutine } from '@/lib/routine/models';
 import { ROUTINE_KEY } from '@/lib/plan/storage';
@@ -25,12 +24,9 @@ export default function OnboardingFlow() {
 
   if (saved) {
     return (
-      <div className="panel p-6 max-w-2xl">
-        <p className="t-eyebrow">Routine saved</p>
-        <h2 className="t-h2 mt-2">Your daily plan is ready</h2>
-        <p className="t-lead mt-3">Start with three flexible actions. You can make any of them easier, replace it, move it, or skip it.</p>
-        <Link href="/today" className="btn btn-primary mt-5">Open today</Link>
-      </div>
+      <p className="t-lead max-w-[52ch]">
+        Routine saved. Review and accept the first weekly changes before they appear on Today.
+      </p>
     );
   }
 

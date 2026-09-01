@@ -1,4 +1,5 @@
 import type { Achievement, Consistency, DailyAction, GamificationState, Progression, WeeklyQuest } from './models.ts';
+import type { WeeklyPlan } from '@/lib/routine/models.ts';
 
 export const isoDay = (date = new Date()) => date.toISOString().slice(0, 10);
 
@@ -36,6 +37,23 @@ export function buildInitialActions(date: string): DailyAction[] {
       rescheduledTo: null, completedAt: null,
     },
   ];
+}
+
+export function buildActionsFromWeeklyPlan(date: string, plan: WeeklyPlan | null): DailyAction[] {
+  if (!plan) return [];
+  return plan.changes.filter((change) => change.accepted).slice(0, 3).map((change) => ({
+    id: `${date}:${change.id}`,
+    date,
+    title: change.title,
+    easierTitle: change.alternatives[0] ?? change.title,
+    alternatives: change.alternatives,
+    rationale: change.rationale,
+    sourceType: 'accepted_change',
+    sourceLabel: `Accepted weekly change, rule ${change.ruleId}`,
+    state: 'available',
+    rescheduledTo: null,
+    completedAt: null,
+  }));
 }
 
 export function buildQuest(date = new Date()): WeeklyQuest {

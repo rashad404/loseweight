@@ -1,15 +1,25 @@
 'use client';
 
-import { buildInitialActions, buildQuest, evaluateAchievements, isoDay, updateQuest } from './engine.ts';
+import { buildActionsFromWeeklyPlan, buildQuest, evaluateAchievements, isoDay, updateQuest } from './engine.ts';
 import type { ActionState, GamificationState } from './models.ts';
+import type { WeeklyPlan } from '@/lib/routine/models';
 
 export const GAME_KEY = 'lw_game_v1';
 export const GAME_CHANGED = 'lw:game-changed';
+export const WEEKLY_PLAN_KEY = 'lw_weekly_plan_v1';
+
+function plannedActions(date: string) {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem(WEEKLY_PLAN_KEY);
+    return buildActionsFromWeeklyPlan(date, raw ? JSON.parse(raw) as WeeklyPlan : null);
+  } catch { return []; }
+}
 
 export function initialState(date = isoDay()): GamificationState {
   const deviceId = typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : `device-${date}`;
   return {
-    version: 1, actions: buildInitialActions(date), quest: buildQuest(new Date(`${date}T12:00:00Z`)), achievements: [],
+    version: 1, actions: plannedActions(date), quest: buildQuest(new Date(`${date}T12:00:00Z`)), achievements: [],
     preferences: { enabled: true, celebrations: true, landscape: true, mode: 'loss', theme: 'mint' },
     circle: null, sync: { deviceId, revision: 0, updatedAt: new Date().toISOString() }, lastVisit: null,
   };
@@ -24,7 +34,7 @@ export function loadGame(date = isoDay()): GamificationState {
     parsed.circle ??= null;
     parsed.sync ??= defaults.sync;
     if (!parsed.actions.some((a) => a.date === date) && parsed.preferences.mode !== 'paused') {
-      parsed.actions.push(...buildInitialActions(date));
+      parsed.actions.push(...plannedActions(date));
     }
     return parsed;
   } catch { return initialState(date); }

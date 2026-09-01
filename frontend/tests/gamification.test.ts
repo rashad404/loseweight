@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildInitialActions, buildQuest, calculateConsistency, calculateProgression, evaluateAchievements, updateQuest } from '../lib/gamification/engine.ts';
+import { buildActionsFromWeeklyPlan, buildInitialActions, buildQuest, calculateConsistency, calculateProgression, evaluateAchievements, updateQuest } from '../lib/gamification/engine.ts';
+import type { WeeklyPlan } from '../lib/routine/models.ts';
 import type { GamificationState } from '../lib/gamification/models.ts';
 import { exportGame, importGame, rescheduleAction } from '../lib/gamification/storage.ts';
 
@@ -92,4 +93,19 @@ test('progression uses actions and achievements, never health outcomes', () => {
   assert.equal(progress.level, 2);
   assert.deepEqual(progress.unlockedThemes, ['mint', 'violet']);
   assert.equal(JSON.stringify(progress).includes('weight'), false);
+});
+
+test('today actions only come from accepted weekly changes', () => {
+  const change = {
+    id: 'change-1', kind: 'adjust-portion' as const, targetMealId: null, targetItemId: null,
+    title: 'Use the portion you accepted', rationale: 'From the weekly review', ruleId: 'portion-rule',
+    difficulty: 'easy' as const, kcalSavedLow: 0, kcalSavedHigh: 0, proteinAddedG: 0,
+    fiberAddedG: 0, alternatives: ['Use a smaller plate'], accepted: true,
+  };
+  const plan = { changes: [change, { ...change, id: 'rejected', accepted: false }] } as WeeklyPlan;
+  const actions = buildActionsFromWeeklyPlan('2026-08-31', plan);
+  assert.equal(actions.length, 1);
+  assert.equal(actions[0].title, change.title);
+  assert.equal(actions[0].sourceType, 'accepted_change');
+  assert.deepEqual(buildActionsFromWeeklyPlan('2026-08-31', null), []);
 });

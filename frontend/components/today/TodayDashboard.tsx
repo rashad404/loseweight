@@ -10,6 +10,7 @@ import { recordGameEvent } from '@/lib/gamification/analytics';
 import { createRemoteCircle, flushGameEvents, pushProgress, sendRemoteReaction } from '@/lib/gamification/api';
 import type { ActionState, DailyAction, GamificationState, PlanMode, SupportCircle } from '@/lib/gamification/models';
 import { gameCopy, type GameLocale } from './copy';
+import { Link } from '@/i18n/navigation';
 
 const achievementIds = ['first-check', 'flexible-plan', 'welcome-back', 'steady-week', 'quest-complete'] as const;
 
@@ -64,17 +65,17 @@ export default function TodayDashboard({ locale }: { locale: string }) {
 
         {state.preferences.mode === 'paused' ? (
           <section className="game-soft-card text-center py-12"><RefreshCw className="mx-auto text-violet-500" /><h2 className="t-h2 mt-4">{c.pausedTitle}</h2><p className="text-muted mt-2">{c.pausedBody}</p><button className="btn btn-primary mt-5" onClick={() => setMode('maintenance')}>{c.resume}</button></section>
-        ) : <section className="space-y-3" aria-labelledby="actions-heading">
+        ) : today.length === 0 ? <section className="game-soft-card py-10 text-center"><h2 className="t-h2">Build your weekly plan first</h2><p className="text-muted mt-2">Today only shows changes you reviewed and accepted. It will never invent an action.</p><Link href="/onboarding" className="btn btn-primary mt-5">Continue onboarding</Link></section> : <section className="space-y-3" aria-labelledby="actions-heading">
           <div className="flex items-end justify-between gap-4"><div><p className="t-eyebrow">{c.today}</p><h2 id="actions-heading" className="t-h2 mt-1">{c.matters}</h2></div><span className="text-sm text-muted">{c.change}</span></div>
           {today.map((action, index) => <article key={action.id} className="game-action" data-state={action.state}>
             <button className="game-check" aria-label={`Mark ${action.title} complete`} onClick={() => changeAction(action, action.state === 'completed' ? 'available' : 'completed')}>
               {action.state === 'completed' || action.state === 'adjusted' ? <Check size={20} /> : <span>{index + 1}</span>}
             </button>
-            <div className="min-w-0 flex-1"><h3 className="font-bold leading-snug">{action.state === 'adjusted' ? c.actions[index][1] : c.actions[index][0]}</h3><p className="mt-1 text-sm text-muted">{c.actions[index][2]}</p><p className="mt-2 text-xs font-semibold text-violet-500">{c.actions[index][3]}</p></div>
+            <div className="min-w-0 flex-1"><h3 className="font-bold leading-snug">{action.title}</h3><p className="mt-1 text-sm text-muted">{action.rationale}</p><p className="mt-2 text-xs font-semibold text-violet-500">{action.sourceLabel}</p></div>
             <button className="game-more" aria-expanded={open === action.id} onClick={() => setOpen(open === action.id ? null : action.id)} aria-label={`Options for ${action.title}`}><ChevronDown size={19} /></button>
             {open === action.id && <div className="game-action-menu">
               <button onClick={() => changeAction(action, 'adjusted')}>{c.makeEasier}</button>
-              {c.alternatives[index].map((alt) => <button key={alt} onClick={() => changeAction(action, 'adjusted', alt)}>{c.replace}: {alt}</button>)}
+              {action.alternatives.map((alt) => <button key={alt} onClick={() => changeAction(action, 'adjusted', alt)}>{c.replace}: {alt}</button>)}
               <button onClick={() => { update(rescheduleAction(state, action.id, tomorrow)); recordGameEvent('action_rescheduled', { sourceType: action.sourceType, actionState: 'rescheduled', mode: state.preferences.mode }); setOpen(null); }}>{c.move}</button>
               <button onClick={() => changeAction(action, 'skipped_reasonable')}>{c.unsuitable}</button>
               <button onClick={() => changeAction(action, 'skipped')}>{c.skip}</button>

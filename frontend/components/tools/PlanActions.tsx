@@ -39,8 +39,8 @@ export default function PlanActions({ plan }: { plan: SavedPlan }) {
         </button>
 
         {existing && (
-          <Link href="/today" className="btn btn-ghost">
-            Today
+          <Link href="/tracker" className="btn btn-ghost">
+            {t('goToTracker')}
             <ArrowRight size={16} aria-hidden="true" />
           </Link>
         )}
