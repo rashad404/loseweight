@@ -7,6 +7,7 @@ import { AlertCircle } from 'lucide-react';
 import type { PlanChange, RoutineItem, UserRoutine } from '@/lib/routine/models';
 import type { SavedPlan } from '@/lib/plan/storage';
 import { expectedFrom, proposeChanges, toChange } from '@/lib/routine/weekly-plan';
+import { localizedChangeParams } from '@/lib/routine/presentation';
 import ChangeCard from './ChangeCard';
 
 /**
@@ -32,6 +33,7 @@ export default function WeeklyPlanReview({
 }) {
   const t = useTranslations('weekly');
   const tc = useTranslations();
+  const tp = useTranslations('change.param');
 
   const proposal = useMemo(() => proposeChanges(routine, plan), [routine, plan]);
   const [changes, setChanges] = useState<PlanChange[]>(proposal.changes);
@@ -75,7 +77,7 @@ export default function WeeklyPlanReview({
       return { original: '-', modified: `+${change.fiberAddedG} g fiber` };
     }
 
-    return { original: '-', modified: tc(change.title, p) };
+    return { original: '-', modified: tc(change.title, localizedChangeParams(p, tp)) };
   };
 
   const toggle = (id: string) =>

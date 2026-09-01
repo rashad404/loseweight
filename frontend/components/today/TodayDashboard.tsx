@@ -6,6 +6,7 @@ import { Award, Check, ChevronDown, CircleDashed, Copy, Heart, HeartHandshake, P
 import { Link } from '@/i18n/navigation';
 import { loadDay, loadDays, loadWeekly, saveDay, saveWeekly, setActionState, type ActionState, type DayRecord } from '@/lib/plan/storage';
 import type { PlanChange, WeeklyPlan } from '@/lib/routine/models';
+import { localizedChangeParams } from '@/lib/routine/presentation';
 import { calculateConsistency, calculateProgression, isoDay } from '@/lib/gamification/engine';
 import { createLocalId, exportGame, importGame, initialState, loadGame, saveGame } from '@/lib/gamification/storage';
 import { recordGameEvent } from '@/lib/gamification/analytics';
@@ -21,6 +22,7 @@ export default function TodayDashboard({ locale }: { locale: string }) {
   const c = gameCopy[(locale in gameCopy ? locale : 'en') as GameLocale];
   const t = useTranslations('today');
   const tc = useTranslations();
+  const tp = useTranslations('change.param');
   const date = isoDay();
   const [plan, setPlan] = useState<WeeklyPlan | null>(null);
   const [day, setDay] = useState<DayRecord>({ date, followed: [], skipped: [], usedFlexibleMeal: false, actions: {} });
@@ -114,11 +116,12 @@ export default function TodayDashboard({ locale }: { locale: string }) {
             {accepted.map((change, index) => {
               const current = actionState(change);
               const displayed = day.actions?.[change.id]?.replacement;
+              const params = localizedChangeParams(change.params, tp);
               return <article key={change.id} className="game-action" data-state={current}>
-                <button className="game-check" aria-label={tc(change.title, change.params)} onClick={() => changeAction(change, current === 'completed' ? 'available' : 'completed')}>
+                <button className="game-check" aria-label={tc(change.title, params)} onClick={() => changeAction(change, current === 'completed' ? 'available' : 'completed')}>
                   {current === 'completed' || current === 'adjusted' ? <Check size={20} /> : <span>{index + 1}</span>}
                 </button>
-                <div className="min-w-0 flex-1"><h3 className="font-bold">{displayed ? tc(displayed) : tc(change.title, change.params)}</h3><p className="text-sm text-muted mt-1">{tc(change.rationale, change.params)}</p><p className="text-xs text-muted mt-2">{change.ruleId}</p></div>
+                <div className="min-w-0 flex-1"><h3 className="font-bold">{displayed ? tc(displayed) : tc(change.title, params)}</h3><p className="text-sm text-muted mt-1">{tc(change.rationale, params)}</p><p className="text-xs text-muted mt-2">{c.sourceAccepted}</p></div>
                 <button className="game-menu-trigger" aria-expanded={open === change.id} onClick={() => setOpen(open === change.id ? null : change.id)}><ChevronDown size={18} /></button>
                 {open === change.id && <div className="game-action-menu">
                   <button onClick={() => changeAction(change, 'adjusted', change.alternatives[0])}>{c.makeEasier}</button>
@@ -136,7 +139,7 @@ export default function TodayDashboard({ locale }: { locale: string }) {
 
         {accepted.length > 0 && (state.preferences.enabled ? <section className="grid gap-4 lg:grid-cols-[1.15fr_.85fr]">
           <div className="game-soft-card flex items-center gap-5"><ProgressRing completed={consistency.completed} planned={consistency.planned} /><div><p className="t-eyebrow">{c.momentum}</p><h2 className="t-h3 mt-2">{consistency.completed} / {consistency.planned} {c.planned}</h2><p className="text-sm text-muted mt-2">{consistency.activeDays} {c.activeDays}</p></div></div>
-          <div className="game-quest"><Sparkles size={20} /><div><p className="text-xs uppercase tracking-wider font-bold opacity-70">{c.quest}</p><h2 className="font-bold mt-1">{questChange ? tc(questChange.title, questChange.params) : c.questTitle}</h2><p className="text-sm opacity-75 mt-1">{state.quest.progress} / {state.quest.target} {c.days}</p><div className="game-quest-bar"><span style={{ width: `${state.quest.progress / state.quest.target * 100}%` }} /></div></div></div>
+          <div className="game-quest"><Sparkles size={20} /><div><p className="text-xs uppercase tracking-wider font-bold opacity-70">{c.quest}</p><h2 className="font-bold mt-1">{questChange ? tc(questChange.title, localizedChangeParams(questChange.params, tp)) : c.questTitle}</h2><p className="text-sm opacity-75 mt-1">{state.quest.progress} / {state.quest.target} {c.days}</p><div className="game-quest-bar"><span style={{ width: `${state.quest.progress / state.quest.target * 100}%` }} /></div></div></div>
         </section> : <section className="game-soft-card"><p className="font-semibold">{consistency.completed} / {consistency.planned} {c.planned}</p><p className="text-sm text-muted mt-1">{c.progressOff}</p></section>)}
 
         {plan && <section className="grid gap-4 lg:grid-cols-2">

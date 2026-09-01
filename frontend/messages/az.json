@@ -398,6 +398,10 @@
     "recipeHide": "Bağla"
   },
   "change": {
+    "param": {
+      "meal": { "breakfast": "səhər yeməyinə", "lunch": "nahara", "dinner": "axşam yeməyinə", "snack": "qəlyanaltıya", "drink": "içkilərə" },
+      "when": { "morning": "səhər", "afternoon": "günorta", "evening": "axşam", "late-night": "gecə gec saatlarda", "varies": "aclğın dəyişdiyi vaxt" }
+    },
     "fat": {
       "title": "{food} tökmək əvəzinə ölçün",
       "rationale": "Yağı azaltmaq ən asan yoldur, çünki nə yediyinizi yox, nə qədər yediyinizi dəyişir. Gözəyarı tökülən bir xörək qaşığı çox vaxt iki olur. Eyni yeməyi ölçməklə gündə təxminən {saved} kkal qazanırsınız, dad isə dəyişmir.",

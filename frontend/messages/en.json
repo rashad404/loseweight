@@ -398,6 +398,10 @@
     "recipeHide": "Hide"
   },
   "change": {
+    "param": {
+      "meal": { "breakfast": "breakfast", "lunch": "lunch", "dinner": "dinner", "snack": "snacks", "drink": "drinks" },
+      "when": { "morning": "morning", "afternoon": "afternoon", "evening": "evening", "late-night": "late at night", "varies": "whenever hunger varies" }
+    },
     "fat": {
       "title": "Measure the {food} instead of pouring it",
       "rationale": "Cooking fat is the cheapest calorie to cut, because it changes how much you eat, not what you eat. A tablespoon poured by eye is often two. Measuring the same dish saves about {saved} kcal a day and tastes the same.",

@@ -5,6 +5,7 @@ import type { WeeklyPlan } from '../lib/routine/models.ts';
 import type { GamificationState } from '../lib/gamification/models.ts';
 import { exportGame, importGame } from '../lib/gamification/storage.ts';
 import { setActionState, type ActionState, type DayRecord } from '../lib/plan/storage.ts';
+import { localizedChangeParams } from '../lib/routine/presentation.ts';
 
 const change = {
   id: 'change-1', kind: 'adjust-portion' as const, targetMealId: null, targetItemId: null,
@@ -87,4 +88,9 @@ test('progression uses canonical action credits, never achievements or health ou
 test('a rejected change cannot become the weekly quest', () => {
   const rejected = { ...plan, changes: [{ ...change, accepted: false }] };
   assert.equal(buildQuest(rejected).sourceChangeId, null);
+});
+
+test('enum parameters are localized before plan copy is rendered', () => {
+  const translated = localizedChangeParams({ meal: 'lunch', when: 'late-night', grams: 27 }, (key) => `translated:${key}`);
+  assert.deepEqual(translated, { meal: 'translated:meal.lunch', when: 'translated:when.late-night', grams: 27 });
 });

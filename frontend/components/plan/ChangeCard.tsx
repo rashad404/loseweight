@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { ArrowRight, RotateCcw, X } from 'lucide-react';
 import type { PlanChange } from '@/lib/routine/models';
+import { localizedChangeParams } from '@/lib/routine/presentation';
 
 /**
  * One proposed change, with everything needed to judge it.
@@ -35,9 +36,11 @@ export default function ChangeCard({
 }) {
   const t = useTranslations('weekly');
   const tc = useTranslations();
+  const tp = useTranslations('change.param');
   const [showAlternatives, setShowAlternatives] = useState(false);
 
   const saves = change.kcalSavedHigh > 0;
+  const localized = localizedChangeParams(params, tp);
 
   return (
     <li
@@ -46,7 +49,7 @@ export default function ChangeCard({
     >
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <h3 className="t-h4">{tc(change.title, params)}</h3>
+          <h3 className="t-h4">{tc(change.title, localized)}</h3>
           <p className="mt-1 text-[0.8125rem] text-muted">
             {saves
               ? t('worth', { low: change.kcalSavedLow, high: change.kcalSavedHigh })
@@ -93,7 +96,7 @@ export default function ChangeCard({
       <div className="mt-4">
         <p className="field-label">{t('whyThis')}</p>
         <p className="mt-1 text-[0.9375rem] text-muted max-w-prose">
-          {tc(change.rationale, params)}
+          {tc(change.rationale, localized)}
         </p>
       </div>
 
@@ -136,7 +139,7 @@ export default function ChangeCard({
                   onClick={() => onReplace(r.id)}
                   className="text-left text-[0.8125rem] px-2.5 py-1.5 rounded-lg border border-line hover:sunken"
                 >
-                  {tc(r.titleKey, r.params)}
+                  {tc(r.titleKey, localizedChangeParams(r.params, tp))}
                 </button>
               </li>
             ))}
