@@ -1,15 +1,23 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { resolveRoutine, itemsNeedingAttention, uncertainItems } from '../lib/routine/resolve.ts';
-import type { ParsedRoutine } from '../lib/ai/parse-routine.ts';
+import type { ParsedDish, ParsedItem, ParsedRoutine } from '../lib/ai/parse-routine.ts';
 
-const routine = (items: ParsedRoutine['meals'][number]['items']): ParsedRoutine => ({
+const routine = (items: ParsedItem[], dishes: ParsedDish[] = []): ParsedRoutine => ({
   meals: [{ slot: 'breakfast', whenDescribed: null, items }],
+  dishes,
   nonNegotiables: [],
 });
 
-const item = (text: string, quantity: number | null = null, unit: string | null = null) =>
-  ({ text, quantity, unit, household: null });
+const item = (
+  text: string,
+  quantity: number | null = null,
+  unit: string | null = null,
+  over: Partial<ParsedItem> = {},
+): ParsedItem => ({
+  text, canonical: null, preparation: null, confidence: 0.9,
+  quantity, unit, household: null, dish: null, ...over,
+});
 
 const flat = (r: Awaited<ReturnType<typeof resolveRoutine>>) => r.meals.flatMap((m) => m.items);
 
@@ -28,7 +36,7 @@ test('a stated amount stays with the food it was written before', async () => {
   // "two slices of bread with butter" measures the bread. Copying it onto
   // every half described the butter as slices as well.
   const rows = flat(await resolveRoutine(routine([
-    { text: 'bread with butter', quantity: 2, unit: 'slices', household: 'two slices' },
+    item('bread with butter', 2, 'slices', { household: 'two slices' }),
   ])));
 
   assert.equal(rows[0].portion.grams, 60, 'two slices of bread');
@@ -77,4 +85,85 @@ test('attention is only for items carrying no figure at all', async () => {
 
   assert.deepEqual(itemsNeedingAttention(r).map((i) => i.rawText), ['zzzqqq not a food']);
   assert.equal(uncertainItems(r).length, 0, 'an assumed portion is not a fault to fix');
+});
+
+/* ------------------------------------------------------- composite dishes -- */
+
+const plov = (over: Partial<ParsedDish> = {}): ParsedDish => ({
+  dish: 'plov',
+  recipeId: 7,
+  state: 'generated',
+  variant: 'meat plov',
+  preparation: null,
+  servingG: 300,
+  ingredients: [
+    { food: 'white rice', gramsLow: 150, gramsHigh: 150 },
+    { food: 'butter', gramsLow: 20, gramsHigh: 20 },
+  ],
+  assumptions: ['The cooking fat was not stated.'],
+  ...over,
+});
+
+test('a dish is priced from its ingredients, not guessed as a whole', async () => {
+  const rows = flat(await resolveRoutine(
+    routine([item('plov', null, null, { dish: 'plov' })], [plov()]),
+  ));
+
+  // 150 g cooked white rice at 130 kcal/100 g plus 20 g butter at 717.
+  const expected = Math.round(1.5 * 130 + 0.2 * 717);
+  assert.equal(rows[0].match!.nutrition!.kcalLow, expected);
+  assert.equal(rows[0].match!.source, 'recipe');
+  assert.equal(rows[0].rawText, 'plov', "the person's own word is kept");
+});
+
+test('a proposed composition is carried through as a proposal', async () => {
+  const rows = flat(await resolveRoutine(
+    routine([item('plov', null, null, { dish: 'plov' })], [plov()]),
+  ));
+  const recipe = rows[0].match!.recipe!;
+
+  assert.equal(recipe.state, 'generated', 'the UI has to know this was not reviewed');
+  assert.equal(recipe.id, 7);
+  assert.deepEqual(recipe.assumptions, ['The cooking fat was not stated.']);
+  assert.equal(rows[0].match!.confidence, 'low');
+  assert.equal(rows[0].match!.caveat, 'mixedDish');
+});
+
+test('an ingredient nothing can price is reported, not silently dropped', async () => {
+  const rows = flat(await resolveRoutine(routine(
+    [item('plov', null, null, { dish: 'plov' })],
+    [plov({ ingredients: [
+      { food: 'white rice', gramsLow: 150, gramsHigh: 150 },
+      { food: 'zzzqqq unknown', gramsLow: 50, gramsHigh: 50 },
+    ] })],
+  )));
+
+  // The total is an understatement, so the missing part is named.
+  assert.deepEqual(rows[0].match!.recipe!.missing, ['zzzqqq unknown']);
+  assert.equal(rows[0].match!.nutrition!.kcalLow, Math.round(1.5 * 130));
+});
+
+test('a stated weight rescales the whole dish', async () => {
+  const full = flat(await resolveRoutine(
+    routine([item('plov', null, null, { dish: 'plov' })], [plov()]),
+  ));
+  const half = flat(await resolveRoutine(
+    routine([item('plov', 150, 'g', { dish: 'plov' })], [plov()]),
+  ));
+
+  assert.ok(
+    Math.abs(half[0].match!.nutrition!.kcalLow - full[0].match!.nutrition!.kcalLow / 2) <= 1,
+    'half a serving is half the dish',
+  );
+});
+
+test('the canonical name is looked up, not the untranslated words', async () => {
+  // "yağ" is in no food table. The model resolving it to butter in context is
+  // the whole reason this field exists.
+  const rows = flat(await resolveRoutine(routine([
+    item('yağ', null, null, { canonical: 'butter' }),
+  ])));
+
+  assert.equal(rows[0].match!.name, 'Butter, salted');
+  assert.equal(rows[0].rawText, 'yağ', "the person still sees what they wrote");
 });

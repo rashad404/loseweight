@@ -384,6 +384,15 @@
     "chooseMatchHelp": "Pick the closest one. Until you do, it counts as nothing.",
     "chooseNone": "None of these",
     "portionFromWords": "Worked out from how you described it, so it is approximate",
-    "fieldLabel": "A typical day"
+    "fieldLabel": "A typical day",
+    "recipeProposed": "We assumed what is in this",
+    "recipeReviewed": "Composition checked by a reviewer",
+    "recipeYours": "Composition you confirmed",
+    "recipeIntro": "No database has a figure for this dish, so we priced what is usually in it. Check it, because the amounts vary by household.",
+    "recipeMissing": "We found no data for {items}, so the total is lower than the real one.",
+    "recipeConfirm": "This looks right",
+    "recipeConfirmed": "Confirmed",
+    "recipeShow": "What we assumed",
+    "recipeHide": "Hide"
   }
 }

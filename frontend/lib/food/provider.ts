@@ -19,6 +19,17 @@ export interface FoodQuery {
   servings?: number | null;
   /** Narrows the search when the user's locale suggests a regional dish. */
   locale?: string;
+  /**
+   * Take the best-ranked search result rather than asking the user to choose.
+   *
+   * Used only for the ingredients inside a dish composition. Asking a person
+   * to pick a USDA record for the onion inside their plov is the wrong
+   * question, and refusing to price it made the dish silently understate
+   * itself. The composition is already shown as a proposal with every
+   * ingredient and the record it used listed, so the choice stays visible
+   * without becoming a prompt.
+   */
+  acceptBest?: boolean;
 }
 
 export interface FoodProvider {
@@ -72,11 +83,12 @@ export async function resolve(
   providers: FoodProvider[],
   query: FoodQuery,
 ): Promise<FoodMatch[]> {
-  const all: FoodMatch[] = [];
+  const all: { match: FoodMatch; from: number }[] = [];
 
-  for (const provider of providers) {
+  for (const [index, provider] of providers.entries()) {
     try {
-      all.push(...(await provider.search(query)));
+      const found = await provider.search(query);
+      all.push(...found.map((match) => ({ match, from: index })));
     } catch {
       // A provider being unavailable must not lose the matches others found.
     }
@@ -93,6 +105,17 @@ export async function resolve(
     }];
   }
 
+  // Ordered by how specifically the match answers the food, then by how
+  // precise its figure is. Those are different things, and sorting on
+  // confidence alone conflated them: a curated recipe is always low confidence
+  // because household ratios vary, so plain tea from the generic table
+  // outranked the sweet-tea recipe and the sugar quietly vanished. Providers
+  // are listed most specific first, so their position carries that meaning.
   const rank: Record<Confidence, number> = { high: 0, medium: 1, low: 2 };
-  return all.sort((a, b) => rank[a.confidence] - rank[b.confidence]);
+
+  return all
+    .sort((a, b) => (a.from !== b.from
+      ? a.from - b.from
+      : rank[a.match.confidence] - rank[b.match.confidence]))
+    .map(({ match }) => match);
 }

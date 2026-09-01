@@ -68,7 +68,16 @@ const LOCAL: Record<string, LocalFood> = {
   'salad':            { fdcId: '169249', label: 'Lettuce, green leaf, raw',           per100: { kcal: 15,  proteinG: 1.4,  fiberG: 1.3 }, defaultG: 100 },
 };
 
-const normalise = (s: string) => s.toLowerCase().trim().replace(/\s+/g, ' ');
+/**
+ * Lowercase, and turn punctuation into spaces.
+ *
+ * Food records and canonical names are written with commas: "white rice,
+ * cooked", "black tea, brewed". Whole-word matching needs a space or the end
+ * of the string after a term, so a comma blocked every one of them and a
+ * composed plov came back as its butter alone.
+ */
+const normalise = (s: string) =>
+  s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
 
 /**
  * A sane multiplier for a stated count. Guards against a parse that reads a
@@ -89,6 +98,29 @@ const KEYS: { term: string; food: LocalFood }[] = Object.entries(LOCAL)
  */
 const contains = (needle: string, haystack: string) =>
   new RegExp(`(^|\\s)${needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}($|\\s)`).test(haystack);
+
+/** Words that never change which food is meant. */
+const FILLER = new Set(['of', 'with', 'and', 'a', 'an', 'the', 'plain', 'fresh', 'some']);
+
+/**
+ * Whether a curated entry answers the whole request, not just part of it.
+ *
+ * The qualifiers are the point. Asked to name the form of a food, the model
+ * returns "white brined cheese" for pendir and "sweet tea" for şirin çay, and
+ * matching the bare word inside them threw away exactly the part that changes
+ * the calories: cheddar at 403 instead of a brined cheese, tea at 2 kcal
+ * instead of tea with sugar.
+ *
+ * So every meaningful word has to be accounted for, either by the term that
+ * matched or by the record's own description. Anything left over means this
+ * entry is not the food that was asked for, and the search should handle it.
+ */
+function coversQuery(query: string, term: string, label: string): boolean {
+  const words = (s: string) => new Set(s.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean));
+  const known = new Set([...words(term), ...words(label)]);
+
+  return [...words(query)].every((w) => FILLER.has(w) || known.has(w));
+}
 
 /**
  * The remote lookup is injectable so tests never depend on the network, on the
@@ -116,10 +148,12 @@ export function createUsdaProvider(remote: RemoteLookup = defaultRemote): FoodPr
   return {
     id: 'usda',
 
-    async search({ name, grams, servings }: FoodQuery): Promise<FoodMatch[]> {
+    async search({ name, grams, servings, acceptBest }: FoodQuery): Promise<FoodMatch[]> {
       const n = normalise(name);
 
-      const hit = LOCAL[n] ?? KEYS.find(({ term }) => term === n || contains(term, n))?.food;
+      const hit = LOCAL[n]
+        ?? KEYS.find(({ term, food }) =>
+          (term === n || contains(term, n)) && coversQuery(n, term, food.label))?.food;
 
       if (hit) {
         const g = grams ?? hit.defaultG * portions(servings);
@@ -152,7 +186,7 @@ export function createUsdaProvider(remote: RemoteLookup = defaultRemote): FoodPr
           ...(grams ? {} : { caveat: 'assumedPortion' }),
         });
 
-        if (strong) return [asMatch(results[0])];
+        if (strong || acceptBest) return [asMatch(results[0])];
 
         // No candidate clearly answers the word. USDA's own order is not a
         // tiebreaker: it ranks rice crackers above rice and a meatless product

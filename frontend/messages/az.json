@@ -384,6 +384,15 @@
     "chooseMatchHelp": "Ən yaxınını seçin. Seçməyincə bu məhsul hesaba daxil edilmir.",
     "chooseNone": "Heç biri uyğun deyil",
     "portionFromWords": "Sizin yazdığınıza əsasən hesablanıb, ona görə təxminidir",
-    "fieldLabel": "Adi bir gününüz"
+    "fieldLabel": "Adi bir gününüz",
+    "recipeProposed": "Tərkibi biz təxmin etdik",
+    "recipeReviewed": "Tərkibi mütəxəssis yoxlayıb",
+    "recipeYours": "Sizin təsdiqlədiyiniz tərkib",
+    "recipeIntro": "Bu yemək üçün hazır rəqəm yoxdur, ona görə adətən içinə nə qoyulursa, onu hesabladıq. Baxın, çünki hər evdə miqdar fərqli olur.",
+    "recipeMissing": "{items} üçün məlumat tapılmadı, ona görə yekun rəqəm həqiqi olandan azdır.",
+    "recipeConfirm": "Düzgündür",
+    "recipeConfirmed": "Təsdiqləndi",
+    "recipeShow": "Nəyi təxmin etdik",
+    "recipeHide": "Bağla"
   }
 }

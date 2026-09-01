@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { AlertCircle, Check, Heart, Pencil, X } from 'lucide-react';
 import type { RoutineItem } from '@/lib/routine/models';
 import { resolveItem } from '@/lib/routine/resolve';
+import RecipeDisclosure from './RecipeDisclosure';
 
 /**
  * One food, with everything the user needs to judge and fix it.
@@ -165,7 +166,9 @@ export default function ItemRow({
           </p>
         )}
 
-        {(mixed || assumed || uncertain) && !unmatched && choices.length === 0 && (
+        {item.match?.recipe && <RecipeDisclosure recipe={item.match.recipe} />}
+
+        {(mixed || assumed || uncertain) && !unmatched && choices.length === 0 && !item.match?.recipe && (
           <p className="mt-1 text-[0.75rem] text-muted">
             {/* Saying "portion not stated" to someone who wrote "two slices"
                 reads as if we ignored them. They said it; we converted it. */}

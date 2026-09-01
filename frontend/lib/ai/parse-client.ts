@@ -37,15 +37,17 @@ export function userKey(): string {
   }
 }
 
+const EMPTY: ParsedRoutine = { meals: [], dishes: [], nonNegotiables: [] };
+
 export async function parseRoutine(
   text: string,
-  opts: { consent: boolean; signal?: AbortSignal },
+  opts: { consent: boolean; locale?: string; signal?: AbortSignal },
 ): Promise<ParseOutcome> {
   // Screened here for an immediate answer. The server screens again, and that
   // one is authoritative.
   const screen = screenTopics(text);
   if (!screen.allowed) {
-    return { routine: { meals: [], nonNegotiables: [] }, source: 'refused', refusedTopics: screen.topics, urgent: screen.urgent };
+    return { routine: EMPTY, source: 'refused', refusedTopics: screen.topics, urgent: screen.urgent };
   }
 
   const local = parseRoutineDeterministic(text);
@@ -59,7 +61,9 @@ export async function parseRoutine(
     const res = await fetch(`${API_URL}/routine/parse`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({ text, user_key: userKey(), consent: true }),
+      // The locale decides which cuisine a dish name belongs to. A recipe
+      // reviewed for one is not automatically right for another.
+      body: JSON.stringify({ text, user_key: userKey(), consent: true, locale: opts.locale ?? 'en' }),
       signal: opts.signal,
     });
 
@@ -73,7 +77,7 @@ export async function parseRoutine(
     };
 
     if (json.source === 'refused') {
-      return { routine: { meals: [], nonNegotiables: [] }, source: 'refused', refusedTopics: json.refused, urgent: json.urgent };
+      return { routine: EMPTY, source: 'refused', refusedTopics: json.refused, urgent: json.urgent };
     }
 
     // An empty result from the server is worse than the local parse, so keep

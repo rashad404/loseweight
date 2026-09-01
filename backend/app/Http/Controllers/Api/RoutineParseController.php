@@ -31,9 +31,12 @@ class RoutineParseController extends Controller
             // enforce a per-user rate and spend limit.
             'user_key' => ['required', 'string', 'max:64'],
             'consent' => ['required', 'accepted'],
+            // Which cuisine the dish names belong to. A recipe reviewed for one
+            // locale is not automatically right for another.
+            'locale' => ['sometimes', 'string', 'in:en,az,ru'],
         ]);
 
-        $result = $this->parser->parse($data['text'], $data['user_key']);
+        $result = $this->parser->parse($data['text'], $data['user_key'], $data['locale'] ?? 'en');
 
         return response()->json([
             'routine' => $result['routine'],

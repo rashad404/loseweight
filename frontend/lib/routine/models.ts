@@ -47,6 +47,34 @@ export interface FoodMatch {
    * food counts for nothing until the user picks one.
    */
   alternatives?: FoodMatch[];
+  /**
+   * Where the figure came from, kept with every estimate. "rice", "rice
+   * cooked" and "rice dry" are different records and different arithmetic, so
+   * the exact record is recorded rather than the search word.
+   */
+  record?: { fdcId: string; dataType: string | null; description: string };
+  /** Present when this was composed from a dish rather than looked up. */
+  recipe?: ResolvedRecipe;
+}
+
+/**
+ * A dish composition as actually used, with everything needed to judge it.
+ *
+ * `state` is the whole point: a `generated` composition is a proposal from a
+ * model, and the UI must present it as one. Only a person's review makes it
+ * authoritative.
+ */
+export interface ResolvedRecipe {
+  id: number | null;
+  dish: string;
+  state: 'generated' | 'user_confirmed' | 'reviewed' | 'curated_override';
+  variant: string | null;
+  servingG: number;
+  /** What the model had to assume, in its own words. */
+  assumptions: string[];
+  /** Ingredients no food source could price, so the total understates. */
+  missing: string[];
+  ingredients: { food: string; gramsLow: number; gramsHigh: number; matched: string | null }[];
 }
 
 export interface PortionEstimate {

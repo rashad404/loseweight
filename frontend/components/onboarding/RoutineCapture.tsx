@@ -39,7 +39,7 @@ export default function RoutineCapture({
     setBusy(true);
     setProblem('none');
 
-    const parsed = await parseRoutine(text, { consent });
+    const parsed = await parseRoutine(text, { consent, locale });
 
     if (parsed.source === 'refused') {
       setProblem(parsed.urgent ? 'urgent' : 'refused');
