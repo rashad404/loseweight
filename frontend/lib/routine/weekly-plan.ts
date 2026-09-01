@@ -144,9 +144,11 @@ export function situationKeys(routine: UserRoutine): {
   const often = routine.eatingOut === 'most-days' || routine.eatingOut === 'several-weekly';
 
   return {
-    eatingOutRules: often
-      ? ['situation.out.often.order', 'situation.out.often.drink', 'situation.out.often.half']
-      : ['situation.out.rare.enjoy', 'situation.out.rare.drink', 'situation.out.rare.next'],
+    eatingOutRules: routine.eatingOut === 'unknown'
+      ? ['situation.out.unknown.order', 'situation.out.unknown.drink', 'situation.out.unknown.portion']
+      : often
+        ? ['situation.out.often.order', 'situation.out.often.drink', 'situation.out.often.half']
+        : ['situation.out.rare.enjoy', 'situation.out.rare.drink', 'situation.out.rare.next'],
     hungerRescue: [
       `situation.hunger.${routine.hungriest}`,
       'situation.hunger.protein',

@@ -400,7 +400,7 @@
   "change": {
     "param": {
       "meal": { "breakfast": "breakfast", "lunch": "lunch", "dinner": "dinner", "snack": "snacks", "drink": "drinks" },
-      "when": { "morning": "morning", "afternoon": "afternoon", "evening": "evening", "late-night": "late at night", "varies": "whenever hunger varies" }
+      "when": { "unknown": "an appropriate time", "morning": "morning", "afternoon": "afternoon", "evening": "evening", "late-night": "late at night", "varies": "whenever hunger varies" }
     },
     "fat": {
       "title": "Measure the {food} instead of pouring it",
@@ -468,6 +468,11 @@
   },
   "situation": {
     "out": {
+      "unknown": {
+        "order": "If you eat out, decide what you want before hunger makes the decision for you.",
+        "drink": "Water is the simplest default with a restaurant meal. Choose another drink when you actually want it.",
+        "portion": "Restaurant portions vary. Stop when you are comfortably full and take the rest with you if that is practical."
+      },
       "often": {
         "order": "Decide what you are having before you look at the menu. Ordering hungry is how the plan goes sideways.",
         "drink": "Drink water with the meal. Restaurant drinks are often a third of the calories and none of the fullness.",
@@ -480,6 +485,7 @@
       }
     },
     "hunger": {
+      "unknown": "You have not selected a usual hungry time, so keep one practical option available rather than assuming when hunger will arrive.",
       "morning": "You are hungriest in the morning, so put most of your protein at breakfast rather than saving it for later.",
       "afternoon": "Your hunger comes in the afternoon. Have something ready by mid-morning, because deciding at 4pm rarely goes well.",
       "evening": "Evening is your hard part. Keep more of the day's food for the evening rather than eating light and fighting it later.",

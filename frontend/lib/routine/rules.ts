@@ -269,7 +269,7 @@ const adjustPortion: Rule = (ctx) => {
  * that usually costs more than the snack does.
  */
 const addPlannedSnack: Rule = (ctx) => {
-  if (ctx.routine.hungriest === 'varies') return [];
+  if (ctx.routine.hungriest === 'varies' || ctx.routine.hungriest === 'unknown') return [];
   const hasSnack = ctx.routine.meals.some((m) => m.slot === 'snack');
   if (hasSnack) return [];
 

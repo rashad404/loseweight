@@ -400,7 +400,7 @@
   "change": {
     "param": {
       "meal": { "breakfast": "səhər yeməyinə", "lunch": "nahara", "dinner": "axşam yeməyinə", "snack": "qəlyanaltıya", "drink": "içkilərə" },
-      "when": { "morning": "səhər", "afternoon": "günorta", "evening": "axşam", "late-night": "gecə gec saatlarda", "varies": "aclğın dəyişdiyi vaxt" }
+      "when": { "unknown": "uyğun bir vaxt", "morning": "səhər", "afternoon": "günorta", "evening": "axşam", "late-night": "gecə gec saatlarda", "varies": "aclğın dəyişdiyi vaxt" }
     },
     "fat": {
       "title": "{food} tökmək əvəzinə ölçün",
@@ -468,6 +468,11 @@
   },
   "situation": {
     "out": {
+      "unknown": {
+        "order": "Çöldə yeyirsinizsə, aclıq sizin yerinizə seçim etməzdən əvvəl nə istədiyinizə qərar verin.",
+        "drink": "Restoran yeməyinin yanında ən sadə seçim sudur. Başqa içkini həqiqətən istədiyiniz vaxt seçin.",
+        "portion": "Restoran porsiyaları fərqli olur. Rahat doyduğunuz vaxt dayanın, mümkündürsə qalanını özünüzlə götürün."
+      },
       "often": {
         "order": "Menyuya baxmamışdan əvvəl nə yeyəcəyinizi qərarlaşdırın. Ac halda sifariş vermək planı pozan əsas şeydir.",
         "drink": "Yeməklə su için. Restoran içkiləri çox vaxt kalorinin üçdə biri olur, amma heç doydurmur.",
@@ -480,6 +485,7 @@
       }
     },
     "hunger": {
+      "unknown": "Adətən nə vaxt acdığınızı seçməmisiniz. Aclığın vaxtını təxmin etmək əvəzinə uyğun bir variantı hazır saxlayın.",
       "morning": "Səhərlər daha çox acırsınız, ona görə zülalın böyük hissəsini səhər yeməyinə saxlayın, sonraya yox.",
       "afternoon": "Aclıq günortadan sonra gəlir. Səhər saatlarında bir şey hazırlayın, çünki saat 16-da qərar vermək çox vaxt yaxşı bitmir.",
       "evening": "Ən çətin vaxtınız axşamdır. Gündəlik yeməyin çoxunu axşama saxlayın, gün boyu az yeyib axşam mübarizə aparmaqdansa.",

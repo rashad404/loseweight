@@ -1,5 +1,5 @@
 const MEAL_SLOTS = new Set(['breakfast', 'lunch', 'dinner', 'snack', 'drink']);
-const HUNGER_TIMES = new Set(['morning', 'afternoon', 'evening', 'late-night', 'varies']);
+const HUNGER_TIMES = new Set(['unknown', 'morning', 'afternoon', 'evening', 'late-night', 'varies']);
 
 /** Translate enum-valued message parameters while preserving user food names and numbers. */
 export function localizedChangeParams(

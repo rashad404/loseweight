@@ -257,8 +257,8 @@ export async function resolveRoutine(
     meals,
     nonNegotiables: parsed.nonNegotiables,
     cooking: 'sometimes',
-    eatingOut: 'weekly',
-    hungriest: 'varies',
+    eatingOut: 'unknown',
+    hungriest: 'unknown',
     activityDescribed: null,
   };
 }

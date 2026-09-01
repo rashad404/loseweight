@@ -105,8 +105,8 @@ export interface RoutineMeal {
 }
 
 export type CookingFrequency = 'rarely' | 'sometimes' | 'most-days' | 'daily';
-export type EatingOutFrequency = 'rarely' | 'weekly' | 'several-weekly' | 'most-days';
-export type HungriestTime = 'morning' | 'afternoon' | 'evening' | 'late-night' | 'varies';
+export type EatingOutFrequency = 'unknown' | 'rarely' | 'weekly' | 'several-weekly' | 'most-days';
+export type HungriestTime = 'unknown' | 'morning' | 'afternoon' | 'evening' | 'late-night' | 'varies';
 
 /** The five onboarding answers, after parsing and user correction. */
 export interface UserRoutine {

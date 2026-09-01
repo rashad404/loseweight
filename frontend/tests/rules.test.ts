@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { selectChanges, RULES, type RuleContext } from '../lib/routine/rules.ts';
 import { SAFETY_LIMITS } from '../lib/safety/boundaries.ts';
+import { situationKeys } from '../lib/routine/weekly-plan.ts';
 import { usRoutine, azRoutine, routine, meal, item } from './fixtures/routines.ts';
 
 const ctx = (over: Partial<RuleContext> = {}): RuleContext => ({
@@ -173,4 +174,14 @@ test('a word that merely starts like a food term is not treated as one', () => {
   const { chosen } = selectChanges(ctx({ routine: r, currentKcal: 500, targetKcal: 400 }));
   assert.ok(!chosen.some((c) => c.kind === 'swap-liquid-calories'),
     '"sodium" and "winery" must not read as drinks');
+});
+
+test('unknown habits use neutral guidance instead of invented frequency claims', () => {
+  const unknown = routine(usRoutine().meals, { eatingOut: 'unknown', hungriest: 'unknown' });
+  const situations = situationKeys(unknown);
+  assert.deepEqual(situations.eatingOutRules, [
+    'situation.out.unknown.order', 'situation.out.unknown.drink', 'situation.out.unknown.portion',
+  ]);
+  assert.equal(situations.hungerRescue[0], 'situation.hunger.unknown');
+  assert.ok(!selectChanges(ctx({ routine: unknown })).chosen.some((change) => change.kind === 'add-planned-snack'));
 });

@@ -108,10 +108,43 @@ function write(key: string, value: unknown, event: string): boolean {
 
 export const loadPlan = () => read<SavedPlan>(PLAN_KEY);
 
-export const loadRoutine = () => read<UserRoutine>(ROUTINE_KEY);
+export function loadRoutine(): UserRoutine | null {
+  const routine = read<UserRoutine>(ROUTINE_KEY);
+  if (!routine) return null;
+  // Early onboarding did not ask these questions but stored plausible-sounding
+  // defaults. They are unknown, not user answers.
+  const migrated = {
+    ...routine,
+    eatingOut: routine.eatingOut === 'weekly' ? 'unknown' as const : routine.eatingOut,
+    hungriest: routine.hungriest === 'varies' ? 'unknown' as const : routine.hungriest,
+  };
+  if (migrated.eatingOut !== routine.eatingOut || migrated.hungriest !== routine.hungriest) {
+    write(ROUTINE_KEY, migrated, PLAN_CHANGED);
+  }
+  return migrated;
+}
 export const saveRoutine = (r: UserRoutine) => write(ROUTINE_KEY, r, PLAN_CHANGED);
 
-export const loadWeekly = () => read<WeeklyPlan>(WEEKLY_KEY);
+export function loadWeekly(): WeeklyPlan | null {
+  const weekly = read<WeeklyPlan>(WEEKLY_KEY);
+  if (!weekly) return null;
+  const routine = loadRoutine();
+  if (!routine) return weekly;
+  const migrateEatingOut = routine.eatingOut === 'unknown' && weekly.eatingOutRules[0] !== 'situation.out.unknown.order';
+  const eatingOutRules = migrateEatingOut
+    ? ['situation.out.unknown.order', 'situation.out.unknown.drink', 'situation.out.unknown.portion']
+    : weekly.eatingOutRules;
+  const migrateHunger = routine.hungriest === 'unknown' && weekly.hungerRescue.length > 0 && weekly.hungerRescue[0] !== 'situation.hunger.unknown';
+  const hungerRescue = migrateHunger
+    ? ['situation.hunger.unknown', ...weekly.hungerRescue.slice(1)]
+    : weekly.hungerRescue;
+  if (migrateEatingOut || migrateHunger) {
+    const migrated = { ...weekly, eatingOutRules, hungerRescue };
+    write(WEEKLY_KEY, migrated, WEEKLY_CHANGED);
+    return migrated;
+  }
+  return weekly;
+}
 export const saveWeekly = (w: WeeklyPlan) => write(WEEKLY_KEY, w, WEEKLY_CHANGED);
 
 /**
