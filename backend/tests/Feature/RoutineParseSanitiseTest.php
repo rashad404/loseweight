@@ -39,11 +39,20 @@ class RoutineParseSanitiseTest extends TestCase
         $this->assertSame(0.94, $item['confidence']);
     }
 
-    public function test_a_missing_confidence_is_not_read_as_certainty(): void
+    public function test_an_absent_confidence_means_the_model_was_sure(): void
     {
+        // The prompt asks for confidence only below 0.8, so silence is
+        // certainty. Emitting 0.95 on every item cost tokens and said nothing.
         $out = $this->sanitise($this->meal([['text' => 'plov', 'canonical' => 'rice dish']]));
 
-        $this->assertSame(0.5, $out['meals'][0]['items'][0]['confidence']);
+        $this->assertSame(1.0, $out['meals'][0]['items'][0]['confidence']);
+    }
+
+    public function test_a_stated_low_confidence_is_kept(): void
+    {
+        $out = $this->sanitise($this->meal([['text' => 'corek', 'confidence' => 0.6]]));
+
+        $this->assertSame(0.6, $out['meals'][0]['items'][0]['confidence']);
     }
 
     public function test_confidence_is_clamped(): void

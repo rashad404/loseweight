@@ -185,8 +185,13 @@ export async function resolveRoutine(
       // coke because the quantity was dropped for having no unit attached.
       const servings = grams === null ? parsedItem.quantity : null;
 
-      const dish = parsedItem.dish
-        ? parsed.dishes.find((d) => d.dish.toLowerCase() === parsedItem.dish!.toLowerCase())
+      // Matched on the person's own wording as well as the dish name. The
+      // meals and the compositions are asked for separately, so one half can
+      // say "sweet tea" where the other says "sirin cay".
+      const key = (s: string | null) => s?.toLowerCase().trim() ?? '';
+      const wanted = [key(parsedItem.dish), key(parsedItem.text)].filter(Boolean);
+      const dish = wanted.length
+        ? parsed.dishes.find((d) => wanted.includes(key(d.dish)))
         : undefined;
 
       // A composite dish is priced from its ingredients, so the figure traces

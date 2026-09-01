@@ -42,7 +42,7 @@ test('Azerbaijani spelling variants and diacritics all match', async () => {
 
 test('every curated dish is reachable by at least one alias', async () => {
   const found = new Set<string>();
-  for (const name of ['plov','dolma','dushbara','qutab','piti','kebab','dovga','ajabsandal','bozbash','chigirtma','pendir','lavash']) {
+  for (const name of ['plov','dolma','dushbara','qutab','piti','kebab','dovga','ajabsandal','bozbash','chigirtma','pendir','lavash','sirin cay']) {
     const [m] = await resolve(providers, { name });
     if (m.source !== 'unmatched') found.add(m.name);
   }

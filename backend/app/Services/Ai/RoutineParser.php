@@ -22,7 +22,19 @@ class RoutineParser
      */
     public const SCHEMA_VERSION = 2;
 
-    private const SYSTEM = <<<'TXT'
+    /**
+     * Reading the meals, and composing the dishes, are asked separately.
+     *
+     * They used to be one reply of about 1350 tokens, and latency here is
+     * output tokens at roughly 8ms each, so it took 11 seconds. Both prompts
+     * see the same text and run at the same time, so the wait is now the longer
+     * of the two rather than their sum.
+     *
+     * Both are told to omit fields they have nothing to say about. Emitting
+     * "preparation":null,"quantity":null,"unit":null,"household":null on every
+     * item cost about 25 tokens each and carried no information.
+     */
+    private const SYSTEM_ITEMS = <<<'TXT'
 You convert a person's description of how they normally eat into structured data.
 They may write in English, Azerbaijani or Russian.
 
@@ -31,53 +43,30 @@ database, not from you. Your job is to say what the food is, in terms that
 database can be searched with.
 
 For every item:
-- "text" is the person's own words, verbatim. Never translate or correct it.
+- "text" is the person's own words for the FOOD only, verbatim. Never translate
+  or correct it, and never include the time word: "seherler sirin cay" is the
+  item "sirin cay" in the breakfast slot.
 - "canonical" is a searchable English food name. Resolve the ambiguity that
   context settles: bread with cheese and "yağ" at breakfast is butter, not
   cooking oil. Say which form it is when that changes the food: "cooked white
   rice", not "rice"; "brewed coffee", not "coffee".
-- "preparation" is how it was cooked when that is known: fried, boiled, roasted,
-  raw, brewed. Otherwise null.
-- "confidence" is 0 to 1, how sure you are that "canonical" is what they meant.
-- Set quantity and unit only when stated. Put "a bowl" or "two slices" in
-  "household". Otherwise null.
-- A dish is ONE named preparation that people cook or order by that name (plov,
+- Set "quantity" and "unit" only when the person stated them. Put "a bowl" or
+  "two slices" in "household".
+- A dish is ONE named preparation people cook or order by that name (plov,
   dovga, lasagna, borscht), OR a food or drink with something mixed into it that
-  a database record for the plain version would not include (sugar in tea, milk
-  in coffee, honey in yogurt). Those added calories are usually the point, so
-  they must not be lost.
-- If the person's own words say the food is sweetened or has something added,
-  the canonical name must not quietly drop it. Azerbaijani "şirin çay" is sweet
-  tea, so it is tea plus sugar, never "brewed tea" on its own. The same goes for
-  "sweet tea", "sladkiy chay", "coffee with sugar" and "yogurt with honey".
+  a record for the plain version would not include: sugar in tea, milk in
+  coffee, honey in yogurt. Those added calories are usually the point.
+  For those, leave "canonical" out and set "dish" to the person's own word for
+  it, lowercased, exactly as they wrote it: "plov", "dovga", "sirin cay".
 - Foods eaten alongside each other are NOT a dish. "bread with butter and tea"
   is three separate items. The test is whether the extra thing is IN the food or
   merely NEXT to it.
-- If an item really is a dish, leave "canonical" null, set "dish" to its short
-  lowercase name, and describe it once in "dishes".
-- Anything whose calories come mainly from something added to it is a composite
-  dish, not one food. "sweet tea" is tea plus sugar; "coffee with milk" is
-  coffee plus milk. Naming it as a single food loses the part that matters, so
-  decompose it and let the person correct the amount.
-- Name the regional form of a food when it differs from the usual English one.
-  Azerbaijani "pendir" is white brined cheese, not cheddar. "çörək" is a plain
-  wheat flatbread. Choosing the wrong form changes the calories.
-
-For every composite dish in "dishes":
-- "ingredients" lists what is in one normal serving, each with a searchable
-  English "food" name and a gram range, "gramsLow" and "gramsHigh". Give a real
-  range: household recipes vary.
-- Every ingredient name must be specific enough to find in a food database.
-  Bare words like "meat", "oil or fat" and "vegetables" find nothing and drop
-  silently out of the total. Name the animal: "lamb, cooked", "beef, ground,
-  cooked". Name the fat: "butter" or "sunflower oil", never "oil or fat". Say
-  the state, and say the right one: "carrot, raw", not "carrot, dehydrated".
-- "servingG" is the total grams of the serving those ingredients describe.
-- "variant" names which version you assumed, such as "meat plov", when it
-  matters. Otherwise null.
-- "assumptions" lists what you had to assume and the person did not say. Be
-  honest here. Write them in the same language the person wrote in, because
-  they are shown to them unchanged.
+- If the person's words say a food is sweetened or has something added, the
+  canonical name must not quietly drop it. "şirin çay" is sweet tea, so it is a
+  dish, never "brewed tea" on its own.
+- Name the regional form when it differs from the usual English one. Azerbaijani
+  "pendir" is white brined cheese, not cheddar, and "çörək" is a plain wheat
+  flatbread. Choosing the wrong form changes the calories.
 
 Other rules:
 - Return only what the person said. Never add foods they did not mention.
@@ -86,8 +75,52 @@ Other rules:
 - A range like "2-3 cokes" is one item with the higher number, never two items.
 - List foods the person says they will not give up in nonNegotiables.
 
+Keep the reply short. Omit any field you have nothing to say about rather than
+writing null. Include "confidence" (0 to 1) only when you are below 0.8 sure the
+canonical name is what they meant.
+
+Shape, with every optional field omitted:
+{"meals":[{"slot":"breakfast","items":[{"text":"","canonical":""}]}],"nonNegotiables":[]}
+TXT;
+
+    private const SYSTEM_DISHES = <<<'TXT'
+You are given a person's description of how they normally eat. List only the
+composite dishes in it and what is in one normal serving. Ignore everything else.
+
+A dish is ONE named preparation people cook or order by that name (plov, dovga,
+lasagna, borscht), OR a food or drink with something mixed into it that a record
+for the plain version would not include: sugar in tea, milk in coffee, honey in
+yogurt. Azerbaijani "şirin çay" is sweet tea and belongs here, and people often
+type Azerbaijani without its diacritics, so "sirin cay", "corek" and "dusbere"
+mean the same as "şirin çay", "çörək" and "düşbərə".
+
+Foods merely eaten alongside each other are not a dish. "bread with butter and
+tea" is three ordinary foods, so return nothing for it.
+
+Never estimate calories or any nutrition value. A food database supplies those.
+
+For each dish:
+- "dish" is the person's own word for it, lowercased, exactly as they wrote it,
+  without the time word: "plov", "dovga", "sirin cay". Do not translate it.
+- "ingredients" is what is in one normal serving, each with a searchable English
+  "food" name and a gram range, "gramsLow" and "gramsHigh". Give a real range:
+  household recipes vary.
+- Every ingredient name must be specific enough to find in a food database.
+  Bare words like "meat", "oil or fat" and "vegetables" find nothing and drop
+  silently out of the total. Name the animal: "lamb, cooked", "beef, ground,
+  cooked". Name the fat: "butter" or "sunflower oil", never "oil or fat". Say
+  the state, and the right one: "carrot, raw", not "carrot, dehydrated".
+- "servingG" is the total grams of the serving those ingredients describe.
+- "variant" names which version you assumed, such as "meat plov", when it
+  matters. Omit it otherwise.
+- "assumptions" says what you had to assume and the person did not say. At most
+  two, each under twelve words. They are shown to the person unchanged, so write
+  them in the language named below.
+
+If the description contains no composite dish, return {"dishes":[]}.
+
 Shape:
-{"meals":[{"slot":"breakfast","whenDescribed":null,"items":[{"text":"","canonical":null,"preparation":null,"confidence":0,"quantity":null,"unit":null,"household":null,"dish":null}]}],"dishes":[{"dish":"","variant":null,"preparation":null,"servingG":0,"ingredients":[{"food":"","gramsLow":0,"gramsHigh":0}],"assumptions":[]}],"nonNegotiables":[]}
+{"dishes":[{"dish":"","servingG":0,"ingredients":[{"food":"","gramsLow":0,"gramsHigh":0}],"assumptions":[]}]}
 TXT;
 
     public function __construct(
@@ -141,27 +174,43 @@ TXT;
             // Dish compositions made the reply several times longer than the old
             // item-only shape. At the previous limit a routine with two dishes
             // ran out of tokens mid-JSON and fell back to the offline parser.
-            $result = $this->client->structured(self::system($locale), $text, 'ParsedRoutine', 3000);
+            // Both halves see the same text and run together, so the wait is
+            // the longer of the two rather than their sum.
+            $replies = $this->client->structuredPool([
+                'items' => [self::SYSTEM_ITEMS, $text, 1500],
+                'dishes' => [self::dishSystem($locale), $text, 1500],
+            ], 'ParsedRoutine');
         } catch (\RuntimeException $e) {
             return $this->unavailable($e->getMessage());
         }
 
-        $routine = self::sanitise($result['data']);
+        // Reading the meals is the half that cannot be done without. A failed
+        // dish call only means composite dishes fall back to a plain lookup.
+        if ($replies['items'] === null) {
+            return $this->unavailable('request-failed');
+        }
+
+        $routine = self::sanitise(
+            $replies['items']['data'] + ['dishes' => $replies['dishes']['data']['dishes'] ?? []],
+        );
+
+        $model = $replies['items']['model'];
+        $input = collect($replies)->filter()->sum('input_tokens');
+        $output = collect($replies)->filter()->sum('output_tokens');
 
         $this->limiter->record(
-            $userKey, self::FEATURE, $result['model'],
-            $result['input_tokens'], $result['output_tokens'],
-            $this->client->cost($result['model'], $result['input_tokens'], $result['output_tokens']),
+            $userKey, self::FEATURE, $model,
+            $input, $output, $this->client->cost($model, $input, $output),
         );
 
         AiParseCache::create([
             'input_hash' => $hash,
             'feature' => self::FEATURE,
             'result' => $routine,
-            'model' => $result['model'],
+            'model' => $model,
         ]);
 
-        $routine['dishes'] = $this->recipes->reconcile($routine['dishes'], $locale, $result['model']);
+        $routine['dishes'] = $this->recipes->reconcile($routine['dishes'], $locale, $model);
 
         return ['routine' => $routine, 'source' => 'model', 'refused' => [], 'urgent' => false];
     }
@@ -181,14 +230,14 @@ TXT;
     }
 
     /**
-     * The system prompt, with the language for user-facing text named outright.
+     * The dish prompt, with the language for its assumptions named outright.
      *
      * Asking for "the language the person wrote in" produced Turkish for an
      * Azerbaijani routine: the two look close enough that a model slides
      * between them, and Turkish reads as foreign to an Azerbaijani speaker.
      * The language is stated, and the near neighbour is ruled out by name.
      */
-    private static function system(string $locale): string
+    private static function dishSystem(string $locale): string
     {
         $language = match ($locale) {
             'az' => <<<'TXT'
@@ -200,7 +249,7 @@ TXT,
             default => 'English.',
         };
 
-        return self::SYSTEM."\n\nWrite every assumption in this language: {$language}";
+        return self::SYSTEM_DISHES."\n\nWrite every assumption in this language: {$language}";
     }
 
     private static function normalise(string $text): string
@@ -224,8 +273,9 @@ TXT,
                         'text' => mb_substr($i['text'], 0, 120),
                         'canonical' => self::str($i['canonical'] ?? null, 80),
                         'preparation' => self::str($i['preparation'] ?? null, 30),
-                        // A model that omits its confidence is not therefore
-                        // certain. Treat a missing value as the middle.
+                        // The prompt asks for confidence only when the model is
+                        // unsure, so its absence means sure. Emitting 0.95 on
+                        // every item cost tokens and told us nothing.
                         'confidence' => self::confidence($i['confidence'] ?? null),
                         'quantity' => is_numeric($i['quantity'] ?? null) ? (float) $i['quantity'] : null,
                         'unit' => self::str($i['unit'] ?? null, 20),
@@ -272,9 +322,13 @@ TXT,
      */
     private static function dishes(mixed $raw, array $meals): array
     {
+        // Matched against the person's own wording as well as the dish name,
+        // because the two halves are asked separately and can word it
+        // differently. Requiring an exact agreement threw away every
+        // composition when one said "sweet tea" and the other "sirin cay".
         $referenced = collect($meals)
-            ->flatMap(fn ($m) => collect($m['items'])->pluck('dish'))
-            ->filter()->map(fn ($d) => mb_strtolower($d))->unique();
+            ->flatMap(fn ($m) => collect($m['items'])->flatMap(fn ($i) => [$i['dish'], $i['text']]))
+            ->filter()->map(fn ($d) => mb_strtolower(trim($d)))->unique();
 
         return collect(is_array($raw) ? $raw : [])
             ->filter(fn ($d) => is_array($d) && is_string($d['dish'] ?? null))
@@ -328,7 +382,7 @@ TXT,
     private static function confidence(mixed $v): float
     {
         if (! is_numeric($v)) {
-            return 0.5;
+            return 1.0;
         }
 
         return round(max(0.0, min(1.0, (float) $v)), 2);

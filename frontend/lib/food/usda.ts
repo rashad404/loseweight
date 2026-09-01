@@ -50,7 +50,7 @@ const LOCAL: Record<string, LocalFood> = {
   'orange juice':     { fdcId: '169098', label: 'Orange juice, raw',                  per100: { kcal: 45,  proteinG: 0.7,  fiberG: 0.2 }, defaultG: 250, aliases: ['juice'] },
   'cola':             { fdcId: '174852', label: 'Beverages, carbonated, cola, regular', per100: { kcal: 42, proteinG: 0,   fiberG: 0   }, defaultG: 330, aliases: ['coke', 'cokes', 'pepsi', 'soda', 'fizzy drink'] },
   'coffee':           { fdcId: '171890', label: 'Coffee, brewed',                     per100: { kcal: 1,   proteinG: 0.1,  fiberG: 0   }, defaultG: 240, aliases: ['black coffee', 'americano', 'espresso'] },
-  'tea':              { fdcId: '173227', label: 'Tea, black, brewed',                 per100: { kcal: 1,   proteinG: 0,    fiberG: 0   }, defaultG: 240, aliases: ['black tea', 'green tea'] },
+  'tea':              { fdcId: '173227', label: 'Tea, black, brewed',                 per100: { kcal: 1,   proteinG: 0,    fiberG: 0   }, defaultG: 240, aliases: ['black tea', 'green tea', 'çay', 'cay', 'чай'] },
   'beer':             { fdcId: '168746', label: 'Beer, regular, all',                 per100: { kcal: 43,  proteinG: 0.5,  fiberG: 0   }, defaultG: 330 },
   'banana':           { fdcId: '173944', label: 'Bananas, raw',                       per100: { kcal: 89,  proteinG: 1.1,  fiberG: 2.6 }, defaultG: 118, aliases: ['bananas'] },
   'apple':            { fdcId: '171688', label: 'Apples, raw, with skin',             per100: { kcal: 52,  proteinG: 0.3,  fiberG: 2.4 }, defaultG: 180, aliases: ['apples'] },

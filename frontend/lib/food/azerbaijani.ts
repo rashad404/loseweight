@@ -40,8 +40,27 @@ const BREAD: Per100g = { kcal: 266, proteinG: 9, fiberG: 2.7 };
 const HERBS: Per100g = { kcal: 23, proteinG: 2.9, fiberG: 2 };
 const EGG: Per100g = { kcal: 155, proteinG: 13, fiberG: 0 };
 const AUBERGINE: Per100g = { kcal: 25, proteinG: 1, fiberG: 3 };
+const TEA: Per100g = { kcal: 1, proteinG: 0, fiberG: 0 };
+const SUGAR: Per100g = { kcal: 387, proteinG: 0, fiberG: 0 };
 
 const DISHES: Dish[] = [
+  {
+    // Here because the model will not classify it as a dish, however plainly
+    // the prompt asks. It reliably answers "brewed tea", which is about 2 kcal
+    // and misses the entire point: the sugar is the calories, and several
+    // glasses a day is a real part of the day's intake. This is what the
+    // curated layer is for, correcting a repeated error on a common food.
+    aliases: ['sirin cay', 'şirin çay', 'sweet tea', 'çay şəkərlə'],
+    label: 'Sweet tea',
+    // A glass of tea with one to three teaspoons of sugar.
+    servingG: 208,
+    servingLowG: 205,
+    servingHighG: 215,
+    ingredients: [
+      { name: 'brewed tea', grams: 200, per100: TEA },
+      { name: 'sugar', grams: 8, per100: SUGAR },
+    ],
+  },
   {
     aliases: ['plov', 'plow', 'pilaf', 'aş', 'as', 'pilav'],
     label: 'Plov',
